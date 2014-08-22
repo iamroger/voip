@@ -1,0 +1,7 @@
+"----------------------"no
+cd menuconfig; make ; cd ..
+make[1]: Entering directory `/media/data/opensips/opensips-1.8.3-tls/menuconfig'
+gcc -o configure -g -Wall -DMENUCONFIG_CFG_PATH=\"menuconfig/configs/\" -DMENUCONFIG_GEN_PATH=\"etc/\" -DMENUCONFIG_HAVE_SOURCES=1 cfg.o curses.o items.o commands.o menus.o parser.o main.o -lcurses
+make[1]: Leaving directory `/media/data/opensips/opensips-1.8.3-tls/menuconfig'
+./menuconfig/configure --local
+[?1049h[1;24r(B[m[4l[?7h[?1h=[H[2J[39;49m[39;49m[37m[40m[H[2J[7;26H[34m[40m___________________________________________[8;25H|[8;69H|[9;25H|(B[m[39;49m[37m[40m    --->  Configure Compile Options[9;69H[34m[40m|[10;25H|[10;36H(B[m[39;49m[37m[40mCompile And Install OpenSIPS     [34m[40m|[11;25H|[11;36H(B[m[39;49m[37m[40mCleanup OpenSIPS sources[11;69H[34m[40m|[12;25H|[12;36H(B[m[39;49m[37m[40mGenerate OpenSIPS Script[12;69H[34m[40m|[13;25H|[13;36H(B[m[39;49m[37m[40mExit & Save All Changes[13;69H[34m[40m|[14;25H|___________________________________________|[H(B[m[39;49m[37m[40m[7d[J[3;35H[32m[40mOpenSIPS Main Configuration Menu(B[m[39;49m[37m[40m[39;49m[24d[K[24;1H[?1049l[?1l>
