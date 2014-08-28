@@ -1,0 +1,656 @@
+I/DEBUG   (   20): debuggerd: Feb  5 2009 15:37:59
+E/mountd  (   19): could not read initial mass storage state
+E/flash_image(   28): can't find recovery partition
+D/RILD    (   21): overriding with -s /dev/socket/qemud_gsm
+D/AndroidRuntime(   22): 
+D/AndroidRuntime(   22): >>>>>>>>>>>>>> AndroidRuntime START <<<<<<<<<<<<<<
+D/AndroidRuntime(   22): CheckJNI is ON
+D/AndroidRuntime(   22): --- registering native functions ---
+I/        (   23): ServiceManager: 0xaab8
+W/AudioHardwareInterface(   23): Using stubbed audio hardware. No sound will be produced.
+I/AudioFlinger(   23): AudioFlinger's main thread ready to run.
+I/CameraService(   23): CameraService started: pid=23
+I/Zygote  (   22): Preloading classes...
+D/dalvikvm(   22): GC freed 746 objects / 41232 bytes in 19ms
+D/dalvikvm(   22): GC freed 302 objects / 18568 bytes in 13ms
+D/dalvikvm(   22): GC freed 313 objects / 18936 bytes in 12ms
+D/dalvikvm(   22): Trying to load lib /system/lib/libmedia_jni.so 0x0
+D/dalvikvm(   22): Added shared lib /system/lib/libmedia_jni.so 0x0
+D/dalvikvm(   22): Trying to load lib /system/lib/libmedia_jni.so 0x0
+D/dalvikvm(   22): Shared lib '/system/lib/libmedia_jni.so' already loaded in same CL 0x0
+D/dalvikvm(   22): Trying to load lib /system/lib/libmedia_jni.so 0x0
+D/dalvikvm(   22): Shared lib '/system/lib/libmedia_jni.so' already loaded in same CL 0x0
+D/dalvikvm(   22): GC freed 3725 objects / 181800 bytes in 41ms
+D/dalvikvm(   22): GC freed 253 objects / 17216 bytes in 31ms
+D/dalvikvm(   22): GC freed 403 objects / 23720 bytes in 35ms
+D/dalvikvm(   22): GC freed 137 objects / 26664 bytes in 39ms
+D/dalvikvm(   22): GC freed 740 objects / 46568 bytes in 61ms
+D/dalvikvm(   22): GC freed 385 objects / 23912 bytes in 61ms
+D/dalvikvm(   22): Trying to load lib /system/lib/libwebcore.so 0x0
+D/dalvikvm(   22): Added shared lib /system/lib/libwebcore.so 0x0
+D/dalvikvm(   22): GC freed 490 objects / 28192 bytes in 65ms
+D/dalvikvm(   22): GC freed 298 objects / 21040 bytes in 67ms
+D/dalvikvm(   22): GC freed 388 objects / 21072 bytes in 66ms
+D/dalvikvm(   22): GC freed 1799 objects / 93696 bytes in 76ms
+D/dalvikvm(   22): GC freed 611 objects / 45000 bytes in 73ms
+D/dalvikvm(   22): GC freed 14561 objects / 508472 bytes in 123ms
+D/dalvikvm(   22): GC freed 11255 objects / 474600 bytes in 120ms
+D/SSLSocketFactory(   22): Using factory org.apache.harmony.xnet.provider.jsse.OpenSSLSocketFactoryImpl@40124320
+D/dalvikvm(   22): GC freed 4474 objects / 191072 bytes in 99ms
+D/dalvikvm(   22): GC freed 640 objects / 34288 bytes in 90ms
+D/dalvikvm(   22): GC freed 570 objects / 29824 bytes in 89ms
+D/dalvikvm(   22): GC freed 368 objects / 26208 bytes in 89ms
+I/Zygote  (   22): ...preloaded 854 classes in 11974ms.
+D/dalvikvm(   22): GC freed 43 objects / 2424 bytes in 94ms
+I/Zygote  (   22): Preloading resources...
+D/dalvikvm(   22): GC freed 6 objects / 8928 bytes in 90ms
+D/dalvikvm(   22): GC freed 180 objects / 9312 bytes in 101ms
+D/dalvikvm(   22): GC freed 123 objects / 4936 bytes in 95ms
+I/Zygote  (   22): ...preloaded 42 resources in 1385ms.
+D/dalvikvm(   22): GC freed 115 objects / 5496 bytes in 98ms
+D/dalvikvm(   22): GC freed 181 objects / 7400 bytes in 98ms
+D/dalvikvm(   22): GC freed 2 objects / 48 bytes in 97ms
+I/dalvikvm(   22): Splitting out new zygote heap
+I/dalvikvm(   22): System server process 45 has been created
+I/Zygote  (   22): Accepting command socket connections
+D/dalvikvm(   45): Trying to load lib /system/lib/libandroid_servers.so 0x0
+D/dalvikvm(   45): Added shared lib /system/lib/libandroid_servers.so 0x0
+I/sysproc (   45): Entered system_init()
+I/sysproc (   45): ServiceManager: 0xc8a20
+I/SurfaceFlinger(   45): SurfaceFlinger is starting
+E/MemoryHeapBase(   45): error opening /dev/pmem: No such file or directory
+I/SurfaceFlinger(   45): SurfaceFlinger's main thread ready to run. Initializing graphics H/W...
+E/SurfaceFlinger(   45): Couldn't open /sys/android_power/wait_for_fb_sleep or /sys/android_power/wait_for_fb_wake
+E/GLLogger(   45): couldn't load <libhgl.so> library (Cannot find library)
+I/SurfaceFlinger(   45): EGL informations:
+I/SurfaceFlinger(   45): # of configs : 4
+I/SurfaceFlinger(   45): vendor    : Google Inc.
+I/SurfaceFlinger(   45): version   : 1.2 Android META-EGL
+I/SurfaceFlinger(   45): extensions: EGL_ANDROID_query_string_config EGL_ANDROID_swap_rectangle
+I/SurfaceFlinger(   45): ext/config: EGL_ANDROID_swap_rectangle
+I/SurfaceFlinger(   45): Client API: OpenGL ES
+I/EGLDisplaySurface(   45): using (fd=21)
+I/EGLDisplaySurface(   45): id           = 
+I/EGLDisplaySurface(   45): xres         = 320 px
+I/EGLDisplaySurface(   45): yres         = 480 px
+I/EGLDisplaySurface(   45): xres_virtual = 320 px
+I/EGLDisplaySurface(   45): yres_virtual = 960 px
+I/EGLDisplaySurface(   45): bpp          = 16
+I/EGLDisplaySurface(   45): r            = 11:5
+I/EGLDisplaySurface(   45): g            =  5:6
+I/EGLDisplaySurface(   45): b            =  0:5
+I/EGLDisplaySurface(   45): width        = 49 mm (165.877548 dpi)
+I/EGLDisplaySurface(   45): height       = 73 mm (167.013702 dpi)
+I/EGLDisplaySurface(   45): refresh rate = 60.00 Hz
+I/SurfaceFlinger(   45): OpenGL informations:
+I/SurfaceFlinger(   45): vendor    : Google Inc.
+I/SurfaceFlinger(   45): renderer  : Android PixelFlinger 1.0
+I/SurfaceFlinger(   45): version   : OpenGL ES-CM 1.0
+I/SurfaceFlinger(   45): extensions: GL_OES_byte_coordinates GL_OES_fixed_point GL_OES_single_precision GL_OES_read_format GL_OES_compressed_paletted_texture GL_OES_draw_texture GL_OES_matrix_get GL_OES_query_matrix GL_ARB_texture_compression GL_ARB_texture_non_power_of_two GL_ANDROID_direct_texture GL_ANDROID_user_clip_plane GL_ANDROID_vertex_buffer_object GL_ANDROID_generate_mipmap 
+I/sysproc (   45): System server: starting Android runtime.
+I/sysproc (   45): System server: starting Android services.
+I/SystemServer(   45): Entered the Android system server!
+I/sysproc (   45): System server: entering thread pool.
+E/GLLogger(   45): couldn't load <libhgl.so> library (Cannot find library)
+I/SystemServer(   45): Starting Power Manager.
+I/SystemServer(   45): Starting Activity Manager.
+I/SystemServer(   45): Starting telephony registry
+I/SystemServer(   45): Starting Package Manager.
+I/Installer(   45): connecting...
+I/installd(   27): new connection
+I/ARMAssembler(   45): generated scanline__00000177:03545404_00001A04_00000000 [ 61 ipp] (86 ins) at [0x1c21b8:0x1c2310] in 5986013 ns
+I/ARMAssembler(   45): generated scanline__00000177:03010104_00001A01_00000000 [ 40 ipp] (65 ins) at [0x1c4550:0x1c4654] in 1348565 ns
+I/ARMAssembler(   45): generated scanline__00000177:03545404_00000A01_00000000 [ 48 ipp] (72 ins) at [0x1c4680:0x1c47a0] in 1260705 ns
+D/PackageManager(   45): Scanning app dir /system/framework
+W/PackageParser(   45): Bad element under <manifest>: eat-comment
+W/PackageParser(   45): Bad element under <manifest>: eat-comment
+W/PackageParser(   45): Bad element under <manifest>: eat-comment
+W/PackageParser(   45): Bad element under <manifest>: eat-comment
+W/PackageParser(   45): Bad element under <manifest>: eat-comment
+W/PackageParser(   45): Bad element under <manifest>: eat-comment
+W/PackageParser(   45): Bad element under <manifest>: eat-comment
+W/PackageParser(   45): Bad element under <manifest>: eat-comment
+W/PackageParser(   45): Bad element under <manifest>: eat-comment
+W/PackageParser(   45): Bad element under <manifest>: eat-comment
+W/PackageParser(   45): Bad element under <manifest>: eat-comment
+D/dalvikvm(   45): GC freed 5917 objects / 245616 bytes in 257ms
+D/PackageManager(   45): Scanning app dir /system/app
+D/dalvikvm(   45): GC freed 3831 objects / 217872 bytes in 241ms
+D/PackageManager(   45): Scanning app dir /data/app
+W/PackageParser(   45): Intent filter for activity ActivityIntentInfo{4346b010 com.example.android.apis.media.MediaPlayerDemo_Audio} defines no actions
+W/PackageParser(   45): Intent filter for activity ActivityIntentInfo{4346bb68 com.example.android.apis.media.MediaPlayerDemo_Video} defines no actions
+D/PackageManager(   45): Scanning app dir /data/app-private
+I/PackageManager(   45): Time to scan packages: 4.93 seconds
+W/PackageManager(   45): Unknown permission com.google.android.providers.gmail.permission.WRITE_GMAIL in package com.android.settings
+W/PackageManager(   45): Unknown permission com.google.android.providers.gmail.permission.READ_GMAIL in package com.android.settings
+W/PackageManager(   45): Unknown permission com.google.android.gtalkservice.permission.GTALK_SERVICE in package com.google.android.apps.maps
+D/dalvikvm(   45): GC freed 3611 objects / 212744 bytes in 187ms
+I/SystemServer(   45): Starting Content Manager.
+I/SystemServer(   45): Starting System Content Providers.
+I/ActivityThread(   45): Publishing provider settings: com.android.providers.settings.SettingsProvider
+I/ActivityThread(   45): Publishing provider android.server.checkin: android.server.checkin.CheckinProvider
+I/ActivityThread(   45): Publishing provider sync: android.content.SyncProvider
+I/SystemServer(   45): Starting Battery Service.
+E/BatteryService(   45): Could not open '/sys/class/power_supply/usb/online'
+E/BatteryService(   45): Could not open '/sys/class/power_supply/battery/batt_vol'
+E/BatteryService(   45): Could not open '/sys/class/power_supply/battery/batt_temp'
+I/SystemServer(   45): Starting Alarm Manager.
+I/SystemServer(   45): Starting Sensor Service.
+I/SystemServer(   45): Starting Window Manager.
+I/EventHub(   45): New device: path=/dev/input/event0 name=qwerty2 id=0x10000 (of 0x1) index=1 fd=43 classes=0x7
+I/EventHub(   45): New keyboard: publicID=65536 device->id=65536 devname='qwerty2 propName='hw.keyboards.65536.devname' keylayout='/system/usr/keylayout/qwerty.kl'
+E/EventHub(   45): could not get driver version for /dev/input/mouse0, Not a typewriter
+E/EventHub(   45): could not get driver version for /dev/input/mice, Not a typewriter
+I/KeyInputQueue(   45): Device added: id=0x0, name=qwerty2, classes=7
+I/KeyInputQueue(   45):   X: unknown values
+I/KeyInputQueue(   45):   Y: unknown values
+I/KeyInputQueue(   45):   Pressure: unknown values
+I/KeyInputQueue(   45):   Size: unknown values
+I/SystemServer(   45): Registering null Bluetooth Service (emulator)
+E/System  (   45): Failure starting core service
+E/System  (   45): java.lang.SecurityException
+E/System  (   45): 	at android.os.BinderProxy.transact(Native Method)
+E/System  (   45): 	at android.os.ServiceManagerProxy.addService(ServiceManagerNative.java:146)
+E/System  (   45): 	at android.os.ServiceManager.addService(ServiceManager.java:72)
+E/System  (   45): 	at com.android.server.ServerThread.run(SystemServer.java:155)
+E/AndroidRuntime(   45): Crash logging skipped, no checkin service
+I/SystemServer(   45): Starting Status Bar Service.
+I/WindowManager(   45): Input configuration changed: { scale=1.0 imsi=0/0 locale=en_US touch=3 key=2/2 nav=3 orien=1 }
+E/SystemServer(   45): Failure starting StatusBarService
+E/SystemServer(   45): java.lang.NullPointerException
+E/SystemServer(   45): 	at com.android.server.status.StatusBarPolicy.updateBluetooth(StatusBarPolicy.java:762)
+E/SystemServer(   45): 	at com.android.server.status.StatusBarPolicy.<init>(StatusBarPolicy.java:285)
+E/SystemServer(   45): 	at com.android.server.status.StatusBarPolicy.installIcons(StatusBarPolicy.java:341)
+E/SystemServer(   45): 	at com.android.server.ServerThread.run(SystemServer.java:182)
+E/AndroidRuntime(   45): Crash logging skipped, no checkin service
+I/SystemServer(   45): Starting Hardware Service.
+I/SystemServer(   45): Starting NetStat Service.
+I/SystemServer(   45): Starting Connectivity Service.
+D/WifiService(   45): WifiService starting up with Wi-Fi disabled
+I/SystemServer(   45): Starting Notification Manager.
+I/SystemServer(   45): Starting Mount Service.
+I/SystemServer(   45): Starting DeviceMemoryMonitor service
+D/MountListener(   45): handleEvent ums_disconnected
+D/MountListener(   45): handleEvent ums_disabled
+I/SystemServer(   45): Starting Location Manager.
+D/LocationManagerService(   45): Constructed LocationManager Service
+I/System.out(   45): #### #### Setting locale to en_US
+D/libhardware(   45): using QEMU GPS Hardware emulation
+E/GpsLocationProvider(   45): Could not open GPS configuration file /etc/gps.conf
+E/GpsLocationProvider(   45): java.io.FileNotFoundException: /etc/gps.conf
+E/GpsLocationProvider(   45): 	at org.apache.harmony.luni.platform.OSFileSystem.open(OSFileSystem.java:227)
+E/GpsLocationProvider(   45): 	at java.io.FileInputStream.<init>(FileInputStream.java:76)
+E/GpsLocationProvider(   45): 	at com.android.internal.location.GpsLocationProvider.<init>(GpsLocationProvider.java:179)
+E/GpsLocationProvider(   45): 	at com.android.server.LocationManagerService._loadProvidersNoSync(LocationManagerService.java:356)
+E/GpsLocationProvider(   45): 	at com.android.server.LocationManagerService.loadProvidersNoSync(LocationManagerService.java:340)
+E/GpsLocationProvider(   45): 	at com.android.server.LocationManagerService.loadProviders(LocationManagerService.java:333)
+E/GpsLocationProvider(   45): 	at com.android.server.LocationManagerService.<init>(LocationManagerService.java:447)
+E/GpsLocationProvider(   45): 	at com.android.server.ServerThread.run(SystemServer.java:235)
+E/AndroidRuntime(   45): Crash logging skipped, no checkin service
+D/GpsLocationProvider(   45): enable
+D/GpsLocationProvider(   45): GpsEventThread starting
+D/GpsLocationProvider(   45): NetworkThread starting
+D/GpsLocationProvider(   45): NetworkThread wait for network
+I/SystemServer(   45): Starting Search Service.
+I/SystemServer(   45): Starting Clipboard Service.
+I/SystemServer(   45): Starting Checkin Service
+D/dalvikvm(   45): GC freed 4172 objects / 255024 bytes in 207ms
+I/RecoverySystem(   45): No recovery log file
+I/RecoverySystem(   45): No recovery intent file
+W/CheckinService(   45): No saved kernel log file
+I/SystemServer(   45): Starting Wallpaper Service
+D/WallpaperService(   45): WallpaperService startup
+I/SystemServer(   45): Starting Audio Service
+I/SystemServer(   45): Starting HeadsetObserver
+W/HeadsetObserver(   45): This kernel does not have wired headset support
+I/WindowManager(   45): Menu key state: 0
+D/PowerManagerService(   45): system ready!
+D/ActivityManager(   45): Start running!
+I/Zygote  (   45): Process: zygote socket opened
+I/ActivityManager(   45): Start proc com.android.phone for added application com.android.phone: pid=81 uid=1001 gids={3001, 3003}
+I/ActivityManager(   45): Starting activity: Intent { action=android.intent.action.MAIN categories={android.intent.category.HOME} flags=0x10000000 comp={com.android.launcher/com.android.launcher.Launcher} }
+I/ActivityManager(   45): Start proc android.process.acore for activity com.android.launcher/.Launcher: pid=87 uid=10005 gids={3003}
+I/ActivityThread(   87): Publishing provider com.android.googlesearch.SuggestionProvider: com.android.googlesearch.SuggestionProvider
+I/ActivityThread(   81): Publishing provider mms-sms: com.android.providers.telephony.MmsSmsProvider
+I/ActivityThread(   81): Publishing provider mms: com.android.providers.telephony.MmsProvider
+I/ActivityThread(   81): Publishing provider telephony: com.android.providers.telephony.TelephonyProvider
+I/ActivityThread(   87): Publishing provider im: com.android.providers.im.ImProvider
+I/ActivityThread(   81): Publishing provider sms: com.android.providers.telephony.SmsProvider
+I/ActivityThread(   81): Publishing provider sim: com.android.phone.SimProvider
+I/ActivityThread(   87): Publishing provider contacts;call_log: com.android.providers.contacts.ContactsProvider
+D/dalvikvm(   45): GC freed 5938 objects / 286224 bytes in 405ms
+D/PhoneApp(   81): [PhoneIntfMgr] publish: com.android.phone.PhoneInterfaceManager@433dad08
+D/PhoneApp(   81): Resetting audio state/mode: IDLE
+D/KeyguardViewMediator(   45): pokeWakelock(5000)
+D/dalvikvm(   87): GC freed 2432 objects / 154960 bytes in 867ms
+I/ActivityManager(   45): Start proc com.android.mms for broadcast com.android.mms/.transaction.SmsReceiver: pid=111 uid=10011 gids={3003}
+D/dalvikvm(   87): GC freed 609 objects / 73096 bytes in 846ms
+D/AndroidRuntime(  118): 
+D/AndroidRuntime(  118): >>>>>>>>>>>>>> AndroidRuntime START <<<<<<<<<<<<<<
+D/AndroidRuntime(  118): CheckJNI is ON
+W/ActivityManager(   45): Activity idle timeout for HistoryRecord{4347d040 {com.android.launcher/com.android.launcher.Launcher}}
+I/ActivityManager(   45): Start proc com.google.process.gapps for on-hold: pid=119 uid=10016 gids={3003}
+D/AndroidRuntime(  118): --- registering native functions ---
+I/ActivityManager(   45): Displayed activity com.android.launcher/.Launcher: 16570 ms
+I/SurfaceFlinger(   45): Boot is finished (29147 ms)
+I/WindowManager(   45): Input configuration changed: { scale=1.0 imsi=0/0 locale=en_US touch=3 key=2/2 nav=3 orien=1 }
+D/dalvikvm(   45): GC freed 6235 objects / 295144 bytes in 825ms
+W/ActivityManager(   45): Timeout of broadcast BroadcastRecord{434bf900 android.intent.action.SERVICE_STATE} - receiver=android.os.BinderProxy@43482438
+W/ActivityManager(   45): Receiver during timeout: ResolveInfo{43493780 com.android.mms.transaction.SmsReceiver p=0 o=0 m=0x108000}
+W/GoogleLoginService(  119): Device has no accounts: sending Intent { action=android.accounts.LOGIN_ACCOUNTS_MISSING }
+I/ActivityManager(   45): ANR (application not responding) in process: com.android.mms
+I/ActivityManager(   45): Annotation: Broadcast of Intent { action=android.intent.action.SERVICE_STATE comp={com.android.mms/com.android.mms.transaction.SmsReceiver} (has extras) }
+I/ActivityManager(   45): CPU usage:
+I/ActivityManager(   45): Load: 2.13 / 0.54 / 0.18
+I/ActivityManager(   45): CPU usage from 7419ms to 867ms ago:
+I/ActivityManager(   45):   app_process: 30% = 25% user + 5% kernel
+I/ActivityManager(   45):   com.android.phone: 25% = 24% user + 1% kernel
+I/ActivityManager(   45):   android.process.acore: 13% = 9% user + 3% kernel
+I/ActivityManager(   45):   system_server: 11% = 9% user + 2% kernel
+I/ActivityManager(   45):   com.google.process.gapps: 6% = 4% user + 2% kernel
+I/ActivityManager(   45):   com.android.mms: 0% = 0% user + 0% kernel
+I/ActivityManager(   45):   adbd: 0% = 0% user + 0% kernel
+I/ActivityManager(   45):   servicemanager: 0% = 0% user + 0% kernel
+I/ActivityManager(   45): TOTAL: 100% = 84% user + 15% kernel
+I/ActivityManager(   45): 
+I/ActivityManager(   45): /proc/meminfo:
+I/ActivityManager(   45): MemTotal:        94572 kB
+I/ActivityManager(   45): MemFree:         18012 kB
+I/ActivityManager(   45): Buffers:             0 kB
+I/ActivityManager(   45): Cached:          45348 kB
+I/ActivityManager(   45): SwapCached:          0 kB
+I/ActivityManager(   45): Active:          40756 kB
+I/ActivityManager(   45): Inactive:        29036 kB
+I/ActivityManager(   45): SwapTotal:           0 kB
+I/ActivityManager(   45): SwapFree:            0 kB
+I/ActivityManager(   45): Dirty:               0 kB
+I/ActivityManager(   45): Writeback:           0 kB
+I/ActivityManager(   45): AnonPages:       24496 kB
+I/ActivityManager(   45): Mapped:          22056 kB
+I/ActivityManager(   45): Slab:             2616 kB
+I/ActivityManager(   45): SReclaimable:      556 kB
+I/ActivityManager(   45): SUnreclaim:       2060 kB
+I/ActivityManager(   45): PageTables:       1956 kB
+I/ActivityManager(   45): NFS_Unstable:        0 kB
+I/ActivityManager(   45): Bounce:              0 kB
+I/ActivityManager(   45): CommitLimit:     47284 kB
+I/ActivityManager(   45): Committed_AS:   651608 kB
+I/ActivityManager(   45): VmallocTotal:   876544 kB
+I/ActivityManager(   45): VmallocUsed:      8380 kB
+I/ActivityManager(   45): VmallocChunk:   859132 kB
+I/ActivityManager(   45): Removing old ANR trace file from /data/anr/traces.txt
+I/Process (   45): Sending signal. PID: 119 SIG: 3
+I/Process (   45): Sending signal. PID: 111 SIG: 3
+I/Process (   45): Sending signal. PID: 87 SIG: 3
+I/Process (   45): Sending signal. PID: 81 SIG: 3
+I/Process (   45): Sending signal. PID: 45 SIG: 3
+I/dalvikvm(  111): threadid=7: reacting to signal 3
+I/dalvikvm(  119): threadid=7: reacting to signal 3
+I/dalvikvm(   45): threadid=7: reacting to signal 3
+I/dalvikvm(   87): threadid=7: reacting to signal 3
+I/dalvikvm(   81): threadid=7: reacting to signal 3
+I/dalvikvm(  111): Wrote stack trace to '/data/anr/traces.txt'
+I/dalvikvm(   87): Wrote stack trace to '/data/anr/traces.txt'
+I/dalvikvm(  119): Wrote stack trace to '/data/anr/traces.txt'
+I/dalvikvm(   81): Wrote stack trace to '/data/anr/traces.txt'
+I/dalvikvm(   45): Wrote stack trace to '/data/anr/traces.txt'
+W/ActivityManager(   45): finishReceiver called but none active
+W/ActivityManager(   45): finishReceiver called but active receiver is different
+I/ActivityManager(   45): Stopping service: com.android.mms/.transaction.SmsReceiverService
+D/KeyguardViewMediator(   45): pokeWakelock(5000)
+I/ARMAssembler(   45): generated scanline__00000077:03515104_00000000_00000000 [ 27 ipp] (41 ins) at [0x24f340:0x24f3e4] in 4574449 ns
+I/ActivityManager(   45): Stopping service: com.google.android.googleapps/.GoogleLoginService
+D/PackageParser(   45): Scanning package: /data/app/vmdl11139.tmp
+D/dalvikvm(   81): GC freed 2684 objects / 166520 bytes in 374ms
+I/ActivityManager(   45): Killing process com.android.mms (pid=111) at user's request
+I/Process (   45): Sending signal. PID: 111 SIG: 9
+I/ActivityManager(   45): Process com.android.mms (pid 111) has died.
+D/SystemClock(   81): Setting time of day to sec=1238654645
+W/SystemClock(   81): Unable to set rtc to 1238654645: Invalid argument
+D/PhoneApp(   81): [CallNotifier] onMwiChanged(): false
+D/PhoneApp(   81): [CallNotifier] onCfiChanged(): false
+D/dalvikvm(   45): GC freed 4206 objects / 241392 bytes in 227ms
+D/StatusBar(   45): updateResources
+I/ActivityManager(   45): Start proc com.android.alarmclock for broadcast com.android.alarmclock/.AlarmInitReceiver: pid=146 uid=10001 gids={}
+D/PhoneApp(   81): [CallNotifier] onMwiChanged(): false
+D/PhoneApp(   81): [CallNotifier] onCfiChanged(): false
+I/ActivityManager(   45): processNextBroadcast: waiting for ProcessRecord{434f2a30 146:com.android.alarmclock/10001}
+D/dalvikvm(   87): GC freed 2409 objects / 125936 bytes in 664ms
+D/TelephonyProvider(   81): Setting numeric '310260' to be the current operator
+I/ActivityThread(  146): Publishing provider com.android.alarmclock: com.android.alarmclock.AlarmProvider
+I/ActivityManager(   45): Start proc com.google.android.apps.maps for broadcast com.google.android.apps.maps/com.google.android.maps.ff.FriendFinderReceiver: pid=156 uid=10000 gids={3003}
+D/MobileDataStateTracker(   45): CONNECTED event did not supply interface name.
+D/MobileDataStateTracker(   45): DNS server addresses are not known.
+I/ActivityManager(   45): processNextBroadcast: waiting for ProcessRecord{4350de00 156:com.google.android.apps.maps/10000}
+E/NetworkStateTracker(   45): net.tcp.buffersize.unknown not found in system properties. Using defaults
+E/NetworkStateTracker(   45): Can't set tcp buffer sizes:java.io.FileNotFoundException: /sys/kernel/ipv4/tcp_rmem_min
+I/ActivityManager(   45): processNextBroadcast: waiting for ProcessRecord{4350de00 156:com.google.android.apps.maps/10000}
+D/GpsLocationProvider(   45): updateNetworkState available
+D/GpsLocationProvider(   45): NetworkThread out of wake loop
+D/GpsLocationProvider(   45): Requesting time from NTP server pool.ntp.org
+I/ActivityManager(   45): processNextBroadcast: waiting for ProcessRecord{4350de00 156:com.google.android.apps.maps/10000}
+D/dalvikvm(   45): GC freed 3628 objects / 182296 bytes in 519ms
+I/ActivityThread(  156): Publishing provider com.google.android.maps.SuggestionProvider: com.google.android.maps.provider.MapsSuggestionProvider
+D/SntpClient(   45): round trip: 23 ms
+D/SntpClient(   45): clock offset: 42428 ms
+D/GpsLocationProvider(   45): calling native_inject_time: 1238654694992 reference: 83952 certainty: 11
+D/GpsLocationProvider(   45): NetworkThread wait for 14399999ms
+I/ActivityThread(  156): Publishing provider com.google.android.maps.FriendsProvider: com.google.android.maps.ff.FriendsProvider
+I/ActivityThread(  156): Publishing provider com.google.android.maps.SearchHistoryProvider: com.google.android.maps.provider.SearchHistoryProvider
+D/PackageManager(   45): Removing package org.wooyd.android.voidroid
+D/PackageManager(   45):   Activities: org.wooyd.android.voidroid.VoiDroid
+D/PackageManager(   45): Scanning package org.wooyd.android.voidroid
+I/PackageManager(   45): /data/app/vmdl11139.tmp changed; unpacking
+D/installd(   27): DexInv: --- BEGIN '/data/app/vmdl11139.tmp' ---
+D/Maps.FriendFinder(  156): Starting FriendView service
+I/ActivityManager(   45): Start proc android.process.media for broadcast com.android.providers.downloads/.DownloadReceiver: pid=164 uid=10004 gids={1006, 3003, 2001}
+I/ActivityThread(  164): Publishing provider downloads: com.android.providers.downloads.DownloadProvider
+I/ActivityThread(  164): Publishing provider drm: com.android.providers.drm.DrmProvider
+I/ActivityThread(  164): Publishing provider media: com.android.providers.media.MediaProvider
+V/MediaProvider(  164): Attached volume: internal
+D/dalvikvm(  163): DexOpt: load 266ms, verify 1600ms, opt 41ms
+I/ActivityManager(   45): Start proc com.android.mms for broadcast com.android.mms/.transaction.MmsSystemEventReceiver: pid=174 uid=10011 gids={3003}
+D/installd(   27): DexInv: --- END '/data/app/vmdl11139.tmp' (success) ---
+D/PackageManager(   45):   Activities: org.wooyd.android.voidroid.VoiDroid
+D/MediaScannerService(  164): start scanning volume internal
+I/installd(   27): move /data/dalvik-cache/data@app@vmdl11139.tmp@classes.dex -> /data/dalvik-cache/data@app@org.wooyd.android.voidroid.apk@classes.dex
+D/PackageManager(   45): New package installed in /data/app/org.wooyd.android.voidroid.apk
+D/ActivityManager(   45): Uninstalling process org.wooyd.android.voidroid
+D/AndroidRuntime(  118): Shutting down VM
+D/dalvikvm(  118): DestroyJavaVM waiting for non-daemon threads to exit
+E/AndroidRuntime(  118): ERROR: thread attach failed
+I/dalvikvm(  118): DestroyJavaVM shutting VM down
+D/dalvikvm(  118): HeapWorker thread shutting down
+D/dalvikvm(  118): HeapWorker thread has shut down
+D/jdwp    (  118): JDWP shutting down net...
+D/dalvikvm(  118): VM cleaning up
+D/dalvikvm(  118): LinearAlloc 0x0 used 527764 of 4194304 (12%)
+D/MediaScanner(  164):  prescan time: 418ms
+D/MediaScanner(  164):     scan time: 671ms
+D/MediaScanner(  164): postscan time: 32ms
+D/MediaScanner(  164):    total time: 1121ms
+D/dalvikvm(   87): GC freed 2257 objects / 144432 bytes in 774ms
+D/dalvikvm(   45): GC freed 3362 objects / 149488 bytes in 213ms
+I/ActivityManager(   45): Stopping service: com.android.providers.downloads/.DownloadService
+D/MediaScannerService(  164): done scanning volume internal
+I/ActivityManager(   45): Stopping service: com.android.providers.media/.MediaScannerService
+I/CheckinService(   45): Checkin triggered: Intent { action=android.server.checkin.CHECKIN flags=0x4 (has extras) }
+I/CheckinService(   45): Found tombstone: /data/tombstones/tombstone_00
+I/ActivityManager(   45): Stopping service: com.android.providers.downloads/.DownloadService
+I/ActivityManager(   45): Stopping service: com.android.mms/.transaction.TransactionService
+I/CheckinService(   45): Found tombstone: /data/tombstones/tombstone_01
+D/dalvikvm(   45): GREF has increased to 201
+I/ActivityManager(   45): Stopping service: com.android.mms/.transaction.SmsReceiverService
+D/AndroidRuntime(  196): 
+D/AndroidRuntime(  196): >>>>>>>>>>>>>> AndroidRuntime START <<<<<<<<<<<<<<
+D/AndroidRuntime(  196): CheckJNI is ON
+I/CheckinService(   45): Found tombstone: /data/tombstones/tombstone_02
+D/AndroidRuntime(  196): --- registering native functions ---
+D/dalvikvm(   45): GC freed 3774 objects / 574336 bytes in 789ms
+I/CheckinService(   45): Found tombstone: /data/tombstones/tombstone_03
+I/CheckinService(   45): Found tombstone: /data/tombstones/tombstone_04
+I/CheckinService(   45): Found tombstone: /data/tombstones/tombstone_05
+D/dalvikvm(   45): GC freed 814 objects / 498320 bytes in 618ms
+W/CheckinService(   45): Unknown kernel event tag: battery_discharge
+D/dalvikvm(   45): GC freed 672 objects / 395168 bytes in 213ms
+D/PackageParser(   45): Scanning package: /data/app/vmdl11140.tmp
+D/dalvikvm(   45): GC freed 1317 objects / 387016 bytes in 237ms
+D/dalvikvm(   45): GC freed 726 objects / 354888 bytes in 188ms
+D/dalvikvm(   45): GC freed 175 objects / 290288 bytes in 197ms
+D/dalvikvm(   45): GC freed 32 objects / 202944 bytes in 188ms
+D/dalvikvm(   45): GC freed 1 objects / 56 bytes in 187ms
+D/dalvikvm(   45): GC freed 3 objects / 238912 bytes in 186ms
+D/dalvikvm(   45): GC freed 3 objects / 205840 bytes in 186ms
+D/dalvikvm(   45): GC freed 57 objects / 207432 bytes in 200ms
+D/dalvikvm(   45): GC freed 2 objects / 344 bytes in 181ms
+I/dalvikvm-heap(   45): Grow heap (frag case) to 4.855MB for 207252-byte allocation
+D/dalvikvm(   45): GC freed 18 objects / 310160 bytes in 186ms
+I/CheckinService(   45): Sending checkin request (51809 bytes)...
+D/dalvikvm(   81): GC freed 3993 objects / 208464 bytes in 335ms
+D/dalvikvm(   45): GC freed 5012 objects / 758032 bytes in 237ms
+D/PackageManager(   45): Removing package org.wooyd.android.voidroid
+D/PackageManager(   45):   Activities: org.wooyd.android.voidroid.VoiDroid
+D/PackageManager(   45): Scanning package org.wooyd.android.voidroid
+I/PackageManager(   45): /data/app/vmdl11140.tmp changed; unpacking
+D/installd(   27): DexInv: --- BEGIN '/data/app/vmdl11140.tmp' ---
+D/dalvikvm(   45): GC freed 9442 objects / 646880 bytes in 457ms
+D/dalvikvm(  204): DexOpt: load 273ms, verify 1350ms, opt 61ms
+D/installd(   27): DexInv: --- END '/data/app/vmdl11140.tmp' (success) ---
+D/PackageManager(   45):   Activities: org.wooyd.android.voidroid.VoiDroid
+D/dalvikvm(  119): GC freed 1370 objects / 89936 bytes in 352ms
+I/installd(   27): move /data/dalvik-cache/data@app@vmdl11140.tmp@classes.dex -> /data/dalvik-cache/data@app@org.wooyd.android.voidroid.apk@classes.dex
+D/PackageManager(   45): New package installed in /data/app/org.wooyd.android.voidroid.apk
+D/AndroidRuntime(  196): Shutting down VM
+D/dalvikvm(  196): DestroyJavaVM waiting for non-daemon threads to exit
+I/dalvikvm(  196): DestroyJavaVM shutting VM down
+D/dalvikvm(  196): HeapWorker thread shutting down
+D/dalvikvm(  196): HeapWorker thread has shut down
+D/jdwp    (  196): JDWP shutting down net...
+D/dalvikvm(  196): VM cleaning up
+D/ActivityManager(   45): Uninstalling process org.wooyd.android.voidroid
+D/dalvikvm(  196): LinearAlloc 0x0 used 527764 of 4194304 (12%)
+D/dalvikvm(   45): GC freed 7051 objects / 456336 bytes in 228ms
+D/dalvikvm(   87): GC freed 2323 objects / 120080 bytes in 298ms
+D/dalvikvm(   87): GC freed 1228 objects / 62632 bytes in 306ms
+D/dalvikvm(   45): GC freed 11362 objects / 580096 bytes in 372ms
+I/CheckinService(   45): From server: Intent { action=android.server.checkin.FOTA_CANCEL }
+W/CheckinService(   45): Unknown kernel event tag: battery_discharge
+I/ActivityManager(   45): Starting activity: Intent { action=android.intent.action.MAIN categories={android.intent.category.LAUNCHER} flags=0x10200000 comp={org.wooyd.android.voidroid/org.wooyd.android.voidroid.VoiDroid} }
+I/ActivityManager(   45): Start proc org.wooyd.android.voidroid for activity org.wooyd.android.voidroid/.VoiDroid: pid=210 uid=10019 gids={}
+D/dalvikvm(   22): GC freed 266 objects / 10008 bytes in 242ms
+D/dalvikvm(   22): GC freed 45 objects / 1904 bytes in 209ms
+I/CheckinService(   45): Sending checkin request (2609 bytes)...
+D/dalvikvm(   22): GC freed 2 objects / 48 bytes in 195ms
+I/CheckinService(   45): From server: Intent { action=android.server.checkin.FOTA_CANCEL }
+I/CheckinService(   45): Checkin success
+D/dalvikvm(  210): Trying to load lib /data/data/org.wooyd.android.voidroid/libpjsua_jni.so 0x4339bf50
+D/dalvikvm(  210): Added shared lib /data/data/org.wooyd.android.voidroid/libpjsua_jni.so 0x4339bf50
+W/dalvikvm(  210): JNI WARNING: illegal continuation byte 0xe9
+W/dalvikvm(  210):              string: 'éééÿéééÿèèèÿèèèÿèèèÿÿÿ'
+W/dalvikvm(  210):              in Lorg/pjsip/pjsua/pjsuaJNI;.swig_module_init ()V (GetStaticMethodID)
+I/dalvikvm(  210): "main" prio=5 tid=3 NATIVE
+I/dalvikvm(  210):   | group="main" sCount=0 dsCount=0 s=0 obj=0x400103e8
+I/dalvikvm(  210):   | sysTid=210 nice=0 sched=0/0 handle=-1092682596
+I/dalvikvm(  210):   at org.pjsip.pjsua.pjsuaJNI.swig_module_init(Native Method)
+I/dalvikvm(  210):   at org.pjsip.pjsua.pjsuaJNI.<clinit>(pjsuaJNI.java:895)
+I/dalvikvm(  210):   at org.pjsip.pjsua.pjsua.create(pjsua.java:-1)
+I/dalvikvm(  210):   at org.wooyd.android.voidroid.VoiDroid.onCreate(VoiDroid.java:39)
+I/dalvikvm(  210):   at android.app.Instrumentation.callActivityOnCreate(Instrumentation.java:1122)
+I/dalvikvm(  210):   at android.app.ActivityThread.performLaunchActivity(ActivityThread.java:2104)
+I/dalvikvm(  210):   at android.app.ActivityThread.handleLaunchActivity(ActivityThread.java:2157)
+I/dalvikvm(  210):   at android.app.ActivityThread.access$1800(ActivityThread.java:112)
+I/dalvikvm(  210):   at android.app.ActivityThread$H.handleMessage(ActivityThread.java:1581)
+I/dalvikvm(  210):   at android.os.Handler.dispatchMessage(Handler.java:88)
+I/dalvikvm(  210):   at android.os.Looper.loop(Looper.java:123)
+I/dalvikvm(  210):   at android.app.ActivityThread.main(ActivityThread.java:3739)
+I/dalvikvm(  210):   at java.lang.reflect.Method.invokeNative(Native Method)
+I/dalvikvm(  210):   at java.lang.reflect.Method.invoke(Method.java:515)
+I/dalvikvm(  210):   at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:739)
+I/dalvikvm(  210):   at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:497)
+I/dalvikvm(  210):   at dalvik.system.NativeStart.main(Native Method)
+I/dalvikvm(  210): 
+E/dalvikvm(  210): VM aborting
+I/DEBUG   (   20): *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+I/DEBUG   (   20): Build fingerprint: 'generic/sdk/generic/:1.1/PLATFORM-1_0/129975:sdk/test-keys'
+I/DEBUG   (   20): pid: 210, tid: 210  >>> org.wooyd.android.voidroid <<<
+I/DEBUG   (   20): signal 11 (SIGSEGV), fault addr deadd00d
+I/DEBUG   (   20):  r0 00000320  r1 0000000c  r2 0000000c  r3 00000026
+I/DEBUG   (   20):  r4 deadd00d  r5 ad07edf8  r6 0010d220  r7 ad067b98
+I/DEBUG   (   20):  r8 433a48f0  r9 ffffe250  10 00003c4c  fp 00000000
+I/DEBUG   (   20):  ip ad07eed4  sp bedef458  lr afe1238d  pc ad039132  cpsr 20000030
+I/DEBUG   (   20):          #00  pc ad039132  /system/lib/libdvm.so
+I/DEBUG   (   20):          #01  pc ad02c300  /system/lib/libdvm.so
+I/DEBUG   (   20):          #02  pc ad02c530  /system/lib/libdvm.so
+I/DEBUG   (   20):          #03  pc ad032a3a  /system/lib/libdvm.so
+I/DEBUG   (   20):          #04  pc 8003b648  /data/data/org.wooyd.android.voidroid/libpjsua_jni.so
+I/DEBUG   (   20):          #05  pc ad00d9f4  /system/lib/libdvm.so
+I/DEBUG   (   20):          #06  pc ad04120e  /system/lib/libdvm.so
+I/DEBUG   (   20):          #07  pc ad012748  /system/lib/libdvm.so
+I/DEBUG   (   20):          #08  pc ad02a92c  /system/lib/libdvm.so
+I/DEBUG   (   20):          #09  pc ad0169d0  /system/lib/libdvm.so
+I/DEBUG   (   20):          #10  pc ad051f10  /system/lib/libdvm.so
+I/DEBUG   (   20):          #11  pc ad051f30  /system/lib/libdvm.so
+I/DEBUG   (   20):          #12  pc ad059fe4  /system/lib/libdvm.so
+I/DEBUG   (   20):          #13  pc ad05aacc  /system/lib/libdvm.so
+I/DEBUG   (   20):          #14  pc ad00f7e8  /system/lib/libdvm.so
+I/DEBUG   (   20):          #15  pc ad02a92c  /system/lib/libdvm.so
+I/DEBUG   (   20):          #16  pc ad0169d0  /system/lib/libdvm.so
+I/DEBUG   (   20):          #17  pc ad052096  /system/lib/libdvm.so
+I/DEBUG   (   20):          #18  pc ad03ccbc  /system/lib/libdvm.so
+I/DEBUG   (   20):          #19  pc ad012748  /system/lib/libdvm.so
+I/DEBUG   (   20):          #20  pc ad02a92c  /system/lib/libdvm.so
+I/DEBUG   (   20):          #21  pc ad0169d0  /system/lib/libdvm.so
+I/DEBUG   (   20):          #22  pc ad051f10  /system/lib/libdvm.so
+I/DEBUG   (   20):          #23  pc ad03f87a  /system/lib/libdvm.so
+I/DEBUG   (   20):          #24  pc ad030b96  /system/lib/libdvm.so
+I/DEBUG   (   20):          #25  pc ad32764c  /system/lib/libandroid_runtime.so
+I/DEBUG   (   20):          #26  pc ad3280d8  /system/lib/libandroid_runtime.so
+I/DEBUG   (   20):          #27  pc 00008bf2  /system/bin/app_process
+I/DEBUG   (   20):          #28  pc afe1dbd2  /system/lib/libc.so
+I/DEBUG   (   20):          #29  pc afe0b010  /system/lib/libc.so
+I/DEBUG   (   20):          #30  pc b0000d70  /system/bin/linker
+I/DEBUG   (   20): stack:
+I/DEBUG   (   20):     bedef418  00000005  
+I/DEBUG   (   20):     bedef41c  00000000  
+I/DEBUG   (   20):     bedef420  afe35f3c  
+I/DEBUG   (   20):     bedef424  afe35f90  
+I/DEBUG   (   20):     bedef428  00000000  
+I/DEBUG   (   20):     bedef42c  afe1238d  /system/lib/libc.so
+I/DEBUG   (   20):     bedef430  0000bb00  [heap]
+I/DEBUG   (   20):     bedef434  afe11539  /system/lib/libc.so
+I/DEBUG   (   20):     bedef438  ad067b98  /system/lib/libdvm.so
+I/DEBUG   (   20):     bedef43c  ad07edf8  
+I/DEBUG   (   20):     bedef440  ad07edf8  
+I/DEBUG   (   20):     bedef444  0010d220  [heap]
+I/DEBUG   (   20):     bedef448  ad067b98  /system/lib/libdvm.so
+I/DEBUG   (   20):     bedef44c  afe1159d  /system/lib/libc.so
+I/DEBUG   (   20):     bedef450  df002777  
+I/DEBUG   (   20):     bedef454  e3a070ad  
+I/DEBUG   (   20): #00 bedef458  fffe7b88  
+I/DEBUG   (   20):     bedef45c  ad02c303  /system/lib/libdvm.so
+I/DEBUG   (   20): #01 bedef460  ad067b98  /system/lib/libdvm.so
+I/DEBUG   (   20):     bedef464  ad02c533  /system/lib/libdvm.so
+I/ActivityManager(   45): Process org.wooyd.android.voidroid (pid 210) has died.
+D/Zygote  (   22): Process 210 terminated by signal (11)
+D/dalvikvm(  146): GC freed 1161 objects / 69040 bytes in 153ms
+D/dalvikvm(  164): GC freed 2606 objects / 158680 bytes in 173ms
+D/dalvikvm(  174): GC freed 2345 objects / 129872 bytes in 151ms
+D/AndroidRuntime(  219): 
+D/AndroidRuntime(  219): >>>>>>>>>>>>>> AndroidRuntime START <<<<<<<<<<<<<<
+D/AndroidRuntime(  219): CheckJNI is ON
+D/AndroidRuntime(  219): --- registering native functions ---
+D/PackageParser(   45): Scanning package: /data/app/vmdl11141.tmp
+D/PackageManager(   45): Removing package org.wooyd.android.voidroid
+D/PackageManager(   45):   Activities: org.wooyd.android.voidroid.VoiDroid
+D/PackageManager(   45): Scanning package org.wooyd.android.voidroid
+I/PackageManager(   45): /data/app/vmdl11141.tmp changed; unpacking
+D/installd(   27): DexInv: --- BEGIN '/data/app/vmdl11141.tmp' ---
+D/dalvikvm(  225): DexOpt: load 116ms, verify 665ms, opt 19ms
+D/installd(   27): DexInv: --- END '/data/app/vmdl11141.tmp' (success) ---
+D/PackageManager(   45):   Activities: org.wooyd.android.voidroid.VoiDroid
+I/installd(   27): move /data/dalvik-cache/data@app@vmdl11141.tmp@classes.dex -> /data/dalvik-cache/data@app@org.wooyd.android.voidroid.apk@classes.dex
+D/PackageManager(   45): New package installed in /data/app/org.wooyd.android.voidroid.apk
+D/dalvikvm(   45): GC freed 8081 objects / 680160 bytes in 263ms
+D/AndroidRuntime(  219): Shutting down VM
+D/dalvikvm(  219): DestroyJavaVM waiting for non-daemon threads to exit
+I/dalvikvm(  219): DestroyJavaVM shutting VM down
+D/dalvikvm(  219): HeapWorker thread shutting down
+D/dalvikvm(  219): HeapWorker thread has shut down
+D/jdwp    (  219): JDWP shutting down net...
+D/dalvikvm(  219): VM cleaning up
+D/ActivityManager(   45): Uninstalling process org.wooyd.android.voidroid
+D/dalvikvm(  219): LinearAlloc 0x0 used 527764 of 4194304 (12%)
+D/dalvikvm(   87): GC freed 232 objects / 11176 bytes in 279ms
+D/dalvikvm(   45): GC freed 2200 objects / 142952 bytes in 242ms
+I/ActivityManager(   45): Starting activity: Intent { action=android.intent.action.MAIN categories={android.intent.category.LAUNCHER} flags=0x10200000 comp={org.wooyd.android.voidroid/org.wooyd.android.voidroid.VoiDroid} }
+I/ActivityManager(   45): Start proc org.wooyd.android.voidroid for activity org.wooyd.android.voidroid/.VoiDroid: pid=231 uid=10019 gids={}
+D/dalvikvm(  231): Trying to load lib /data/data/org.wooyd.android.voidroid/libpjsua_jni.so 0x4341bf50
+D/dalvikvm(  231): Added shared lib /data/data/org.wooyd.android.voidroid/libpjsua_jni.so 0x4341bf50
+I/        (  231): JNI_OnLoad in pjsua_jni
+W/dalvikvm(  231): JNI WARNING: illegal continuation byte 0xe5
+W/dalvikvm(  231):              string: 'åååÿáááÿâââÿâââÿâââÿâââÿâââÿâââÿáááÿáááÿáááÿÿÿ'
+W/dalvikvm(  231):              in Lorg/pjsip/pjsua/pjsuaJNI;.swig_module_init ()V (GetStaticMethodID)
+I/dalvikvm(  231): "main" prio=5 tid=3 NATIVE
+I/dalvikvm(  231):   | group="main" sCount=0 dsCount=0 s=0 obj=0x400103e8
+I/dalvikvm(  231):   | sysTid=231 nice=0 sched=0/0 handle=-1092682596
+I/dalvikvm(  231):   at org.pjsip.pjsua.pjsuaJNI.swig_module_init(Native Method)
+I/dalvikvm(  231):   at org.pjsip.pjsua.pjsuaJNI.<clinit>(pjsuaJNI.java:895)
+I/dalvikvm(  231):   at org.pjsip.pjsua.pjsua.create(pjsua.java:-1)
+I/dalvikvm(  231):   at org.wooyd.android.voidroid.VoiDroid.onCreate(VoiDroid.java:39)
+I/dalvikvm(  231):   at android.app.Instrumentation.callActivityOnCreate(Instrumentation.java:1122)
+I/dalvikvm(  231):   at android.app.ActivityThread.performLaunchActivity(ActivityThread.java:2104)
+I/dalvikvm(  231):   at android.app.ActivityThread.handleLaunchActivity(ActivityThread.java:2157)
+I/dalvikvm(  231):   at android.app.ActivityThread.access$1800(ActivityThread.java:112)
+I/dalvikvm(  231):   at android.app.ActivityThread$H.handleMessage(ActivityThread.java:1581)
+I/dalvikvm(  231):   at android.os.Handler.dispatchMessage(Handler.java:88)
+I/dalvikvm(  231):   at android.os.Looper.loop(Looper.java:123)
+I/dalvikvm(  231):   at android.app.ActivityThread.main(ActivityThread.java:3739)
+I/dalvikvm(  231):   at java.lang.reflect.Method.invokeNative(Native Method)
+I/dalvikvm(  231):   at java.lang.reflect.Method.invoke(Method.java:515)
+I/dalvikvm(  231):   at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:739)
+I/dalvikvm(  231):   at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:497)
+I/dalvikvm(  231):   at dalvik.system.NativeStart.main(Native Method)
+I/dalvikvm(  231): 
+E/dalvikvm(  231): VM aborting
+I/DEBUG   (   20): *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+I/DEBUG   (   20): Build fingerprint: 'generic/sdk/generic/:1.1/PLATFORM-1_0/129975:sdk/test-keys'
+I/DEBUG   (   20): pid: 231, tid: 231  >>> org.wooyd.android.voidroid <<<
+I/DEBUG   (   20): signal 11 (SIGSEGV), fault addr deadd00d
+I/DEBUG   (   20):  r0 00000320  r1 0000000c  r2 0000000c  r3 00000026
+I/DEBUG   (   20):  r4 deadd00d  r5 ad07edf8  r6 0010d338  r7 ad067b98
+I/DEBUG   (   20):  r8 434248f0  r9 ffffe248  10 00003c54  fp 00000000
+I/DEBUG   (   20):  ip ad07eed4  sp bedef458  lr afe1238d  pc ad039132  cpsr 20000030
+I/DEBUG   (   20):          #00  pc ad039132  /system/lib/libdvm.so
+I/DEBUG   (   20):          #01  pc ad02c300  /system/lib/libdvm.so
+I/DEBUG   (   20):          #02  pc ad02c530  /system/lib/libdvm.so
+I/DEBUG   (   20):          #03  pc ad032a3a  /system/lib/libdvm.so
+I/DEBUG   (   20):          #04  pc 8003b6f8  /data/data/org.wooyd.android.voidroid/libpjsua_jni.so
+I/DEBUG   (   20):          #05  pc ad00d9f4  /system/lib/libdvm.so
+I/DEBUG   (   20):          #06  pc ad04120e  /system/lib/libdvm.so
+I/DEBUG   (   20):          #07  pc ad012748  /system/lib/libdvm.so
+I/DEBUG   (   20):          #08  pc ad02a92c  /system/lib/libdvm.so
+I/DEBUG   (   20):          #09  pc ad0169d0  /system/lib/libdvm.so
+I/DEBUG   (   20):          #10  pc ad051f10  /system/lib/libdvm.so
+I/DEBUG   (   20):          #11  pc ad051f30  /system/lib/libdvm.so
+I/DEBUG   (   20):          #12  pc ad059fe4  /system/lib/libdvm.so
+I/DEBUG   (   20):          #13  pc ad05aacc  /system/lib/libdvm.so
+I/DEBUG   (   20):          #14  pc ad00f7e8  /system/lib/libdvm.so
+I/DEBUG   (   20):          #15  pc ad02a92c  /system/lib/libdvm.so
+I/DEBUG   (   20):          #16  pc ad0169d0  /system/lib/libdvm.so
+I/DEBUG   (   20):          #17  pc ad052096  /system/lib/libdvm.so
+I/DEBUG   (   20):          #18  pc ad03ccbc  /system/lib/libdvm.so
+I/DEBUG   (   20):          #19  pc ad012748  /system/lib/libdvm.so
+I/DEBUG   (   20):          #20  pc ad02a92c  /system/lib/libdvm.so
+I/DEBUG   (   20):          #21  pc ad0169d0  /system/lib/libdvm.so
+I/DEBUG   (   20):          #22  pc ad051f10  /system/lib/libdvm.so
+I/DEBUG   (   20):          #23  pc ad03f87a  /system/lib/libdvm.so
+I/DEBUG   (   20):          #24  pc ad030b96  /system/lib/libdvm.so
+I/DEBUG   (   20):          #25  pc ad32764c  /system/lib/libandroid_runtime.so
+I/DEBUG   (   20):          #26  pc ad3280d8  /system/lib/libandroid_runtime.so
+I/DEBUG   (   20):          #27  pc 00008bf2  /system/bin/app_process
+I/DEBUG   (   20):          #28  pc afe1dbd2  /system/lib/libc.so
+I/DEBUG   (   20):          #29  pc afe0b010  /system/lib/libc.so
+I/DEBUG   (   20):          #30  pc b0000d70  /system/bin/linker
+I/DEBUG   (   20): stack:
+I/DEBUG   (   20):     bedef418  00000005  
+I/DEBUG   (   20):     bedef41c  00000000  
+I/DEBUG   (   20):     bedef420  afe35f3c  
+I/DEBUG   (   20):     bedef424  afe35f90  
+I/DEBUG   (   20):     bedef428  00000000  
+I/DEBUG   (   20):     bedef42c  afe1238d  /system/lib/libc.so
+I/DEBUG   (   20):     bedef430  0000bb00  [heap]
+I/DEBUG   (   20):     bedef434  afe11539  /system/lib/libc.so
+I/DEBUG   (   20):     bedef438  ad067b98  /system/lib/libdvm.so
+I/DEBUG   (   20):     bedef43c  ad07edf8  
+I/DEBUG   (   20):     bedef440  ad07edf8  
+I/DEBUG   (   20):     bedef444  0010d338  [heap]
+I/DEBUG   (   20):     bedef448  ad067b98  /system/lib/libdvm.so
+I/DEBUG   (   20):     bedef44c  afe1159d  /system/lib/libc.so
+I/DEBUG   (   20):     bedef450  df002777  
+I/DEBUG   (   20):     bedef454  e3a070ad  
+I/DEBUG   (   20): #00 bedef458  fffe7b88  
+I/DEBUG   (   20):     bedef45c  ad02c303  /system/lib/libdvm.so
+I/DEBUG   (   20): #01 bedef460  ad067b98  /system/lib/libdvm.so
+I/DEBUG   (   20):     bedef464  ad02c533  /system/lib/libdvm.so
+I/ActivityManager(   45): Process org.wooyd.android.voidroid (pid 231) has died.
+D/Zygote  (   22): Process 231 terminated by signal (11)
