@@ -43,27 +43,28 @@ void Context::delegate( jobject obj ) {
 }
 
 int Context::receive( char* cmd ) {
+	
 
 }
 
 int Context::send( MSG_ID id, char* data ) {
 
-    JNIEnv* delegator_env = NULL;
-    int ret = -1;
+	JNIEnv* delegator_env = NULL;
+	int ret = -1;
 
-    if( jvm && delegator && jvm->AttachCurrentThread( &delegator_env, NULL ) == JNI_OK && delegator_env ) {
-        jclass cls = delegator_env->GetObjectClass(delegator);
-        if( cls ) {
-        	jmethodID method = delegator_env->GetMethodID( jc, "Receive", "(Ljava/lang/String;)I");
-        	if( method ) {
-        		jstring str = delegator_env->NewStringUTF( str );
-        		ret = thread_env->CallIntMethod( delegator, method, str );
-        	}
-        }
-        jvm->DetachCurrentThread();
-    }
-    LOGI("send %d", ret);
-    return ret;
+	if( jvm && delegator && jvm->AttachCurrentThread( &delegator_env, NULL ) == JNI_OK && delegator_env ) {
+	    jclass cls = delegator_env->GetObjectClass(delegator);
+	    if( cls ) {
+	    	jmethodID method = delegator_env->GetMethodID( jc, "Receive", "(Ljava/lang/String;)I");
+	    	if( method ) {
+	    		jstring str = delegator_env->NewStringUTF( str );
+	    		ret = thread_env->CallIntMethod( delegator, method, str );
+	    	}
+	    }
+	    jvm->DetachCurrentThread();
+	}
+	LOGI("send %d", ret);
+	return ret;
 }
 
 void Context::Context( JavaVM* vm ) {

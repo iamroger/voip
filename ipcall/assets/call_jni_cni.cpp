@@ -29,9 +29,11 @@ extern "C" {
 JNIEXPORT jint JNICALL Java_com_roger_ipcall_CallDelegator (JNIEnv *env, jclass cls, jstring p ) {
 	jboolean iscopy = 0;
 	char* cmd = (char*) env->GetStringUTFChars( p, &iscopy );
-	if( Context::singleton() ) {
-		Context::singleton()->delegate((jobject)cls);
-		return Context::singleton()->receive( cmd );
+	Context* ctx = Context::singleton();
+	if( ctx ) {
+		if( ctx->isDelegated() )
+			ctx->delegate((jobject)cls);
+		return ctx->receive( cmd );
 	}
 }
 
@@ -39,7 +41,7 @@ jint JNI_OnLoad(JavaVM* vm, void* reserved)
 {
 	Context::acquire( vm );
     
-    return JNI_VERSION_1_4;
+	return JNI_VERSION_1_4;
 }
 
 #ifdef __cplusplus

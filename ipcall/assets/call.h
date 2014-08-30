@@ -60,7 +60,7 @@ class UnRegiste : public Action {
 class Context {
 	public:
 		enum MSG_ID {
-			CMD_REGISTE,
+			CMD_REGISTE = 0,
 			CMD_MAKE_CALL,
 			CMD_ANSWER,
 			CMD_REJECT,
@@ -70,6 +70,8 @@ class Context {
 		static void acquire();
 		
 		static Context* singleton();
+
+		inline bool isDelegated() { return delegator == NULL; }
 		
 		void delegate( jobject obj );
 		
@@ -98,6 +100,7 @@ class Context {
 		jobject delegator;
 		struct Dispatcher {
 			Dispatcher(int i,Action* a):id(i),act(a){}
+			~Dispatcher(){ if(act) delete act; }
 			int id,
 			Action* act;
 		};
