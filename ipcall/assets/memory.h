@@ -6,6 +6,9 @@
 #define __MEMORY_H__
 
 #include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
 
 #define INCREAMENT 64
 
@@ -20,10 +23,10 @@ class Memory {
                 static Memory* singleton() {
                         return instance;
                 }
-                void Memory() {
+                Memory() : tmp(NULL),sizeOfTmp(INCREAMENT) {
                         if( !instance ) {
-                                instance = this;
-				realloc( &tmp, INCREAMENT );
+							instance = this;
+							realloc( (void**)&tmp, sizeOfTmp );
                         }
                 }
                 static void acquire() {
@@ -31,7 +34,7 @@ class Memory {
                                 instance = new Memory();
                         }
                 }
-                void ~Memory() {
+                ~Memory() {
                         if( instance ) {
                                 release( &tmp );
                                 instance = NULL;
@@ -40,23 +43,23 @@ class Memory {
 		enum Type {
 			TEMPORARY
 		};
-		inline void release( void** p ) {
-			if( p && *p ) {
-				delete *p;
-				*p = NULL;
+		inline void release( void* p ) {
+			if( p && *(unsigned char**)p ) {
+				delete *(unsigned char**)p;
+				*(unsigned char**)p = NULL;
 			}
 		}
-		inline void realloc( void** p, int size ) {
+		inline void realloc( void* p, int size ) {
 			release( p );
-			*p = new char[size];
-			memset( *p, 0, sizeOfTmp );
+			*(unsigned char**)p = new unsigned char[size];
+			memset( *(unsigned char**)p, 0, size );
 		}
 		inline const void* get( int size ) {
-			char* p = NULL;
+			void* p = NULL;
 			realloc( &p, size );
 			return p;
 		}
-		inline const void* getInc( Type t = TEMPORARY, int size ) {
+		inline const void* getInc( Type t = TEMPORARY, int size = INCREAMENT ) {
 			if( t == TEMPORARY ) {
 				if( size > sizeOfTmp ) {
 					sizeOfTmp += INCREAMENT;
@@ -69,7 +72,7 @@ class Memory {
 			}
 			return NULL;
 		}
-		inline const void* clone( Type t = TEMPORARYT, int size ) {
+		inline const void* clone( Type t = TEMPORARY, int size = INCREAMENT ) {
 			if( t == TEMPORARY ) {
 				char* p = NULL;
 				realloc( &p, size );
@@ -80,8 +83,8 @@ class Memory {
 			return NULL;				
 		}
         protected:
-		int sizeOfTmp;
-                char* tmp;
+			int sizeOfTmp;
+			char* tmp;
 };
 Memory* Memory::instance = NULL;
 
@@ -94,7 +97,7 @@ class Stack8 {
 	public:
 		inline Stack8():index(0),count(0),stack(NULL) { 
 			Memory::acquire();
-			stack = Memory::singleton()->get( INCREAMENT );
+			stack = (unsigned int*)Memory::singleton()->get( INCREAMENT );
 			count = INT_NUM_PER_INC;
 		}
 		inline ~Stack8(){
@@ -104,21 +107,21 @@ class Stack8 {
 		inline void push( const void* o ) {
 			if( index == count - 1 ) {
 				count += INT_NUM_PER_INC;
-				Memory::singleton()->realloc( &stack );
+				Memory::singleton()->realloc( &stack, count*sizeof(stack[0]) );
 			}
-			stack[index++] = o;
+			stack[index++] = (unsigned int)o;
 		}
 		inline const void* pop() {
 			if( !index )
 				return NULL;
-			return stack[--index];
+			return (void*)stack[--index];
 		}
 		inline const void* top() {
 			if( !index )
 				return NULL;
-			return stack[index];
+			return (void*)stack[index];
 		}
-		inline void* at( int index ) const { return stack[index]; }
+		inline void* at( int index ) const { return (void*)stack[index]; }
 		inline int size() const { return index; }
 		inline bool empty() const { return index == 0 ; }
 	protected:
@@ -128,6 +131,3 @@ class Stack8 {
 };
 
 #endif
-
-
-
