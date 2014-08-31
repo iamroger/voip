@@ -9,6 +9,11 @@
 
 #define INCREAMENT 64
 
+enum RESULT{
+	FAILED = -1,
+	SUCCESS
+};
+
 class Memory {
         public:
                 static Memory* instance;
@@ -96,7 +101,7 @@ class Stack8 {
 			Memory::singleton()->release(&stack);
 			count = index = 0;
 		}
-		inline bool push( const void* o ) {
+		inline void push( const void* o ) {
 			if( index == count - 1 ) {
 				count += INT_NUM_PER_INC;
 				Memory::singleton()->realloc( &stack );

@@ -10,10 +10,6 @@
 
 class JSON {
 	public:
-		enum RESULT{
-			FAILED = -1,
-			SUCCESS 
-		};
 		inline void JSON() : root(NULL), jstr(NULL){ 
 			Memory::acquire();
 		}
