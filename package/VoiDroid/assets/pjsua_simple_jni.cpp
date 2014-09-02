@@ -26,6 +26,7 @@
 #include <android/log.h>
 #include <pthread.h>
 #include <pjsua-lib/pjsua.h>
+//#include <pjmedia/port.h>
 #define LOGI(fmt, args...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, fmt, ##args)
 #define LOGD(fmt, args...) __android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, fmt, ##args)
 #define LOGE(fmt, args...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, fmt, ##args)
@@ -35,9 +36,14 @@
 #define STR_SIZE      256
 
 
-class Recv {
+static pjsua_config cfg;
+static int ring_slot = PJSUA_INVALID_ID;
+static pjmedia_port* ring_port = 0;
+static pj_pool_t* pool = 0;
+static pjsua_call_id current_call_id = -1;
+class CNI {
     protected:
-	 static Recv* singleton;
+	 static CNI* singleton;
          JNIEnv *e;
          JNIEnv* thread_env;
          JavaVM* jvm;
@@ -56,7 +62,7 @@ class Recv {
             i --;
         return i;
     }
-    Recv( JNIEnv* env, jobject obj, jstring javaclassmethod ) {
+    CNI( JNIEnv* env, jobject obj, jstring javaclassmethod ) {
         singleton = this;
         e = env;
         jvm = NULL;
@@ -77,42 +83,14 @@ class Recv {
         if( env ) {
             jo = env->NewGlobalRef(obj);
         }
-        /*if( env ) {
-            jstring js;
-            jclass jcls = env->FindClass( jfunc_class );
-            jmethodID jmid = 0;
-            //if( jcls )
-            //    jmid = env->GetStaticMethodID( jcls, jfunc_method, "(Ljava/lang/String;)I");
-            jo = env->NewGlobalRef(obj);
-            char* s = 0;
-            jc = env->GetObjectClass( jo );
-            if( obj ) {
-                jm = env->GetMethodID( jc,"toString","()Ljava/lang/String;");
-                jstring str = (jstring)env->CallObjectMethod(jo, jm );
-                s  = (char *) env->GetStringUTFChars( str, &iscopy );
-                jclass local = env->GetObjectClass( jo );
-                // must be a great careful, if java native is static, GetObjectClass will be return NoSuchMethodError!
-                // if jo of instance want to get method of instance, it will FAILED!!!
-                // it will report NoSuchMethodError, and be crashed!!!
-                // but the method of instance is static, it will be ok.
-                // only FindClass can get method, then call it by instance with CallMethod(inst...).
-                // MAYBE jo of instance is only referred to java.lang.Class(Object,toString is ok)
-                jmid = env->GetMethodID( jcls, jfunc_method, "(Ljava/lang/String;)I");
-                //jm = env->GetStaticMethodID( obj, jfunc_method, "(Ljava/lang/String;)I");
-            }
-            //if( env->IsInstanceOf( obj, jc ) ){
-                LOGI(">>>>jcls:%d, obj:%d, jo:%d, jc:%d, jm:%d, jmid:%d, name:%s ", jcls, obj, jo, jc, jm, jmid,s );
-            //}
-            LOGI("=========jcls:%d, obj:%d, jo:%d, jc:%d, jm:%d, jmid:%d, name:%s, %s ", jcls, obj, jo, jc, jm, jmid,s,jfunc_method );
-        }*/
     }
-    ~Recv() {
+    ~CNI() {
         if( e && joo ) 
             e->DeleteLocalRef(joo);
     }
     static void acquire( JNIEnv* env, jobject obj, jstring javaclassmethod ) {
         if ( singleton == NULL )
-            singleton = new Recv( env, obj, javaclassmethod );
+            singleton = new CNI( env, obj, javaclassmethod );
     }
     static void release() {
         if( singleton ) {
@@ -120,7 +98,7 @@ class Recv {
             singleton = NULL;
         }
     }
-    static Recv* single() {
+    static CNI* single() {
         return singleton;
     }
     int handle( char* str ) {
@@ -143,8 +121,45 @@ class Recv {
             jvm->DetachCurrentThread();
         return ret;
     }
+    static void ring_start() {
+        LOGI("ring slot %d, %d", ring_slot, PJSUA_INVALID_ID );
+        int status = pjsua_conf_connect(ring_slot, 0);
+        if (status != PJ_SUCCESS){
+            LOGE("failed to conn port, status %d", status);
+            return;
+        }
+    }
+    static void ring_stop() {
+    	pjsua_conf_disconnect(ring_slot, 0);
+    }
+    void video_start() {
+
+	}
+	void video_stop() {
+
+	}
+	static void answer( pjsua_call_id call_id ) {
+		pjsua_call_info call_info;
+
+		pjsua_call_get_info(call_id, &call_info);
+
+		int i;
+		for (i=0; i<call_info.media_cnt; ++i) {
+			pjsua_conf_port_id call_conf_slot;
+			call_conf_slot = call_info.media[i].stream.aud.conf_slot;
+			pjsua_conf_connect(call_conf_slot, 0);
+			if (!0/*disconnect_mic*/)
+				pjsua_conf_connect(0, call_conf_slot);
+		}
+                
+        pjsua_call_answer(call_id, 200, NULL, NULL);
+	}
+	static void hangup( pjsua_call_id call_id ) {
+		current_call_id = -1;
+		pjsua_call_hangup(call_id, PJSIP_SC_GONE, NULL, NULL);
+	}
 };
-Recv* Recv::singleton = NULL;
+CNI* CNI::singleton = NULL;
 
 #ifdef __cplusplus
 extern "C" {
@@ -158,26 +173,27 @@ static jclass gCls;
 static pjsua_transport_id gTransId;
 
 //static pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
-/* Callback called by the library upon receiving incoming call */
+/* CNI called by the library upon receiving incoming call */
 static void on_incoming_call(pjsua_acc_id acc_id, pjsua_call_id call_id,
                              pjsip_rx_data *rdata)
 {
     pjsua_call_info ci;
+    current_call_id = call_id;
 
     PJ_UNUSED_ARG(acc_id);
     PJ_UNUSED_ARG(rdata);
 
     pjsua_call_get_info(call_id, &ci);
 
-    Recv* rcv = Recv::single();
+    CNI* rcv = CNI::single();
+    CNI::ring_start();
     if( rcv && rcv->handle( ci.remote_info.ptr ) != -1) {
         /* Automatically answer incoming calls with 200/OK */
-        pjsua_call_answer(call_id, 200, NULL, NULL);
     }
     LOGI("on incoming call accepted, %s", ci.remote_info.ptr);
 }
 
-/* Callback called by the library when call's state has changed */
+/* CNI called by the library when call's state has changed */
 static void on_call_state(pjsua_call_id call_id, pjsip_event *e)
 {
     int status;
@@ -191,21 +207,20 @@ static void on_call_state(pjsua_call_id call_id, pjsip_event *e)
     LOGI("Call %d state=%.*s", call_id, (int)ci.state_text.slen, ci.state_text.ptr);
 }
 
-/* Callback called by the library when call's media state has changed */
+/* CNI called by the library when call's media state has changed */
 static void on_call_media_state(pjsua_call_id call_id)
 {
     pjsua_call_info ci;
 
     pjsua_call_get_info(call_id, &ci);
- 
+    //CNI::answer( call_id );
+    LOGI("on_call_media_state, call id %d, conf_slot %d, active %d %d ", call_id, ci.conf_slot, ci.media_status, PJSUA_CALL_MEDIA_ACTIVE );
     if (ci.media_status == PJSUA_CALL_MEDIA_ACTIVE) {
         // When media is active, connect call to sound device.
         pjsua_conf_connect(ci.conf_slot, 0);
         pjsua_conf_connect(0, ci.conf_slot);
     }
 }
-
-
 /*
  * Class:     org_wooyd_android_pjsua_pjsua
  * Method:    init
@@ -224,14 +239,14 @@ JNIEXPORT jint JNICALL Java_org_wooyd_android_pjsua_pjsua_init
     } 
     
     {
-        Recv::acquire( env, obj, jfunc );
+        CNI::acquire( env, obj, jfunc );
     }
     /* Init pjsua */
     {
         char *proxy_str;
         jboolean iscopy;
         pj_str_t proxy_pj_str;
-        pjsua_config cfg;
+
         pjsua_media_config media_cfg;
         pjsua_logging_config log_cfg;
 
@@ -249,7 +264,7 @@ JNIEXPORT jint JNICALL Java_org_wooyd_android_pjsua_pjsua_init
         }
 
         pjsua_logging_config_default(&log_cfg);
-        log_cfg.console_level = 4;
+        log_cfg.console_level = 1;
 
         pjsua_media_config_default(&media_cfg);
         /* Set the clock rates to 8kHz to avoid resampling */
@@ -265,6 +280,37 @@ JNIEXPORT jint JNICALL Java_org_wooyd_android_pjsua_pjsua_init
             LOGE("failed to init pjsua, status %d", status);
             return (jint) status;
         }
+
+        {
+            /* Ring (to alert incoming call) */
+            pool = pjsua_pool_create("pjsua-app", 1000, 1000);
+            LOGI("audio_frame_ptime %x, clock_rate %x, chanel_count %d",media_cfg.audio_frame_ptime,media_cfg.clock_rate,media_cfg.channel_count);
+            unsigned  samples_per_frame = media_cfg.audio_frame_ptime *
+			    media_cfg.clock_rate *
+			    media_cfg.channel_count / 1000;
+            char s[5] = {"ring"};
+            pj_str_t name = pj_str(s);
+            status = pjmedia_tonegen_create2(pool, &name,
+						 8000,
+						 1,
+						 160,/*samples_per_frame,*/
+						 16, 0,
+						 &ring_port);
+            if (status != PJ_SUCCESS){
+                LOGE("failed to init pjmedia, status %d", status);
+                return (jint) status;
+            }
+            status = pjsua_conf_add_port(pool, ring_port, &ring_slot);
+            if (status != PJ_SUCCESS){
+                LOGE("failed to add port, status %d", status);
+                return (jint) status;
+            }
+            status = pjsua_conf_connect(ring_slot, 0);
+            if (status != PJ_SUCCESS){
+                LOGE("failed to conn port, status %d", status);
+                return (jint) status;
+            } 
+         }
     }
 
     /* Add UDP transport. */
@@ -390,6 +436,12 @@ JNIEXPORT void JNICALL Java_org_wooyd_android_pjsua_pjsua_hangup
     pjsua_call_hangup_all();
 }
 
+JNIEXPORT void JNICALL Java_org_wooyd_android_pjsua_pjsua_answer
+    (JNIEnv *env, jclass cls) {
+    CNI::answer( current_call_id );
+}
+
+
 /*
  * Class:     org_wooyd_android_pjsua_pjsua
  * Method:    destroy
@@ -397,8 +449,19 @@ JNIEXPORT void JNICALL Java_org_wooyd_android_pjsua_pjsua_hangup
  */
 JNIEXPORT void JNICALL Java_org_wooyd_android_pjsua_pjsua_destroy
     (JNIEnv *env, jclass cls) {
+    if(pool)
+        pj_pool_release(pool);
+    pool = 0;
+    LOGE("destroy ....");
+    if ( ring_slot != PJSUA_INVALID_ID && ring_port ) {
+        pjsua_conf_remove_port(ring_slot);
+        ring_slot = PJSUA_INVALID_ID;
+        pjmedia_port_destroy(ring_port);
+        ring_port = NULL;
+    }
+    
     pjsua_destroy();
-    Recv::release();
+    CNI::release();
 }
 
 

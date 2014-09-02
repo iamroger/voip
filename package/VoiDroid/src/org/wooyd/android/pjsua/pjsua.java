@@ -23,37 +23,13 @@
 package org.wooyd.android.pjsua;
 
 import java.lang.String;
-
-import android.app.Activity;
-import android.content.Intent;
-import android.net.Uri;
 import android.util.Log;
 
 public class pjsua {
-	public native int init( String proxy, String cls );
+    public static native int init(String proxy);
     public static native int add_account(String sip_user, String sip_domain, String sip_passwd);
     public static native int acc_get_default();
     public static native int make_call(int acc_id, String uri);
     public static native void hangup();
     public static native void destroy();
-    private static Activity ctx = null;
-
-    public pjsua( Activity a ) {
-    	ctx = a;
-    }
-    public void test() {
-    	Log.e("VoiDroid", "pjsua" );
-    }
-    public int receive( String remoteCall ){
-    	Intent newIntent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:+4321ww9"));
-    	Log.e("VoiDroid", "remoteCall: " + remoteCall.substring(5,remoteCall.indexOf('@')));
-    	//Intent newIntent = new Intent();
-    	//newIntent.setClassName("com.android.phone", "com.android.phone.InCallScreen");
-    	//newIntent.putExtra(Intent.EXTRA_PHONE_NUMBER, number);
-
-    	newIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-    	
-    	ctx.startActivity(newIntent);
-    	return 1;
-    }
 }

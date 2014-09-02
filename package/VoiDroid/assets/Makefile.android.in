@@ -1,12 +1,16 @@
-PJSIP_CXXFLAGS = -I@PJSIP_DIR@/pjsip/include -I@PJSIP_DIR@/pjsua-lib/include -I@PJSIP_DIR@/pjlib/include -I@PJSIP_DIR@/pjmedia/include -I@PJSIP_DIR@/pjnath/include -I@PJSIP_DIR@/pjlib-util/include 
-HOST_TYPE = arm-unknown-eabi
+
+PJSIP_DIR=../../pjproject-2.2.1
+ANDROID_LDFLAGS_LIBRARY=$(ANDROID_NDK_ROOT)/platforms/android-9/arch-arm/usr/lib
+
+PJSIP_CXXFLAGS = -I$(PJSIP_DIR)/pjsip/include -I$(PJSIP_DIR)/pjsip/include/pjsua-lib -I$(PJSIP_DIR)/pjlib/include -I$(PJSIP_DIR)/pjmedia/include -I$(PJSIP_DIR)/pjnath/include -I$(PJSIP_DIR)/pjlib-util/include 
+HOST_TYPE = arm-unknown-linux-androideabi
 
 # -fno-rtti is essential, as it turns of RTTI, which is not supported by the bionic.
-CXXFLAGS = -I. @ANDROID_CXXFLAGS@ -I@ANDROID_DIR@/dalvik/libnativehelper/include/nativehelper $(PJSIP_CXXFLAGS) -fno-rtti
+CXXFLAGS = -I.  $(PJSIP_CXXFLAGS) -fno-rtti
 
-PJSIP_LDFLAGS = -L@PJSIP_DIR@/pjsip/lib -L@PJSIP_DIR@/pjsua-lib/lib -L@PJSIP_DIR@/pjlib/lib -L@PJSIP_DIR@/pjmedia/lib -L@PJSIP_DIR@/pjnath/lib -L@PJSIP_DIR@/pjlib-util/lib -L@PJSIP_DIR@/third_party/lib -lpjsua-$(HOST_TYPE) -lpjsip-ua-$(HOST_TYPE) -lpjsip-simple-$(HOST_TYPE) -lpjsip-$(HOST_TYPE) -lpjmedia-codec-$(HOST_TYPE) -lpjmedia-$(HOST_TYPE) -lpjnath-$(HOST_TYPE) -lpjlib-util-$(HOST_TYPE) -lpj-$(HOST_TYPE) -lgsmcodec-$(HOST_TYPE) -lilbccodec-$(HOST_TYPE) -lspeex-$(HOST_TYPE) -lresample-$(HOST_TYPE) -lmilenage-$(HOST_TYPE) -lsrtp-$(HOST_TYPE) -lm -lssl -landroid_runtime
+PJSIP_LDFLAGS = -L$(PJSIP_DIR)/pjsip/lib  -L$(PJSIP_DIR)/pjlib/lib -L$(PJSIP_DIR)/pjmedia/lib -L$(PJSIP_DIR)/pjnath/lib -L$(PJSIP_DIR)/pjlib-util/lib -L$(PJSIP_DIR)/third_party/lib -lpjsua-$(HOST_TYPE) -lpjsip-ua-$(HOST_TYPE) -lpjsip-simple-$(HOST_TYPE) -lpjsip-$(HOST_TYPE) -lpjmedia-codec-$(HOST_TYPE) -lpjmedia-$(HOST_TYPE) -lpjnath-$(HOST_TYPE) -lpjlib-util-$(HOST_TYPE) -lpj-$(HOST_TYPE) -lgsmcodec-$(HOST_TYPE) -lilbccodec-$(HOST_TYPE) -lspeex-$(HOST_TYPE) -lresample-$(HOST_TYPE) -lmilenage-$(HOST_TYPE) -lsrtp-$(HOST_TYPE) -lm -lssl -landroid_runtime
 
-LDFLAGS = @ANDROID_LDFLAGS_LIBRARY@ -Wl,-E $(PJSIP_LDFLAGS)
+LDFLAGS = -L$(ANDROID_LDFLAGS_LIBRARY) -Wl,-E $(PJSIP_LDFLAGS)
 
 all : libpjsua_simple_jni.so
 

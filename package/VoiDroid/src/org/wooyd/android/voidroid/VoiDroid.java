@@ -23,20 +23,12 @@
 package org.wooyd.android.voidroid;
 
 import android.app.Activity;
-import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.net.Uri;
 import android.os.Bundle;
 import java.util.zip.*;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.FileOutputStream;
 import java.io.File;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.SocketException;
-
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -46,22 +38,19 @@ import android.util.Log;
        
 public class VoiDroid extends Activity
 {
-	static Activity mCxt;
     String callStateText;
     pjsua pj;
     EditText addressField, sipUsername, sipDomain, sipPassword, proxyField;
     TextView statusField;
-    Button registerButton, callButton, hangupButton, udpButton;
+    Button callButton, hangupButton;
     int acc_id = -1;
 
     public void loadNativeLibrary() {
         try {
-        	PackageInfo  apk = this.getPackageManager().getPackageInfo(this.getPackageName(), 0);
-        	String path = apk.applicationInfo.publicSourceDir;
-            ZipFile zip = new ZipFile(path);
+            ZipFile zip = new ZipFile("/data/app/org.wooyd.android.voidroid.apk");
             ZipEntry zipen = zip.getEntry("assets/libpjsua_simple_jni.so");
             InputStream is = zip.getInputStream(zipen);
-            OutputStream os = new FileOutputStream(apk.applicationInfo.dataDir+"/libpjsua_simple_jni.so");
+            OutputStream os = new FileOutputStream("/data/data/org.wooyd.android.voidroid/libpjsua_simple_jni.so");
             byte[] buf = new byte[8092];
             int n;
             while ((n = is.read(buf)) > 0) os.write(buf, 0, n);
@@ -73,13 +62,6 @@ public class VoiDroid extends Activity
             Log.e("VoiDroid", "failed to copy native library: " + ex);
         }
     }
-    public void VoiDroid() {
-    	Log.e("VoiDroid", "VoiDroid" );
-    }
-    public  String test() {
-    	Log.e("VoiDroid", "VoiDroid" );
-    	return null;
-    }
 
      /** Called when the activity is first created. */
     @Override
@@ -87,7 +69,6 @@ public class VoiDroid extends Activity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        mCxt = this;
         
         addressField = (EditText) findViewById(R.id.address);
         sipUsername = (EditText) findViewById(R.id.username);
@@ -95,63 +76,34 @@ public class VoiDroid extends Activity
         sipPassword = (EditText) findViewById(R.id.password);
         proxyField = (EditText) findViewById(R.id.proxy);
         statusField = (TextView) findViewById(R.id.status);
-        
-        pj = new pjsua((Activity)this); 
+
         loadNativeLibrary();
-        
-        String proxy = proxyField.getText().toString();
-        if(proxy.length() != 0) {
-            if(!proxy.startsWith("sip:")) proxy = "sip:" + proxy;
-            if(!proxy.endsWith(";lr")) proxy += ";lr";
-        }
-        int status = pj.init(proxy,"org/wooyd/android/pjsua/pjsua/receive"); 
-        
-        
-        registerButton = (Button) findViewById(R.id.register_button);
-        registerButton.setOnClickListener(new Button.OnClickListener() {
-        	 public void onClick(View v) {
-        		 
-        		 
-        		 if(acc_id < 0) {
-                     acc_id = pj.add_account(sipUsername.getText().toString(),
-                                             sipDomain.getText().toString(),
-                                             sipPassword.getText().toString());
-                     if(acc_id < 0) {
-                         /* Tried to register, but an error has occured */
-                         statusField.setText("Failed to register account");
-                         return;
-                     } else {
-                         statusField.setText("Registered account");
-                     }
-                 }else 
-                	 statusField.setText("not register account");
-        	 }        	
-        });
+        pj = new pjsua();
 
         callButton = (Button) findViewById(R.id.call_button);
         callButton.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
-                /*String proxy = proxyField.getText().toString();
+                String proxy = proxyField.getText().toString();
                 if(proxy.length() != 0) {
                     if(!proxy.startsWith("sip:")) proxy = "sip:" + proxy;
                     if(!proxy.endsWith(";lr")) proxy += ";lr";
                 }
-                int status = pj.init(proxy);*/
+                int status = pj.init(proxy);
                 String address = addressField.getText().toString();
-                /*if(acc_id < 0) {
+                if(acc_id < 0) {
                     acc_id = pj.add_account(sipUsername.getText().toString(),
                                             sipDomain.getText().toString(),
                                             sipPassword.getText().toString());
                     if(acc_id < 0) {
-                        // Tried to register, but an error has occured /
+                        /* Tried to register, but an error has occured */
                         statusField.setText("Failed to register SIP account");
                         return;
                     } else {
                         statusField.setText("Registered SIP account");
                     }
-                }*/
+                }
                 statusField.setText("Call to " + address + " in progress");
-                int status = pj.make_call(acc_id, "sip:"+address);
+                status = pj.make_call(acc_id, address);
                 if(status != 0) {
                     statusField.setText("Call to " + address + "failed");
                 }
@@ -166,26 +118,5 @@ public class VoiDroid extends Activity
                 pj.destroy();
              }
         });    
-        
-        udpButton = (Button) findViewById(R.id.udp_button);
-        udpButton.setOnClickListener(new Button.OnClickListener() {
-            public void onClick(View v) {
-            	String message="Hello Android!";
-            	int server_port = 12345;
-            	DatagramSocket s;
-				try {
-					s = new DatagramSocket();
-	            	InetAddress local = InetAddress.getByName("54.218.33.25");
-	            	int msg_length=message.length();
-	            	byte[] msg = message.getBytes();
-	            	DatagramPacket p = new DatagramPacket(msg, msg_length,local,server_port);
-	            	s.send(p);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
-            }
-       }); 
     }
 }

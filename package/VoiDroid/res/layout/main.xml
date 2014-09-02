@@ -3,7 +3,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     >
-<LinearLayout 
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
@@ -11,9 +11,20 @@
 <TextView
     android:layout_width="fill_parent"
     android:layout_height="wrap_content" 
-    android:text="Enter address to call:"
+    android:text="Enter SIP address to call:"
     />
 <EditText android:id="@+id/address"
+    android:layout_width="fill_parent" 
+    android:layout_height="wrap_content" 
+    android:text="sip:"
+    android:editable="true"
+    />
+<TextView
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" 
+    android:text="Enter SIP account username (optional):"
+    />
+<EditText android:id="@+id/username"
     android:layout_width="fill_parent" 
     android:layout_height="wrap_content" 
     android:text=""
@@ -22,44 +33,30 @@
 <TextView
     android:layout_width="fill_parent"
     android:layout_height="wrap_content" 
-    android:text="Enter account username (optional):"
-    />
-<EditText android:id="@+id/username"
-    android:layout_width="fill_parent" 
-    android:layout_height="wrap_content" 
-    android:text="1234"
-    android:hint="register"
-    android:editable="true"
-    />
-<TextView
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content" 
-    android:text="Enter account domain (optional):"
+    android:text="Enter SIP account domain (optional):"
     />
 <EditText android:id="@+id/domain"
     android:layout_width="fill_parent" 
     android:layout_height="wrap_content" 
-    android:text="192.168.56.101"
-    android:hint="register"
+    android:text=""
     android:editable="true"
     />
 <TextView
     android:layout_width="fill_parent"
     android:layout_height="wrap_content" 
-    android:text="Enter account password (optional):"
+    android:text="Enter SIP account password (optional):"
     />
 <EditText android:id="@+id/password"
     android:layout_width="fill_parent" 
     android:layout_height="wrap_content" 
-    android:text="1234"
-    android:hint="register"
+    android:text=""
     android:password="true"
     android:editable="true"
     />
 <TextView
     android:layout_width="fill_parent"
     android:layout_height="wrap_content" 
-    android:text="Outbound proxy (optional):"
+    android:text="Outbound SIP proxy (optional):"
     />
 <EditText android:id="@+id/proxy"
     android:layout_width="fill_parent" 
@@ -71,19 +68,13 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:gravity="center_horizontal"
-    android:text="Welcome to jluo"
+    android:text="Welcome to VoiDroid!"
     />
-    <LinearLayout
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         >
-    <Button android:id="@+id/register_button"
-        android:layout_width="wrap_content" 
-        android:layout_height="wrap_content" 
-        android:layout_weight="1"
-        android:text="Register"
-        />
     <Button android:id="@+id/call_button"
         android:layout_width="wrap_content" 
         android:layout_height="wrap_content" 
@@ -97,11 +88,5 @@
         android:text="Hangup"
         />
     </LinearLayout>
-    <Button android:id="@+id/udp_button"
-        android:layout_width="wrap_content" 
-        android:layout_height="wrap_content" 
-        android:layout_weight="1"
-        android:text="udp"
-        />
 </LinearLayout>
 </ScrollView>
