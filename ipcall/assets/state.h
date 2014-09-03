@@ -8,11 +8,11 @@
 /*
  * example 1.cpp: _S("object").start() > _streamT("={") > _S("string") > _streamT("=,") \
  *                                                     > _S("value") > _streamT("=}") > _S("object").end();
- *              _S("object").start() > _streamT("={:=\b*:=}") > _S("object").end(); 
+ *              _S("object").start() > _streamT("={|=\b*|=}") > _S("object").end(); 
  *              _S("value").start() > _streamT("={") > _S("object") > _streamT("=}") > _S("value").end();
  *              _S("value").start() > _streamT("=\"") > _S("string") > _streamT("=\"") > _S("value").end();
  *                                        // \" will be transferred into next state 
- *              _S("string").start() > _streamT("!\b:!\"") > _S("string") > _streamT("=\"") > _S("string").end();
+ *              _S("string").start() > _streamT("!\b|!\"") > _S("string") > _streamT("=\"") > _S("string").end();
  *              
  *              struct object {
  *                  struct pair {
@@ -60,8 +60,21 @@
  *              _DECL_START("play")( const Context& ctx, const Message& msg ) {
  *                  request( "play:{usera:"+msg.data("btn.name")+",userb:"+this.name+"}" );
  *              }
- *
- *
+ *     3rd lib: _streamT
+ *              _S("rule").start() > _T('=') > _S("next");
+ *              _S("next") > _T() > _S("pass");      // any code, it append the latest state.
+ *              _S("next") > _T('|') > _S("next");
+ *              _S("next") > _T('&') > _S("next");   // I want stop trans in advance via to previous result 
+ *              _S("next") > _Assert() > _S("pass");
+ *              _S("next") > _T('>') > _S("next");
+ *              _S("next") > _T('<') > _S("next");
+ *              _S("next") > _T('!') > _S("next");
+ *              _S("next") > _T('\') > _S("special");
+ *              _S("special") > _T('.') > _S("next");
+ *              _S("pass") > _T() > _S("rule").end();
+ *              
+ *              _DECL("next") ( const Context& ctx, const Message& msg ) {
+ *                   
  */
 class State {
 	public:
