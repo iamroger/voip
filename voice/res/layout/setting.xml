@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="38dp"
+        android:layout_marginTop="35dp"
+        android:orientation="horizontal" >
+	    <TextView
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    android:layout_weight="2"
+        	android:layout_marginLeft="8dp"
+		    android:text="运营商"
+		    android:textSize="22sp"/>
+	    <EditText 
+		    android:id="@+id/carrior"
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    android:layout_weight="1"
+		    android:background="#00000000"
+		    android:hint="192.168.95.2"
+		    android:textSize="22sp"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="38dp"
+        android:layout_marginTop="35dp"
+        android:orientation="horizontal" >
+	    <TextView
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    android:layout_weight="2"
+        	android:layout_marginLeft="8dp"
+		    android:text="用户账号"
+		    android:textSize="22sp"/>
+	    <EditText 
+		    android:id="@+id/user"
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    android:layout_weight="1"
+		    android:background="#00000000"
+		    android:hint="15801803130"
+		    android:textSize="22sp"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="38dp"
+        android:layout_marginTop="35dp"
+        android:orientation="horizontal" >
+	    <TextView
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    android:layout_weight="2"
+        	android:layout_marginLeft="8dp"
+		    android:text="账号密码"
+		    android:textSize="22sp"/>
+	    <EditText 
+		    android:id="@+id/passwd"
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    android:layout_weight="1"
+		    android:background="#00000000"
+		    android:hint="1234"
+		    android:textSize="22sp"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="38dp"
+        android:layout_marginTop="35dp"
+        android:orientation="horizontal" >
+	    <TextView
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    android:layout_weight="2"
+        	android:layout_marginLeft="8dp"
+		    android:text="默认话筒"
+		    android:textSize="22sp"/>
+	    <CheckBox
+	        android:id="@+id/mute"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="" />
+    </LinearLayout>
+</LinearLayout>
