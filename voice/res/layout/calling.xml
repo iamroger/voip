@@ -1,40 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="vertical"
-    android:background="#ffefefef">
-    <ImageView android:id="@+id/calling_logo"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	    android:gravity="center"/>
-    <TextView android:id="@+id/calling_number"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	    android:gravity="center"
-	    android:text="Welcome to jluo"
-	    android:textSize="22sp"/>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#1f000000" >
+
     <RelativeLayout
-        android:orientation="horizontal"
-        android:layout_marginTop="33dp"
+        android:id="@+id/relativeLayout1"
         android:layout_width="fill_parent"
-        android:layout_height="88dp">
-        <ImageView 
-	        android:id="@+id/calling_answer"
-	        android:layout_width="wrap_content" 
-	        android:layout_height="wrap_content" 
-	        android:scaleType="center"
-	        android:paddingLeft="8dp"
-	        android:paddingRight="8dp"
-	        android:src="@drawable/phonea"
-	        android:visibility="gone"/>
-	    <ImageView 
-	        android:id="@+id/calling_reject"
-	        android:layout_width="28dp" 
-	        android:layout_height="28dp" 
-	        android:layout_centerHorizontal="true"
-	        android:scaleType="centerInside"
-	        android:src="@drawable/phoner"/>
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal" >
+
+        <ImageView
+            android:id="@+id/calling_answer"
+            android:layout_width="52dp"
+            android:layout_height="52dp"
+            android:layout_centerInParent="true"
+            android:padding="10dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/phonea"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/calling_reject"
+            android:layout_width="52dp"
+            android:layout_height="52dp"
+            android:layout_centerInParent="true"
+            android:padding="10dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/phoner" />
     </RelativeLayout>
-</LinearLayout>
+
+    <TextView
+        android:id="@+id/calling_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/relativeLayout1"
+        android:layout_centerHorizontal="true"
+        android:paddingBottom="210dp"
+        android:background="#00000000"
+        android:fontFamily="sans-serif-light"
+        android:text="Welcome to jluo"
+        android:textColor="#fffcfcfc"
+        android:textSize="30sp" />
+
+</RelativeLayout>

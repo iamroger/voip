@@ -34,6 +34,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 
+import android.view.KeyEvent;
 import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -98,6 +99,8 @@ public class main extends Activity implements OnClickListener
     }
 
     public void incomingCall(String name ) {
+    	if( name.equals(callData.get("user"))  )
+    		return;
         Bundle b = new Bundle();
         b.putString("name", name);
         Message m = new Message();
@@ -126,8 +129,9 @@ public class main extends Activity implements OnClickListener
     public void exit( View v ) {
     	//co.hangup();
     	//co.destroy();
-        finish();
+    	//moveTaskToBack(true);//finish();
         //System.exit(0);
+    	droid.self.onBackPressed();
     }
 
     @Override
@@ -260,6 +264,17 @@ public class main extends Activity implements OnClickListener
 	    	mToneGenerator.startTone(tone, 150);
     	}
 	}
+    public boolean onKeyDown(int keyCode, KeyEvent event)
+    {
+
+        if (keyCode == KeyEvent.KEYCODE_BACK)
+        {
+            moveTaskToBack(true);
+            return true; // return
+        }
+
+        return false;
+    }
 	@Override
 	public void onClick(View arg0) {
 		// TODO Auto-generated method stub
@@ -276,7 +291,7 @@ public class main extends Activity implements OnClickListener
 		}
 		switch( arg0.getId() ) {
 		case R.id.call_button:
-			if( et.getText().equals("8#") ) {
+			if( et.getText().toString().equals("*#*#") ) {
 				if( droid.self != null )
 					droid.self.startActivity("setting");
 				break;
@@ -287,7 +302,7 @@ public class main extends Activity implements OnClickListener
             }
             {
 				if( droid.self != null )
-					droid.self.startActivity("calling", "route", "out");
+					droid.self.startActivity("calling", "route", "out", "name", et.getText().toString() );
             }
 			break;
 		case R.id.dial_0:

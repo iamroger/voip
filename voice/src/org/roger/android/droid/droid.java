@@ -36,15 +36,19 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 
+import android.view.KeyEvent;
 import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.ViewAnimator;
 
 import org.roger.android.core.core;
 import org.roger.android.core.data;
@@ -61,16 +65,34 @@ public class droid extends ActivityGroup {
         super.onCreate(savedInstanceState);
         self = this;
         setContentView(R.layout.droid);
-        layout_main = (LinearLayout) findViewById(R.id.main);
-        layout_calling = (LinearLayout) findViewById(R.id.calling);
-        layout_setting = (LinearLayout) findViewById(R.id.setting);
+        layout = (LinearLayout) findViewById(R.id.activity);
+        animator = new ViewAnimator( this );
         
-        mActivities.put("main", new Info(main.class,layout_main)); 
-        mActivities.put("calling", new Info(calling.class,layout_calling)); 
-        mActivities.put("setting", new Info(setting.class,layout_setting)); 
+        mActivities.put("main", new Info(main.class)); 
+        mActivities.put("calling", new Info(calling.class)); 
+        mActivities.put("setting", new Info(setting.class)); 
+        
+        params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT,LinearLayout.LayoutParams.FILL_PARENT);
+		wparams = new WindowManager.LayoutParams();
+		wparams.width = LayoutParams.FILL_PARENT;
+		wparams.height = LayoutParams.FILL_PARENT;
 
         getWindow().setBackgroundDrawableResource(R.drawable.wow);
         startActivity("main");
+    }
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) { 
+	    if (keyCode == KeyEvent.KEYCODE_BACK) {
+	    	onBackPressed();
+	    }
+	    return super.onKeyDown(keyCode, event);
+    }
+    @Override
+    public void onBackPressed() {
+    	//co.hangup();
+    	//co.destroy();
+    	moveTaskToBack(true);//finish();
+        //System.exit(0);
     }
 
     public void startActivity( String name, String... args ) {
@@ -80,29 +102,36 @@ public class droid extends ActivityGroup {
     	LocalActivityManager mgr = getLocalActivityManager();
     	for (String key : mActivities.keySet()) {
     		Info r = mActivities.get(key);
-    		r.layout.removeAllViews();
-    		r.layout.setVisibility(View.INVISIBLE);
+    		layout.removeAllViews();
     	}
     	Info a = mActivities.get(name);
-    	if( a.cls != null && a.layout != null ) {
+    	if( a.cls != null && layout != null ) {
     		Intent i = new Intent(this, a.cls);
     		for( int n = 0; n < args.length ; n += 2 ) {
         		i.putExtra(args[n], args[n+1]);
         	}
-    		a.layout.setVisibility(View.VISIBLE);
-    		a.layout.addView(mgr.startActivity(name, i).getDecorView());
+    		Activity next = mgr.getActivity(name);
+    		if( next != null ) {
+    			next.setIntent(i);
+    		}
+    		View decor = mgr.startActivity(name, i).getDecorView();
+    		mgr.getActivity(name).setIntent(i);
+    		if (decor != null) {
+    			decor.startAnimation( AnimationUtils.loadAnimation(this, R.anim.right_in) );  
+    		}
+    		
+    		layout.addView(decor, wparams);
     	}
     }
     class Info {
     	public Class<?> cls;
-    	public LinearLayout layout;
-    	public Info( Class<?> c, LinearLayout l) {
+    	public Info( Class<?> c) {
     		cls = c;
-    		layout = l;
     	}
     };
+    ViewAnimator animator;
     HashMap<String, Info > mActivities = new HashMap<String, Info>() ;
-    LinearLayout layout_main;
-    LinearLayout layout_calling;
-    LinearLayout layout_setting;
+    WindowManager.LayoutParams wparams;
+    LinearLayout.LayoutParams params;
+    LinearLayout layout;
 }

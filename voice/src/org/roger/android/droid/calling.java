@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.media.AudioManager;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -154,6 +155,34 @@ public class calling extends Activity {
         	.show();
     	}
     };*/
+    @Override
+    public void onResume() {
+    	super.onRestart();
+    	Intent i = getIntent();
+		if( i.getStringExtra("route").equals("in") ) 
+		     isInCall = true;
+		
+		CallName = i.getStringExtra("name");
+		calling_number.setText(CallName);
+ 
+		 if( isInCall ) {
+			calling_answer.setVisibility(View.VISIBLE);
+			RelativeLayout.LayoutParams layoutParams1 = (RelativeLayout.LayoutParams)calling_answer.getLayoutParams();
+			layoutParams1.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
+			calling_answer.setLayoutParams(layoutParams1);
+			RelativeLayout.LayoutParams layoutParams2 = (RelativeLayout.LayoutParams)calling_reject.getLayoutParams();
+			layoutParams2.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
+			calling_reject.setLayoutParams(layoutParams2);
+		 }else {
+			calling_answer.setVisibility(View.INVISIBLE);
+			RelativeLayout.LayoutParams layoutParams1 = (RelativeLayout.LayoutParams)calling_answer.getLayoutParams();
+			layoutParams1.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
+			calling_answer.setLayoutParams(layoutParams1);
+			RelativeLayout.LayoutParams layoutParams2 = (RelativeLayout.LayoutParams)calling_reject.getLayoutParams();
+			layoutParams2.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
+			calling_reject.setLayoutParams(layoutParams2);
+		}
+    }
     TextView calling_number;
     ImageView calling_answer;
     ImageView calling_reject;
@@ -165,11 +194,6 @@ public class calling extends Activity {
 	        
 	     getWindow().setSoftInputMode(LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 	     
-	     if( getIntent().getStringExtra("route").equals("in") ) 
-	          isInCall = true;
-
-	     CallName = getIntent().getStringExtra("name");
-	     
 	     ringtone = RingtoneManager.getRingtone(this, RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE));
 	     ringer.start();
 	     ringer.go();
@@ -177,31 +201,13 @@ public class calling extends Activity {
 	     calling_answer = (ImageView)findViewById(R.id.calling_answer);
 	     calling_number = (TextView)findViewById(R.id.calling_number);
 	     calling_reject = (ImageView)findViewById(R.id.calling_reject);
-	     
-	     calling_number.setText(CallName);
-	     
-	     if( isInCall ) {
-	    	 calling_answer.setVisibility(View.VISIBLE);
-	    	 RelativeLayout.LayoutParams layoutParams1 = (RelativeLayout.LayoutParams)calling_answer.getLayoutParams();
-	    	 layoutParams1.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
-	    	 calling_answer.setLayoutParams(layoutParams1);
-	    	 RelativeLayout.LayoutParams layoutParams2 = (RelativeLayout.LayoutParams)calling_reject.getLayoutParams();
-	    	 layoutParams2.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
-	    	 calling_reject.setLayoutParams(layoutParams2);
-	     }else {
-	    	 calling_answer.setVisibility(View.INVISIBLE);
-	    	 RelativeLayout.LayoutParams layoutParams1 = (RelativeLayout.LayoutParams)calling_answer.getLayoutParams();
-	    	 layoutParams1.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
-	    	 calling_answer.setLayoutParams(layoutParams1);
-	    	 RelativeLayout.LayoutParams layoutParams2 = (RelativeLayout.LayoutParams)calling_reject.getLayoutParams();
-	    	 layoutParams2.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
-	    	 calling_reject.setLayoutParams(layoutParams2);
-	     }
-	     
+
 	     calling_reject.setOnClickListener(new Button.OnClickListener() {
 	             public void onClick(View v) {
 	            	ringer.pause();
-	            	main.co.hangup();	                
+	            	main.co.hangup();
+	            	if( droid.self != null )
+						droid.self.startActivity("main");
 	             }
 	     });
 	     calling_answer.setOnClickListener(new Button.OnClickListener() {

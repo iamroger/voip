@@ -3,19 +3,12 @@
     android:orientation="vertical" 
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
+    
     <LinearLayout 
-        android:id="@+id/main"
+        android:id="@+id/activity"
         android:layout_width="fill_parent" 
-        android:layout_height="fill_parent">
-    </LinearLayout>
-    <LinearLayout 
-        android:id="@+id/calling"
         android:layout_height="fill_parent"
-        android:layout_width="fill_parent">
+        android:orientation="vertical" >
     </LinearLayout>
-    <LinearLayout 
-        android:id="@+id/setting"
-        android:layout_height="fill_parent"
-        android:layout_width="fill_parent">
-    </LinearLayout>
+
 </LinearLayout>
