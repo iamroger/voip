@@ -171,7 +171,7 @@ public class main extends Activity implements OnClickListener
 		        	mToneGenerator = new ToneGenerator(AudioManager.STREAM_MUSIC, 80);
 		        	setVolumeControlStream(AudioManager.STREAM_MUSIC);
 		        	AudioManager audioManager = ((AudioManager) getSystemService(Context.AUDIO_SERVICE));
-		        	audioManager.setSpeakerphoneOn(true);
+		        	//audioManager.setSpeakerphoneOn(true);
 		        	audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,
 			                  audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC ),
 			                  AudioManager.STREAM_MUSIC);

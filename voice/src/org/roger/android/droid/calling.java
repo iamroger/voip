@@ -15,6 +15,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager.LayoutParams;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -26,6 +27,7 @@ public class calling extends Activity {
 	private int currVolume;
 	private boolean isInCall = false;
 	private String CallName = "";
+	private Context ctx;
 	
 	public void OpenSpeaker() {
 
@@ -43,7 +45,7 @@ public class calling extends Activity {
 	        audioManager.setMode(AudioManager.MODE_NORMAL);
 	        currVolume = audioManager.getStreamVolume(AudioManager.STREAM_VOICE_CALL);
 	        if( !main.callData.getMute() && !audioManager.isSpeakerphoneOn()) {
-	          audioManager.setSpeakerphoneOn(true);
+	          //audioManager.setSpeakerphoneOn(true);
 	          audioManager.setStreamVolume(AudioManager.STREAM_VOICE_CALL,
 	                  audioManager.getStreamMaxVolume(AudioManager.STREAM_VOICE_CALL ),
 	                  AudioManager.STREAM_VOICE_CALL);
@@ -155,6 +157,22 @@ public class calling extends Activity {
         	.show();
     	}
     };*/
+    public final void answerLeftAligned(){
+    	calling_answer.setVisibility(View.VISIBLE);
+		RelativeLayout.LayoutParams layoutParams1 = (RelativeLayout.LayoutParams)calling_answer.getLayoutParams();
+		layoutParams1.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
+		calling_answer.setLayoutParams(layoutParams1);
+    }
+    public final void rejectRightAligned(){
+    	RelativeLayout.LayoutParams layoutParams2 = (RelativeLayout.LayoutParams)calling_reject.getLayoutParams();
+		layoutParams2.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
+		calling_reject.setLayoutParams(layoutParams2);
+    }
+    public final void rejectCenterAligned(){
+    	RelativeLayout.LayoutParams layoutParams2 = (RelativeLayout.LayoutParams)calling_reject.getLayoutParams();
+		layoutParams2.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
+		calling_reject.setLayoutParams(layoutParams2);
+    }
     @Override
     public void onResume() {
     	super.onRestart();
@@ -165,22 +183,12 @@ public class calling extends Activity {
 		CallName = i.getStringExtra("name");
 		calling_number.setText(CallName);
  
-		 if( isInCall ) {
-			calling_answer.setVisibility(View.VISIBLE);
-			RelativeLayout.LayoutParams layoutParams1 = (RelativeLayout.LayoutParams)calling_answer.getLayoutParams();
-			layoutParams1.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
-			calling_answer.setLayoutParams(layoutParams1);
-			RelativeLayout.LayoutParams layoutParams2 = (RelativeLayout.LayoutParams)calling_reject.getLayoutParams();
-			layoutParams2.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
-			calling_reject.setLayoutParams(layoutParams2);
-		 }else {
+		if( isInCall ) {
+			answerLeftAligned();
+			rejectRightAligned();
+		}else {
 			calling_answer.setVisibility(View.INVISIBLE);
-			RelativeLayout.LayoutParams layoutParams1 = (RelativeLayout.LayoutParams)calling_answer.getLayoutParams();
-			layoutParams1.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
-			calling_answer.setLayoutParams(layoutParams1);
-			RelativeLayout.LayoutParams layoutParams2 = (RelativeLayout.LayoutParams)calling_reject.getLayoutParams();
-			layoutParams2.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
-			calling_reject.setLayoutParams(layoutParams2);
+			rejectCenterAligned();
 		}
     }
     TextView calling_number;
@@ -191,7 +199,7 @@ public class calling extends Activity {
     {
 		 super.onCreate(savedInstanceState);
 	     setContentView(R.layout.calling);
-	        
+	     ctx = this;
 	     getWindow().setSoftInputMode(LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 	     
 	     ringtone = RingtoneManager.getRingtone(this, RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE));
@@ -213,7 +221,9 @@ public class calling extends Activity {
 	     calling_answer.setOnClickListener(new Button.OnClickListener() {
              public void onClick(View v) {
             	 ringer.pause();
-            	 main.co.answer();	                
+            	 main.co.answer();
+            	 calling_answer.setVisibility(View.INVISIBLE);
+            	 calling_reject.startAnimation( AnimationUtils.loadAnimation(ctx, R.anim.right_in_center) );
              }
 	     });
 	        

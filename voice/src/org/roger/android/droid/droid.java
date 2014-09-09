@@ -77,8 +77,8 @@ public class droid extends ActivityGroup {
 		wparams.width = LayoutParams.FILL_PARENT;
 		wparams.height = LayoutParams.FILL_PARENT;
 
-        getWindow().setBackgroundDrawableResource(R.drawable.wow);
         startActivity("main");
+        getWindow().setBackgroundDrawableResource(main.callData.getBgimg());
     }
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) { 
@@ -93,6 +93,12 @@ public class droid extends ActivityGroup {
     	//co.destroy();
     	moveTaskToBack(true);//finish();
         //System.exit(0);
+    }
+    @Override
+    public void onDestroy() {
+    	main.co.hangup();
+    	main.co.destroy();
+        System.exit(0);
     }
 
     public void startActivity( String name, String... args ) {
