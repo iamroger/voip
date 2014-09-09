@@ -2,21 +2,26 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#ff000000">
+    android:background="#ff000000"
+    android:orientation="vertical" >
+
+    <include layout="@layout/title" />
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="38dp"
+        android:layout_height="28dp"
         android:layout_marginTop="35dp"
         android:orientation="horizontal" >
-	    <TextView
-		    android:layout_width="fill_parent"
-		    android:layout_height="wrap_content"
-		    android:layout_weight="2"
-        	android:layout_marginLeft="8dp"
-		    android:text="运营商"
-		    android:textSize="22sp"/>
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_weight="2"
+            android:text="运营商"
+            android:textSize="18sp"
+            android:textColor="#dfdfdf" />
+
 	    <EditText 
 		    android:id="@+id/carrior"
 		    android:layout_width="fill_parent"
@@ -24,7 +29,8 @@
 		    android:layout_weight="1"
 		    android:background="#00000000"
 		    android:hint="192.168.95.2"
-		    android:textSize="22sp"/>
+		    android:textSize="18sp"
+		    android:textColor="#dfdfdf"/>
     </LinearLayout>
     <LinearLayout
         android:orientation="horizontal"
@@ -35,7 +41,7 @@
         android:background="#2f7f7f7f"/>
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="38dp"
+        android:layout_height="28dp"
         android:layout_marginTop="35dp"
         android:orientation="horizontal" >
 	    <TextView
@@ -44,7 +50,8 @@
 		    android:layout_weight="2"
         	android:layout_marginLeft="8dp"
 		    android:text="用户账号"
-		    android:textSize="22sp"/>
+		    android:textSize="18sp"
+		    android:textColor="#dfdfdf"/>
 	    <EditText 
 		    android:id="@+id/user"
 		    android:layout_width="fill_parent"
@@ -52,7 +59,8 @@
 		    android:layout_weight="1"
 		    android:background="#00000000"
 		    android:hint="15801803130"
-		    android:textSize="22sp"/>
+		    android:textSize="18sp"
+		    android:textColor="#dfdfdf"/>
     </LinearLayout>
     <LinearLayout
         android:orientation="horizontal"
@@ -63,7 +71,7 @@
         android:background="#2f7f7f7f"/>
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="38dp"
+        android:layout_height="28dp"
         android:layout_marginTop="35dp"
         android:orientation="horizontal" >
 	    <TextView
@@ -72,15 +80,17 @@
 		    android:layout_weight="2"
         	android:layout_marginLeft="8dp"
 		    android:text="账号密码"
-		    android:textSize="22sp"/>
+		    android:textSize="18sp"
+		    android:textColor="#dfdfdf"/>
 	    <EditText 
 		    android:id="@+id/passwd"
 		    android:layout_width="fill_parent"
 		    android:layout_height="wrap_content"
 		    android:layout_weight="1"
+		    android:textColor="#dfdfdf"
 		    android:background="#00000000"
 		    android:hint="1234"
-		    android:textSize="22sp"/>
+		    android:textSize="18sp"/>
     </LinearLayout>
     <LinearLayout
         android:orientation="horizontal"
@@ -92,7 +102,7 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="38dp"
-        android:layout_marginTop="35dp"
+        android:layout_marginTop="18dp"
         android:orientation="horizontal" >
 	    <TextView
 		    android:layout_width="fill_parent"
@@ -100,12 +110,65 @@
 		    android:layout_weight="2"
         	android:layout_marginLeft="8dp"
 		    android:text="默认话筒"
-		    android:textSize="22sp"/>
+		    android:textColor="#dfdfdf"
+		    android:textSize="18sp"/>
+
 	    <CheckBox
 	        android:id="@+id/mute"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:text="" />
+	        android:layout_marginRight="8dp"
+	        android:paddingBottom="8dp"
+	        android:textColor="#dfdfdf" />
+
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:background="#2f7f7f7f"/>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="33dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+	    <TextView
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_weight="1"
+        	android:layout_marginLeft="8dp"
+		    android:text="背景"
+		    android:textSize="18sp"/>
+
+	    <RadioGroup
+	        android:id="@+id/bg_img"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal"
+	        android:layout_weight="1" >
+
+	        <RadioButton
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="1"
+	            android:text="1" />
+
+	        <RadioButton
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="1"
+	            android:text="2" />
+
+	        <RadioButton
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="1"
+	            android:text="3" />
+	    </RadioGroup>
+
     </LinearLayout>
     <LinearLayout
         android:orientation="horizontal"
