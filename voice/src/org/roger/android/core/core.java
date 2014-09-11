@@ -33,11 +33,7 @@ public class core {
 				droid.self.startActivity("main");
     	}else if ( remoteCall.equals("#confirmed#") ) {
     		if( droid.self != null )
-<<<<<<< HEAD
     			droid.self.startActivity("calling", "route", "confirm" );
-=======
-    			droid.self.startActivity("calling", "route", "out" );
->>>>>>> 022d8c6704da088cf0bac820993541d2c0eb0edc
     	}else {
     		ctx.incomingCall( remoteCall.substring(5,remoteCall.indexOf('@')) );
     	}
