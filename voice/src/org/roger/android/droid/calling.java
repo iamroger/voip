@@ -9,9 +9,11 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
+import android.media.ToneGenerator;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager.LayoutParams;
@@ -23,7 +25,7 @@ import android.widget.TextView;
 
 public class calling extends Activity {
 	
-	Ringtone ringtone = null;
+	
 	private int currVolume;
 	private boolean isInCall = false;
 	private String CallName = "";
@@ -80,36 +82,94 @@ public class calling extends Activity {
 		            	lock.wait();
 		            	OpenSpeaker();
 		            	Log.i("debug", "Ringer thread play");
-		    			ringtone.play();
-		    			while (ringtone.isPlaying()) {
-		    				Thread.sleep(100);
-		    			}
+		    			aloud();
 		            } catch (InterruptedException ex) {
-		            	if(ringtone != null && ringtone.isPlaying()) {
-		            		ringtone.stop();
-		            		ringtone.stop();
-		            		CloseSpeaker();
-		            		Log.i("debug", "Ringer thread interrupt");
-		            	}
+	            		quiet();
+	            		CloseSpeaker();
+	            		Log.i("debug", "Ringer thread interrupt");
 		            } finally {
-		            	if(ringtone != null && ringtone.isPlaying()) {
-		            		ringtone.stop();
-		            		ringtone.stop();
-		            		CloseSpeaker();
-		            		Log.i("debug", "Ringer thread stop");
-		            	}
+	            		quiet();
+	            		CloseSpeaker();
+	            		Log.i("debug", "Ringer thread stop");
 		            }
     			}
     		}
     	}
-    	private void go() {
+    	public final static int TONE = 1;
+    	public final static int RINGTONE = 2;
+    	private int type = RINGTONE;
+    	private void aloud() throws InterruptedException {
+    		if( type == TONE ) {
+    			playTone(ToneGenerator.TONE_SUP_DIAL);
+    			Thread.sleep(100);
+    		}
+    		else if( type == RINGTONE ) {
+    			ringtone.play();
+    			while (ringtone.isPlaying()) {
+    				Thread.sleep(100);
+    			}
+    		}
+    	}
+    	private void quiet() {
+    		if( type == TONE ){
+    			playTone(ToneGenerator.TONE_SUP_DIAL);
+    		}else if( type == RINGTONE ) {
+    			if(ringtone != null && ringtone.isPlaying()) {
+	    			ringtone.stop();
+	    			ringtone.stop();
+    			}
+    		}
+    	}
+    	private void play( int t ) {
     		synchronized ( lock ) { 
+    			type = t;
     			lock.notifyAll();
     		}
     	}
     	private void pause() {
     		interrupt();
     	}
+    	private void init() {
+    		synchronized (lock) {
+                if (mToneGenerator == null) {
+                    try {
+                        mToneGenerator = new ToneGenerator(AudioManager.STREAM_MUSIC, 80);
+                    } catch (RuntimeException e) {
+                        Log.w("debug", "Exception caught while creating local tone generator: " + e);
+                        mToneGenerator = null;
+                    }
+                }
+                if (ringtone == null) {
+                    try {
+                    	ringtone = RingtoneManager.getRingtone(ctx, RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE));
+                    } catch (RuntimeException e) {
+                        Log.w("debug", "Exception caught while creating local tone generator: " + e);
+                        ringtone = null;
+                    }
+                }
+            }
+    		
+    	}
+    	void playTone(int tone) {
+        	if (!( Settings.System.getInt(getContentResolver(), Settings.System.DTMF_TONE_WHEN_DIALING, 1) == 1) ) {
+        		return;
+        	}
+
+        	int ringerMode = ((AudioManager) getSystemService(Context.AUDIO_SERVICE)).getRingerMode();
+        	if ((ringerMode == AudioManager.RINGER_MODE_SILENT) || (ringerMode == AudioManager.RINGER_MODE_VIBRATE)) {
+        		return;
+        	}
+        	AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+
+        	synchronized (lock) {
+    	    	if (mToneGenerator == null) {
+    	    		return;
+    	    	}
+    	    	mToneGenerator.startTone(tone, 150);
+        	}
+    	}
+    	private ToneGenerator mToneGenerator = null; 
+    	Ringtone ringtone = null;
     }
     RingerThread ringer = new RingerThread();
     /*
@@ -174,19 +234,36 @@ public class calling extends Activity {
 		calling_reject.setLayoutParams(layoutParams2);
     }
     @Override
+    public void onPause() {
+    	super.onPause();
+    	ringer.init();
+    }
+    
+    @Override
     public void onResume() {
     	super.onRestart();
+    	
     	Intent i = getIntent();
+    	if( i.getStringExtra("route").equals("confirm") ) {
+    		ringer.pause();
+    		calling_answer.setVisibility(View.INVISIBLE);
+			rejectCenterAligned();
+    		Log.i("debug", "calling confirm");
+    		return;
+    	}
 		if( i.getStringExtra("route").equals("in") ) 
 		     isInCall = true;
 		
 		CallName = i.getStringExtra("name");
-		calling_number.setText(CallName);
+		if( CallName != null && CallName.length() != 0 )
+			calling_number.setText(CallName);
  
 		if( isInCall ) {
+			ringer.play(ringer.RINGTONE);
 			answerLeftAligned();
 			rejectRightAligned();
 		}else {
+			ringer.play(ringer.TONE);
 			calling_answer.setVisibility(View.INVISIBLE);
 			rejectCenterAligned();
 		}
@@ -202,9 +279,8 @@ public class calling extends Activity {
 	     ctx = this;
 	     getWindow().setSoftInputMode(LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 	     
-	     ringtone = RingtoneManager.getRingtone(this, RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE));
+	     ringer.init();
 	     ringer.start();
-	     ringer.go();
 	     
 	     calling_answer = (ImageView)findViewById(R.id.calling_answer);
 	     calling_number = (TextView)findViewById(R.id.calling_number);

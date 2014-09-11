@@ -101,6 +101,7 @@ public class main extends Activity implements OnClickListener
     public void incomingCall(String name ) {
     	if( name.equals(callData.get("user"))  )
     		return;
+    	
         Bundle b = new Bundle();
         b.putString("name", name);
         Message m = new Message();

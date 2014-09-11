@@ -2,7 +2,6 @@ package org.roger.android.core;
 
 
 import org.roger.android.droid.R;
-import org.roger.android.droid.droid;
 import org.roger.android.droid.main;
 
 import android.content.Context;
