@@ -391,15 +391,15 @@ function card( o ) {
     return o.selected;
   };
   this.focus = function(ctx) {
-    if( this.deco.y <= this.y - 12 ) {
-	  this.step = -2;
-	  this.deco.y = this.y - 12;
-	} else if ( this.deco.y >= this.y - 22 ) {
-	  this.step = 2;
-	  this.deco.y = this.y - 22;
-	}
-	this.deco.y += this.step;
-    this.deco.draw(ctx);
+    if( this.deco.y >= this.y - 12 ) {
+      this.step = -2;
+      this.deco.y = this.y - 12;
+    } else if ( this.deco.y <= this.y - 22 ) {
+      this.step = 2;
+      this.deco.y = this.y - 22;
+    }
+    this.deco.y += this.step;
+      this.deco.draw(ctx);
   };
   this.draw = function(ctx) {
     this.photo.draw(ctx);
@@ -411,7 +411,7 @@ function card( o ) {
   this.scale = function(w,h) {
     this.__proto__.scale.call( this, 48,48);
     this.photo.scale(w,h);
-    this.deco.scale(0.1,0.1);
+    //this.deco.scale(0.1,0.1);
   };
 }
 card.prototype = new component();
@@ -540,28 +540,30 @@ function render( canvas, w, h ) {
   this.loop = function() {
     var v = this.current;
     var msg = message_queue.shift();
-    if( v !== null && msg !== null && msg !== undefined && msg.name !== this.lastmsg.name ) {
-	  this.ctx.clearRect(0,0,this.width,this.height);
-      msg.ctx = this.ctx;
-	  v.move( msg );
-	  this.lastmsg = msg;
-	} else if( message_queue.length > 2 ) {
-	  if( message_queue[message_queue.length-1].name === "tick" )
-	    message_queue.splice(0,message_queue.length-1);
-	  else
-	    message_queue.splice(0,message_queue.length);
-	}
+    if( v !== null && msg !== null && msg !== undefined ) {
+      if( msg.name !== this.lastmsg.name || msg.name === "tick" ) {
+        this.ctx.clearRect(0,0,this.width,this.height);
+        msg.ctx = this.ctx;
+        v.move( msg );
+        this.lastmsg = msg;
+      }
+    } else if( message_queue.length > 2 ) {
+      if( message_queue[message_queue.length-1].name === "tick" )
+        message_queue.splice(0,message_queue.length-1);
+      else
+        message_queue.splice(0,message_queue.length);
+    }
     if( !this.stop ) {
-	    //requestAnimationFrame( function(){that.loop()} );
+      //requestAnimationFrame( function(){that.loop()} );
       setTimeout(function(){that.loop()},100);
-	  this.now = new Date().getTime();
+      this.now = new Date().getTime();
       this.tick = this.now - (this.time || this.now);
-	  this.time = this.now;
+      this.time = this.now;
       var msg = new message();
       msg.name = "tick";
       msg.data = this.tick;
       message_queue.push( msg );
-	}
+    }
   }
   var that = this;
   var downListener = function( evt) {
