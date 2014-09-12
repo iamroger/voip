@@ -11,7 +11,7 @@ import android.os.Bundle;
 public class data {
 	Context ctx;
 	Bundle values = new Bundle();
-	public data( main m ) {
+	public data( Context m ) {
 		ctx = m;
 		if( get("carrior") == null )
 			values.putString("carrior", "192.168.95.2");

@@ -15,15 +15,15 @@ public class setting extends Activity {
 	@Override
 	public void onResume(){
 		super.onResume();
-		carrior.setText(main.callData.getCarrior());
-	    user.setText(main.callData.getUser());
-	    passwd.setText(main.callData.getPasswd());
-	    mute.setChecked(main.callData.getMute());
+		carrior.setText(droid.callData.getCarrior());
+	    user.setText(droid.callData.getUser());
+	    passwd.setText(droid.callData.getPasswd());
+	    mute.setChecked(droid.callData.getMute());
 	    RadioButton rb ;
-	    if( main.callData.getBgimg() == R.drawable.wow1 ) {
+	    if( droid.callData.getBgimg() == R.drawable.wow1 ) {
 	    	rb = (RadioButton)radios.getChildAt(0);
 	    	rb.setChecked(true);
-	    }else if ( main.callData.getBgimg() == R.drawable.wow2 ){
+	    }else if ( droid.callData.getBgimg() == R.drawable.wow2 ){
 	    	rb = (RadioButton)radios.getChildAt(1);
 	    	rb.setChecked(true);
 	    }else {
@@ -45,19 +45,19 @@ public class setting extends Activity {
     }
 	public void exit( View v ) {
 		if( droid.self != null ) {
-			main.callData.setCarrior(carrior.getText().toString());
-			main.callData.setUser(user.getText().toString());
-			main.callData.setPasswd(passwd.getText().toString());
-			main.callData.setMute(mute.isChecked());
+			droid.callData.setCarrior(carrior.getText().toString());
+			droid.callData.setUser(user.getText().toString());
+			droid.callData.setPasswd(passwd.getText().toString());
+			droid.callData.setMute(mute.isChecked());
 			RadioButton rb = (RadioButton)radios.findViewById(radios.getCheckedRadioButtonId());
 		    if( rb.getText().toString().equals("1") ) {
-		    	main.callData.setBgimg(R.drawable.wow1);
+		    	droid.callData.setBgimg(R.drawable.wow1);
 		    }else if ( rb.getText().toString().equals("2") ){
-		    	main.callData.setBgimg(R.drawable.wow2);
+		    	droid.callData.setBgimg(R.drawable.wow2);
 		    }else {
-		    	main.callData.setBgimg(R.drawable.wow3);
+		    	droid.callData.setBgimg(R.drawable.wow3);
 		    }
-		    droid.self.getWindow().setBackgroundDrawableResource(main.callData.getBgimg());
+		    droid.self.getWindow().setBackgroundDrawableResource(droid.callData.getBgimg());
 			droid.self.startActivity("main");
 		}
     }
