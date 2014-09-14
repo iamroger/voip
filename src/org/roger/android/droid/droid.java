@@ -20,7 +20,6 @@ import android.media.ToneGenerator;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
 import android.provider.Settings;
@@ -60,26 +59,11 @@ import android.util.Log;
 
        
 public class droid extends ActivityGroup {
-	public static droid self = null;
-	public static data callData ;
+	static public droid self = null;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         self = this;
-        callData = new data(this);
-        notification.start();
-        handler = new Handler(notification.getLooper()) {
-            @Override
-            public void handleMessage(Message msg) {
-                switch(msg.what) {
-                	case START_ACTIVITY:
-                		Bundle b = msg.getData();
-                		startActivity( b.getString("activity"), b.getStringArray("args"));
-                    break;
-                }
-            }
-        };
-        
         setContentView(R.layout.droid);
         layout = (LinearLayout) findViewById(R.id.activity);
         animator = new ViewAnimator( this );
@@ -94,12 +78,8 @@ public class droid extends ActivityGroup {
 		wparams.height = LayoutParams.FILL_PARENT;
 
         startActivity("main");
-        getWindow().setBackgroundDrawableResource(callData.getBgimg());
+        getWindow().setBackgroundDrawableResource(main.callData.getBgimg());
     }
-    private HandlerThread notification = new HandlerThread("notification");
-    
-    public final int START_ACTIVITY = 1;
-    private Handler handler = null;
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) { 
 	    if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -120,33 +100,12 @@ public class droid extends ActivityGroup {
     	main.co.destroy();
         System.exit(0);
     }
-    public void startActivity( String name, String... args ) {
-    	Bundle b = new Bundle();
-    	b.putString("activity", name);
-    	b.putStringArray("args", args);
-    	Message msg = new Message();
-    	msg.what = START_ACTIVITY;
-    	msg.setData(b);
-    	handler.sendMessage(msg);
-    }
 
-    private void toggleActivity( String name, String... args ) {
-    	if( args.length % 2 == 1 || name == null)
+    public void startActivity( String name, String... args ) {
+    	if( args.length % 2 == 1 )
     		return;
     	
     	LocalActivityManager mgr = getLocalActivityManager();
-    	if( name.equals(mgr.getCurrentId()) ){
-    		Activity a = mgr.getActivity(name);
-    		Intent i = a.getIntent();
-    		i.getExtras().clear();
-    		for( int n = 0; n < args.length ; n += 2 ) {
-        		i.putExtra(args[n], args[n+1]);
-        	}
-    		a.startActivity(i);
-    		return;
-    	}
-    	
-    	
     	for (String key : mActivities.keySet()) {
     		Info r = mActivities.get(key);
     		layout.removeAllViews();

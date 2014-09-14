@@ -46,8 +46,8 @@ public class calling extends Activity {
 	        		AudioManager.ROUTE_ALL); 
 	        audioManager.setMode(AudioManager.MODE_NORMAL);
 	        currVolume = audioManager.getStreamVolume(AudioManager.STREAM_VOICE_CALL);
-	        if( !droid.callData.getMute() && !audioManager.isSpeakerphoneOn()) {
-	          audioManager.setSpeakerphoneOn(true);
+	        if( !main.callData.getMute() && !audioManager.isSpeakerphoneOn()) {
+	          //audioManager.setSpeakerphoneOn(true);
 	          audioManager.setStreamVolume(AudioManager.STREAM_VOICE_CALL,
 	                  audioManager.getStreamMaxVolume(AudioManager.STREAM_VOICE_CALL ),
 	                  AudioManager.STREAM_VOICE_CALL);
@@ -232,14 +232,6 @@ public class calling extends Activity {
     	RelativeLayout.LayoutParams layoutParams2 = (RelativeLayout.LayoutParams)calling_reject.getLayoutParams();
 		layoutParams2.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
 		calling_reject.setLayoutParams(layoutParams2);
-    }
-    @Override
-    public void onNewIntent( Intent i ){
-    	super.onNewIntent(i);
-    	if( i.getStringExtra("route").equals("confirm") ) {
-    		calling_answer.setVisibility(View.INVISIBLE);
-       	 	calling_reject.startAnimation( AnimationUtils.loadAnimation(ctx, R.anim.right_in_center) );
-    	}
     }
     @Override
     public void onPause() {

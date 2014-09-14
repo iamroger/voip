@@ -57,6 +57,8 @@ public class main extends Activity implements OnClickListener
 {
 	static Activity mCxt;
 	
+	public static data callData ;
+	
     String callStateText;
     public static core co;
     
@@ -97,7 +99,7 @@ public class main extends Activity implements OnClickListener
     }
 
     public void incomingCall(String name ) {
-    	if( name.equals(droid.callData.get("user"))  )
+    	if( name.equals(callData.get("user"))  )
     		return;
     	
         Bundle b = new Bundle();
@@ -170,7 +172,7 @@ public class main extends Activity implements OnClickListener
 		        	mToneGenerator = new ToneGenerator(AudioManager.STREAM_MUSIC, 80);
 		        	setVolumeControlStream(AudioManager.STREAM_MUSIC);
 		        	AudioManager audioManager = ((AudioManager) getSystemService(Context.AUDIO_SERVICE));
-		        	audioManager.setSpeakerphoneOn(true);
+		        	//audioManager.setSpeakerphoneOn(true);
 		        	audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,
 			                  audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC ),
 			                  AudioManager.STREAM_MUSIC);
@@ -196,7 +198,8 @@ public class main extends Activity implements OnClickListener
         getWindow().setBackgroundDrawableResource(R.drawable.wow);*/
         
         getWindow().setSoftInputMode(LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-               
+       
+        callData = new data(this);
         co =  new core(this); 
        // co = ((MyApp)getApplication()).co;
         loadNativeLibrary();
@@ -205,7 +208,7 @@ public class main extends Activity implements OnClickListener
         int status = co.init("","org/roger/android/core/core/receive"); 
         
         
-        acc_id = co.add_account(droid.callData.getUser(),droid.callData.getCarrior(),droid.callData.getPasswd() );
+        acc_id = co.add_account(callData.getUser(),callData.getCarrior(),callData.getPasswd() );
 		if(acc_id < 0) {
 			Log.i("debug","failed to login!");
 			return;
@@ -277,7 +280,7 @@ public class main extends Activity implements OnClickListener
 	public void onClick(View arg0) {
 		// TODO Auto-generated method stub
 		EditText et = (EditText)findViewById(R.id.dial_num); 
-		if( !droid.callData.getMute() ){
+		if( !callData.getMute() ){
 			Settings.System.putInt(getContentResolver(), Settings.System.SOUND_EFFECTS_ENABLED, 1);
 			arg0.setSoundEffectsEnabled(true);
 			//arg0.playSoundEffect(SoundEffectConstants.CLICK);
@@ -294,7 +297,7 @@ public class main extends Activity implements OnClickListener
 					droid.self.startActivity("setting");
 				break;
 			}
-			int status = co.make_call( acc_id, et.getText().toString() +"@"+ droid.callData.getCarrior() );
+			int status = co.make_call( acc_id, et.getText().toString() +"@"+ callData.getCarrior() );
             if(status != 0) {
                 Log.i("debug","Call to " + et.getText().toString() + "failed");
             }
