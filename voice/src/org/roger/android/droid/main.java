@@ -56,9 +56,9 @@ import android.util.Log;
 public class main extends Activity implements OnClickListener
 {
 	static Activity mCxt;
+	public static core co;
 	
     String callStateText;
-    public static core co;
     
     int acc_id = -1;
     
@@ -153,6 +153,7 @@ public class main extends Activity implements OnClickListener
         setContentView(R.layout.mainf);
         
         mCxt = this;
+        co =  new core(this); 
         //View decorView = getWindow().getDecorView();
         //int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
                   /*| View.SYSTEM_UI_FLAG_FULLSCREEN;*/
@@ -197,7 +198,7 @@ public class main extends Activity implements OnClickListener
         
         getWindow().setSoftInputMode(LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
                
-        co =  new core(this); 
+        
        // co = ((MyApp)getApplication()).co;
         loadNativeLibrary();
         

@@ -62,19 +62,21 @@ import android.util.Log;
 public class droid extends ActivityGroup {
 	public static droid self = null;
 	public static data callData ;
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         self = this;
         callData = new data(this);
+        
         notification.start();
-        handler = new Handler(notification.getLooper()) {
+        handler = new Handler(/*notification.getLooper()*/) {
             @Override
             public void handleMessage(Message msg) {
                 switch(msg.what) {
                 	case START_ACTIVITY:
                 		Bundle b = msg.getData();
-                		startActivity( b.getString("activity"), b.getStringArray("args"));
+                		toggleActivity( b.getString("activity"), b.getStringArray("args"));
                     break;
                 }
             }
@@ -121,10 +123,14 @@ public class droid extends ActivityGroup {
         System.exit(0);
     }
     public void startActivity( String name, String... args ) {
+    	LocalActivityManager mgr = getLocalActivityManager();
+    	if( name.equals(mgr.getCurrentId()) && name.equals("main") ) {
+    		return;
+    	}
     	Bundle b = new Bundle();
     	b.putString("activity", name);
     	b.putStringArray("args", args);
-    	Message msg = new Message();
+    	Message msg = handler.obtainMessage();  
     	msg.what = START_ACTIVITY;
     	msg.setData(b);
     	handler.sendMessage(msg);
@@ -137,12 +143,11 @@ public class droid extends ActivityGroup {
     	LocalActivityManager mgr = getLocalActivityManager();
     	if( name.equals(mgr.getCurrentId()) ){
     		Activity a = mgr.getActivity(name);
-    		Intent i = a.getIntent();
-    		i.getExtras().clear();
+    		Intent i = new Intent("ACTIVITY.UPDATE");
     		for( int n = 0; n < args.length ; n += 2 ) {
         		i.putExtra(args[n], args[n+1]);
         	}
-    		a.startActivity(i);
+    		sendBroadcast(i);
     		return;
     	}
     	

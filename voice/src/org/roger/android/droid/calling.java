@@ -3,15 +3,18 @@ package org.roger.android.droid;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.media.ToneGenerator;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.provider.Settings;
 import android.util.Log;
@@ -29,7 +32,7 @@ public class calling extends Activity {
 	private int currVolume;
 	private boolean isInCall = false;
 	private String CallName = "";
-	private Context ctx;
+	private Context ctx = null;
 	
 	public void OpenSpeaker() {
 
@@ -233,24 +236,66 @@ public class calling extends Activity {
 		layoutParams2.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
 		calling_reject.setLayoutParams(layoutParams2);
     }
-    @Override
-    public void onNewIntent( Intent i ){
-    	super.onNewIntent(i);
-    	if( i.getStringExtra("route").equals("confirm") ) {
-    		calling_answer.setVisibility(View.INVISIBLE);
-       	 	calling_reject.startAnimation( AnimationUtils.loadAnimation(ctx, R.anim.right_in_center) );
-    	}
-    }
+
+    public BroadcastReceiver reciver = new BroadcastReceiver(){
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			if( intent.getAction().equals("ACTIVITY.UPDATE") ) {
+				if( intent.getStringExtra("route").equals("confirm") ) {
+		    		calling_answer.setVisibility(View.INVISIBLE);
+		       	 	calling_reject.startAnimation( AnimationUtils.loadAnimation(ctx, R.anim.right_in_center) );
+		    	}
+			}
+		}    	
+    };
     @Override
     public void onPause() {
     	super.onPause();
     	ringer.init();
     }
-    
     @Override
-    public void onResume() {
-    	super.onRestart();
-    	
+    public void onStart() {
+    	super.onPause();
+    	IntentFilter filter = new IntentFilter("ACTIVITY.UPDATE");
+    	registerReceiver(reciver,filter);
+    }
+    
+    TextView calling_number;
+    ImageView calling_answer;
+    ImageView calling_reject;
+	@Override
+    public void onCreate(Bundle savedInstanceState)
+    {
+		 super.onCreate(savedInstanceState);
+	     setContentView(R.layout.calling);
+	     if( ctx == null ) {
+	    	 ctx = this;
+		     getWindow().setSoftInputMode(LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+		     
+		     calling_answer = (ImageView)findViewById(R.id.calling_answer);
+		     calling_number = (TextView)findViewById(R.id.calling_number);
+		     calling_reject = (ImageView)findViewById(R.id.calling_reject);
+	
+		     calling_reject.setOnClickListener(new Button.OnClickListener() {
+		             public void onClick(View v) {
+		            	ringer.pause();
+		            	main.co.hangup();
+		            	if( droid.self != null )
+							droid.self.startActivity("main");
+		             }
+		     });
+		     calling_answer.setOnClickListener(new Button.OnClickListener() {
+	             public void onClick(View v) {
+	            	 ringer.pause();
+	            	 main.co.answer();
+	            	 calling_answer.setVisibility(View.INVISIBLE);
+	            	 calling_reject.startAnimation( AnimationUtils.loadAnimation(ctx, R.anim.right_in_center) );
+	             }
+		     });
+		     ringer.init();
+		     ringer.start();
+	     }
+	     
     	Intent i = getIntent();
     	if( i.getStringExtra("route").equals("confirm") ) {
     		ringer.pause();
@@ -275,42 +320,7 @@ public class calling extends Activity {
 			calling_answer.setVisibility(View.INVISIBLE);
 			rejectCenterAligned();
 		}
-    }
-    TextView calling_number;
-    ImageView calling_answer;
-    ImageView calling_reject;
-	@Override
-    public void onCreate(Bundle savedInstanceState)
-    {
-		 super.onCreate(savedInstanceState);
-	     setContentView(R.layout.calling);
-	     ctx = this;
-	     getWindow().setSoftInputMode(LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-	     
-	     ringer.init();
-	     ringer.start();
-	     
-	     calling_answer = (ImageView)findViewById(R.id.calling_answer);
-	     calling_number = (TextView)findViewById(R.id.calling_number);
-	     calling_reject = (ImageView)findViewById(R.id.calling_reject);
-
-	     calling_reject.setOnClickListener(new Button.OnClickListener() {
-	             public void onClick(View v) {
-	            	ringer.pause();
-	            	main.co.hangup();
-	            	if( droid.self != null )
-						droid.self.startActivity("main");
-	             }
-	     });
-	     calling_answer.setOnClickListener(new Button.OnClickListener() {
-             public void onClick(View v) {
-            	 ringer.pause();
-            	 main.co.answer();
-            	 calling_answer.setVisibility(View.INVISIBLE);
-            	 calling_reject.startAnimation( AnimationUtils.loadAnimation(ctx, R.anim.right_in_center) );
-             }
-	     });
-	        
+   
     }
 
 }
