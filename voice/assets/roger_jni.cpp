@@ -395,6 +395,8 @@ JNIEXPORT jint JNICALL Java_org_roger_android_core_core_add_1account
         cfg.cred_info[0].username = pj_str(sip_user_ptr);
         cfg.cred_info[0].data_type = PJSIP_CRED_DATA_PLAIN_PASSWD;
         cfg.cred_info[0].data = pj_str(sip_passwd_ptr);
+        if( account_id > 0 ) 
+            pjsua_acc_del( account_id);
 
         status = pjsua_acc_add(&cfg, PJ_TRUE, &account_id);
     } else {
@@ -427,7 +429,7 @@ JNIEXPORT jint JNICALL Java_org_roger_android_core_core_acc_1get_1default
     pjsua_acc_get_info(account_id, &info);
 
     LOGI("%s, %s, %d, %d",info.online_status_text.ptr, info.status_text.ptr, info.online_status, info.status);
-    return info.status == 100 ? 1 : -1;
+    return info.status == 200 ? 1 : -1;
 }
 
 /*
