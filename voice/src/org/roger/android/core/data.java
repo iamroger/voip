@@ -6,6 +6,7 @@ import org.roger.android.droid.main;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.media.AudioManager;
 import android.os.Bundle;
 
 public class data {
@@ -25,6 +26,17 @@ public class data {
 			values.putString("mute", "false");
 		if( get("backimg") == null )
 			values.putString("backimg", String.valueOf(R.drawable.wow1));
+		if( get("dtmfvolume") == null && ctx != null ) {
+			AudioManager audioManager = (AudioManager) ctx.getSystemService(Context.AUDIO_SERVICE);
+			String str = String.valueOf(audioManager.getStreamMaxVolume(AudioManager.STREAM_DTMF ));
+			values.putString("dtmfvolume", str);
+		}
+		if( get("callvolume") == null && ctx != null ) {
+			AudioManager audioManager = (AudioManager) ctx.getSystemService(Context.AUDIO_SERVICE);
+			String str = String.valueOf(audioManager.getStreamMaxVolume(AudioManager.STREAM_VOICE_CALL ));
+			values.putString("callvolume", str);
+		}
+			
 	}
 	public String get( String key ) {
 		SharedPreferences perference = ctx.getSharedPreferences("roger", 0);  
@@ -80,6 +92,12 @@ public class data {
 	public int getBgimg() {
 		return Integer.parseInt(get( "backimg" ));
 	}
+	public int getDTMFVolume() {
+		return Integer.parseInt(get( "dtmfvolume" ));
+	}
+	public int getCallVolume() {
+		return Integer.parseInt(get( "callvolume" ));
+	}
 	public void setCarrior( String val ) {
 		set( "carrior", val );
 	}
@@ -103,5 +121,11 @@ public class data {
 	}
 	public void setBgimg( int val ) {
 		set( "backimg", String.valueOf(val) );
+	}
+	public void setDTMFVolume( int val ) {
+		set( "dtmfvolume", String.valueOf(val) );
+	}
+	public void setCallVolume( int val ) {
+		set( "callvolume", String.valueOf(val) );
 	}
 }

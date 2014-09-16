@@ -180,7 +180,7 @@ public class main extends Activity implements OnClickListener
 		        	AudioManager audioManager = ((AudioManager) getSystemService(Context.AUDIO_SERVICE));
 		        	audioManager.setSpeakerphoneOn(true);
 		        	audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,
-			                  audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC ),
+			                  droid.callData.getDTMFVolume(),
 			                  AudioManager.STREAM_MUSIC);
 	        	} catch (Exception e) {
 		        	e.printStackTrace();

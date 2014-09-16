@@ -52,7 +52,7 @@ public class calling extends Activity {
 	        if( !droid.callData.getMute() && !audioManager.isSpeakerphoneOn()) {
 	          audioManager.setSpeakerphoneOn(true);
 	          audioManager.setStreamVolume(AudioManager.STREAM_VOICE_CALL,
-	                  audioManager.getStreamMaxVolume(AudioManager.STREAM_VOICE_CALL ),
+	                  droid.callData.getCallVolume(),
 	                  AudioManager.STREAM_VOICE_CALL);
 	        }
         } catch (Exception e) {
