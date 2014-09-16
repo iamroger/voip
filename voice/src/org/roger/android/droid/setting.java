@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -30,7 +31,6 @@ public class setting extends Activity {
 	    	rb = (RadioButton)radios.getChildAt(2);
 	    	rb.setChecked(true);
 	    }
-	    	
 	}
 	@Override
 	public void onCreate(Bundle savedInstanceState)
@@ -42,6 +42,10 @@ public class setting extends Activity {
 	    passwd = (TextView)findViewById(R.id.passwd);
 	    mute = (CheckBox)findViewById(R.id.mute); 
 	    radios = (RadioGroup)findViewById(R.id.bg_img);
+    }
+	public void register( View v ) {
+		if( main.co != null )
+			main.acc_id = main.co.add_account(droid.callData.getUser(),droid.callData.getCarrior(),droid.callData.getPasswd() );
     }
 	public void exit( View v ) {
 		if( droid.self != null ) {

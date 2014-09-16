@@ -56,11 +56,11 @@ import android.util.Log;
 public class main extends Activity implements OnClickListener
 {
 	static Activity mCxt;
-	public static core co;
+	public static core co = null;
 	
-    String callStateText;
+    ImageView callstatus;
     
-    int acc_id = -1;
+    public static int acc_id = -1;
     
     private Handler mHandler= new Handler(){      
     	public void handleMessage(Message msg) {
@@ -121,6 +121,11 @@ public class main extends Activity implements OnClickListener
                 }
             }
         }
+    	
+    	if( co.acc_get_default() == 1 ) 
+    		callstatus.setImageResource(R.drawable.on);
+    	else
+    		callstatus.setImageResource(R.drawable.off);
     	//View decorView = getWindow().getDecorView();
     	//decorView.setSystemUiVisibility( View.SYSTEM_UI_FLAG_HIDE_NAVIGATION /*lvl 19 | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY*/ );
     }
@@ -131,6 +136,8 @@ public class main extends Activity implements OnClickListener
     	//moveTaskToBack(true);//finish();
         //System.exit(0);
     	droid.self.onBackPressed();
+    }
+    public void register( View v ) {
     }
 
     @Override
@@ -227,6 +234,7 @@ public class main extends Activity implements OnClickListener
 		Button dial_s = (Button) findViewById(R.id.dial_star);
 		Button dial_a = (Button) findViewById(R.id.dial_sharp);
 		ImageView back = (ImageView) findViewById(R.id.backspace);
+		callstatus = (ImageView) findViewById(R.id.status);
 		callButton.setOnClickListener(this);
 		dial_0.setOnClickListener(this);
 		dial_1.setOnClickListener(this);

@@ -40,6 +40,7 @@ static pjsua_config cfg;
 static int ring_slot = PJSUA_INVALID_ID;
 static pjmedia_port* ring_port = 0;
 static pj_pool_t* pool = 0;
+static int account_id = -1;
 static pjsua_call_id current_call_id = -1;
 class CNI {
     protected:
@@ -368,7 +369,7 @@ JNIEXPORT jint JNICALL Java_org_roger_android_core_core_init
 JNIEXPORT jint JNICALL Java_org_roger_android_core_core_add_1account
     (JNIEnv *env, jclass cls, jstring sip_user, jstring sip_domain, jstring sip_passwd)
 {
-    int acc_id, ret;
+    int ret;
     jboolean iscopy;
     char id[STR_SIZE], reg_uri[STR_SIZE];
     char *sip_user_ptr, *sip_domain_ptr, *sip_passwd_ptr;
@@ -395,10 +396,10 @@ JNIEXPORT jint JNICALL Java_org_roger_android_core_core_add_1account
         cfg.cred_info[0].data_type = PJSIP_CRED_DATA_PLAIN_PASSWD;
         cfg.cred_info[0].data = pj_str(sip_passwd_ptr);
 
-        status = pjsua_acc_add(&cfg, PJ_TRUE, &acc_id);
+        status = pjsua_acc_add(&cfg, PJ_TRUE, &account_id);
     } else {
         LOGI("no credentials given, registering local endpoint account");
-        status = pjsua_acc_add_local(gTransId, PJ_TRUE, &acc_id);
+        status = pjsua_acc_add_local(gTransId, PJ_TRUE, &account_id);
     }
 
     if (status != PJ_SUCCESS) {
@@ -406,7 +407,7 @@ JNIEXPORT jint JNICALL Java_org_roger_android_core_core_add_1account
         /* Negative return value indicates failure to Java */
         ret = -status;
     } else {
-        ret = acc_id;
+        ret = account_id;
     }
 
     return (jint) ret;
@@ -419,8 +420,14 @@ JNIEXPORT jint JNICALL Java_org_roger_android_core_core_add_1account
 JNIEXPORT jint JNICALL Java_org_roger_android_core_core_acc_1get_1default
     (JNIEnv *env, jclass cls)
 {
-    int ret = pjsua_acc_get_default();
-    return (jint) ret;
+    
+    int ret;// = pjsua_acc_get_default();
+    pjsua_acc_info info;
+
+    pjsua_acc_get_info(account_id, &info);
+
+    LOGI("%s, %s, %d, %d",info.online_status_text.ptr, info.status_text.ptr, info.online_status, info.status);
+    return info.status == 100 ? 1 : -1;
 }
 
 /*

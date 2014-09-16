@@ -1,5 +1,5 @@
 
-PJSIP_DIR=../../../pjproject-2.2.1
+PJSIP_DIR=../../pjproject-2.2.1
 ANDROID_LDFLAGS_LIBRARY=$(ANDROID_NDK_ROOT)/platforms/android-18/arch-arm/usr/lib
 
 PJSIP_CXXFLAGS = -I$(PJSIP_DIR)/pjsip/include -I$(PJSIP_DIR)/pjsip/include/pjsua-lib -I$(PJSIP_DIR)/pjlib/include -I$(PJSIP_DIR)/pjmedia/include -I$(PJSIP_DIR)/pjnath/include -I$(PJSIP_DIR)/pjlib-util/include 
