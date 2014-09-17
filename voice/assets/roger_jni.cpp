@@ -245,6 +245,13 @@ static void roger_log( int level, const char* data, int len ) {
     else
        LOGE("roger level: %d, log %.*s", level, len,  data ); */
 }
+static void on_reg_state(pjsua_acc_id acc_id, pjsua_reg_info* reg_info )
+{
+    PJ_UNUSED_ARG(acc_id);
+
+    // Log already written.
+}
+
 /*
  * Method:    init
  * Signature: (Ljava/lang/String;)I
@@ -277,6 +284,7 @@ JNIEXPORT jint JNICALL Java_org_roger_android_core_core_init
         cfg.cb.on_call_media_state = &on_call_media_state;
         cfg.cb.on_call_state = &on_call_state;
         cfg.cb.on_incoming_call = &on_incoming_call;
+        cfg.cb.on_reg_state2 = &on_reg_state;
         /* Add a proxy, if we've got one. */
         proxy_str = (char *) env->GetStringUTFChars(proxy, &iscopy);
         if(strlen(proxy_str) != 0) {
