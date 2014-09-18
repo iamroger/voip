@@ -4,13 +4,15 @@ function message() {
   this.y = 0;
   this.ctx  = null;
   this.data = null;
+  this.vs = [];
   this.to = function( name ) {
     var r = new message();
-	r.name = name;
-	r.x = this.x;
-	r.y = this.y;
-	r.ctx = this.ctx;
-	r.data = this.data;
+	  r.name = name;
+	  r.x = this.x;
+	  r.y = this.y;
+	  r.ctx = this.ctx;
+	  r.data = this.data;
+    r.vs = this.vs;
     return r;
   }
 }
@@ -54,7 +56,7 @@ function state() {
       trigger_msg = n.action( msg );
       if( trigger_msg !== null && this.observer != null ) {
         //this.observer.move( trigger_msg );
-		message_queue.push( trigger_msg );
+		  message_queue.push( trigger_msg );
       }
       this.self.current = n;
     }
@@ -89,13 +91,13 @@ function component() {
   this.draw = function( ctx ) {
     ctx.save(); 
     ctx.beginPath();
-	console.log('x '+this.x+' y '+this.y);
+	  console.log('x '+this.x+' y '+this.y);
     ctx.translate(this.x,this.y);
     ctx.rotate(this.rotz*Math.PI / 180);
 	if( this.grd == null ) {
 	  this.grd=ctx.createLinearGradient(0,0,1,0);
-      this.grd.addColorStop(0,"#FF0000");
-      this.grd.addColorStop(1,"#ffffff");
+    this.grd.addColorStop(0,"#FF0000");
+    this.grd.addColorStop(1,"#ffffff");
 	}
     ctx.fillStyle = this.grd; 
     ctx.scale(this.vertex[2][0],this.vertex[2][1]);	
@@ -263,8 +265,8 @@ function card_idle() {
       this.self.draw( msg.ctx );
       if( this.self.iselected() ) {
         this.self.focus( msg.ctx );
-		return msg.to("tick");
-	  }
+		    return msg.to("tick");
+	    }
     } 
   	return null;
   }
@@ -278,33 +280,81 @@ function card_attack() {
     //for( int i = 0 ; i < 10 ; i ++ ) {
     //  msg.data[0].command =
     //}
+    msg.vs = [[msg.vs[0],"dead",1,"name"],[msg.vs[1],"hurt","-10"]];
     return msg.to( "response" );
   }
 }
 card_attack.prototype = new state();
 
-function fade() {
-  this.speed = 0.1;
-  this.init = 1;
-  this.play = function( ctx, that ) {
+var animation_queue = [];
+function fade( that ) {
+  this.speed = 1;
+  this.init = 10;
+  this.that = that;
+  this.loop = function( ctx ) {
+    play( ctx );
+  };
+  this.play = function( ctx ) {
+    if( this.init === 10 ) 
+      animation_queue[String.valueOf(this)] = this ;
+    else if( this.init === 0 ) 
+      animation_queue[String.valueOf(this)] = null;
+    if( this.that !== that )
+      this.that = that;
     if( this.init != 0 ) {
       this.init -= this.speed;
       ctx.globalAlpha = this.init;
-      that.draw();
+      this.that.draw( ctx );
       ctx.globalAlpha = 1;
-      return 1;
     }else {
-      this.init = 1;
-      return 0;
+      this.init = 10;
+      this.that.fadefinish();
+    }
+  }
+}
+function bump() {
+  this.speed = 0.1;
+  this.init = 0.1;
+  this.that = null;
+  this.loop = function( ctx ) {
+    play( ctx,this.that );
+  };
+  this.play = function( ctx, that ) {
+    if( this.init === 0.1 ) 
+      animation_queue[String.valueOf(this)] = this ;
+    else if( this.init === 1 ) 
+      animation_queue[String.valueOf(this)] = null;
+    if( this.that !== that )
+      this.that = that;
+    if( this.init != 1 ) {
+      this.init += this.speed;
+      this.that.scale( this.init, this.init );
+      this.that.draw( ctx );
+    }else {
+      this.init = 0.1;
+      this.that.bumpfinish();
     }
   }
 }
 
-function fade_up() {
-  this.speed = 0.1;
-  this.init = 1;
+function flashup() {
+  this.speed = 1;
+  this.init = 10;
   this.y = 0;
+  this.that = null;
+  this.text = null;
+  this.loop = function( ctx ) {
+    play( ctx,this.that,this.text );
+  };
   this.play = function( ctx, that, text ) {
+    if( this.init === 10 ) 
+      animation_queue[String.valueOf(this)] = this ;
+    else if( this.init === 0 ) 
+      animation_queue[String.valueOf(this)] = null;
+    if( this.that !== that )
+      this.that = that;
+    if( this.text !== text )
+      this.text = text;
     if( this.init != 0 ) {
       this.init -= this.speed;
       this.y += 5;
@@ -315,10 +365,9 @@ function fade_up() {
       ctx.textBaseline="top";
       ctx.fillText( text, 0, 0 );
       ctx.globalAlpha = 1;
-      return 1;
     }else {
-     this.init = 1;
-     return 0;
+      this.init = 10;
+      this.that.flashupfinish();
     }
   }
 }
@@ -326,19 +375,33 @@ function fade_up() {
 function card_answer() {
   state.call(this);
   this.fade = new fade();
-  this.fade_up = new fade_up();
+  this.bump = new bump();
+  this.flash = new flashup();
+  this.newcard = [];
+  this.fadefinish = function() {
+    this.self.construct( this.newcard[0],this.newcard[1] /*uri, name*/ );
+    this.bump.play( msg.ctx, this.self );
+  };
+  this.bumpfinish = function() {
+    this.newcard = [];
+  };
+  this.flashupfinish = function() {
+  }
   this.action = function( msg ) {
-    if( msg.data[this.self.id].command == "dead" ) {
-      if( this.fade.play(msg.ctx, this.self) == 0 ) {
-        this.self.set(msg.data[this.self.id]);
-        return msg.to("new");
+    if( msg.vs[0][0] === this.self.id ) {
+      if( msg.vs[0][1] === "dead" ) {
+        this.newcard = [msg.vs[0][2],msg.vs[0][3]];
+        this.fade.play( msg.ctx, this.self );
+      }else if( msg.vs[0][1] === "hurt" ) {
+        this.flash.play( msg.ctx, this.self, msg.vs[0][2] );
       }
-      return msg;
-    }else {
-      if( this.fade_up.play(msg.ctx, this.self, msg.data[this.self.id].value) ) {
-        this.self.set(msg.data[this.self.id]);
-        return msg.to("new");
-      }
+    }else if( msg.vs[1][0] === this.self.id ) {
+      if( msg.vs[1][1] === "dead" ) {
+        this.newcard = [msg.vs[1][2],msg.vs[1][3]];
+        this.fade.play( msg.ctx, this.self );
+      }else if( msg.vs[1][1] === "hurt" ) {
+        this.flash.play( msg.ctx, this.self, msg.vs[0][2] );
+      }      
       return msg;
     }
     return null;
@@ -358,7 +421,7 @@ function card_rule( o, that ) {
   hit.setTo( "attack", attack );
   attack.setTo( "response", answer );
   answer.setTo( "tick", answer );
-  answer.setTo( "new", idle );
+  answer.setTo( "any", idle );
 
   return idle;
 }
@@ -374,6 +437,10 @@ function card( o ) {
     this.__proto__.position.call( this, posX, posY );
     this.photo.position( posX, posY );
     this.deco.position(  posX+16, posY - 20 );
+  };
+  this.construct( uri, name ) = function {
+    this.setURI("./"+uri+".png");
+    this.name = name;
   };
   this.iselected = function() {
     return o.selected === this;
@@ -399,7 +466,7 @@ function card( o ) {
       this.deco.y = this.y - 22;
     }
     this.deco.y += this.step;
-      this.deco.draw(ctx);
+    this.deco.draw(ctx);
   };
   this.draw = function(ctx) {
     this.photo.draw(ctx);
@@ -440,7 +507,7 @@ function scene_select( desc ) {
   this.components = [];
   for( var i = 0; i < d.length ; i ++ ) {
     this.components[i] = new button( this );
-	this.components[i].scale(100,16);
+	  this.components[i].scale(100,16);
     this.components[i].setText(d[i][1]);
     this.components[i].name = d[i][0];
 	this.components[i].position( 0, 10+i*30);
@@ -483,7 +550,7 @@ function scene_play( desc ) {
   for( var i = 0; i < d.length ; i ++ ) {
     this.components[i] = new card( this );
     this.components[i].setURI("./"+d[i][1]+".png");
-	this.components[i].scale(0.5,0.5);
+	  this.components[i].scale(0.5,0.5);
     this.components[i].name = d[i][0];
 	if( d[i][2] == 1 ) {
 	  this.components[i].position( 10+(t++)*50, 10 );
@@ -546,6 +613,10 @@ function render( canvas, w, h ) {
         msg.ctx = this.ctx;
         v.move( msg );
         this.lastmsg = msg;
+      }
+      if( msg.name === "tick" ) {
+        for( var anim in animation_queue ) 
+          anim.loop(this.ctx);
       }
     } else if( message_queue.length > 2 ) {
       if( message_queue[message_queue.length-1].name === "tick" )
