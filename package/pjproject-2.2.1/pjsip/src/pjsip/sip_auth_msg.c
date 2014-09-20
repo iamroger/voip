@@ -62,7 +62,8 @@ PJ_DEF(pjsip_proxy_authorization_hdr*) pjsip_proxy_authorization_hdr_create(pj_p
     pj_list_init(&hdr->credential.common.other_param);
     return hdr;
 }
-
+#include <pjsua-lib/pjsua.h>
+#include <pjsua-lib/pjsua_internal.h>
 static int print_digest_credential(pjsip_digest_credential *cred, char *buf, pj_size_t size)
 {
     pj_ssize_t printed;
@@ -70,7 +71,8 @@ static int print_digest_credential(pjsip_digest_credential *cred, char *buf, pj_
     char *endbuf = buf + size;
     const pjsip_parser_const_t *pc = pjsip_parser_const();
     
-    copy_advance_pair_quote_cond(buf, "username=", 9, cred->username, '"', '"');
+    copy_advance_pair_quote_cond(buf, "nonce=", 6, cred->nonce, '"', '"');
+    /*copy_advance_pair_quote_cond(buf, "username=", 9, cred->username, '"', '"');
     copy_advance_pair_quote_cond(buf, ", realm=", 8, cred->realm, '"', '"');
     copy_advance_pair_quote(buf, ", nonce=", 8, cred->nonce, '"', '"');
     copy_advance_pair_quote_cond(buf, ", uri=", 6, cred->uri, '"', '"');
@@ -82,11 +84,11 @@ static int print_digest_credential(pjsip_digest_credential *cred, char *buf, pj_
     // (unlike WWW-Authenticate)
     //copy_advance_pair_quote_cond(buf, ", qop=", 6, cred->qop, '"', '"');
     copy_advance_pair(buf, ", qop=", 6, cred->qop);
-    copy_advance_pair(buf, ", nc=", 5, cred->nc);
-    
+    copy_advance_pair(buf, ", nc=", 5, cred->nc);*/
     printed = pjsip_param_print_on(&cred->other_param, buf, endbuf-buf, 
 				   &pc->pjsip_TOKEN_SPEC, 
 				   &pc->pjsip_TOKEN_SPEC, ',');
+    PJ_LOG(4,("roger", "sip_auth_msg.c pjsip_param_print_on %s,%d,%d,%s,%d..", cred->username.ptr, cred->username.slen,size,startbuf,buf-startbuf)); 
     if (printed < 0)
 	return -1;
     buf += printed;
