@@ -101,6 +101,9 @@ public class calling extends Activity {
     	public final static int TONE = 1;
     	public final static int RINGTONE = 2;
     	private int type = RINGTONE;
+    	public final static int STOPED = 1;
+    	public final static int PLAYING = 2;
+    	private int state = STOPED;
     	private void aloud() throws InterruptedException {
     		if( type == TONE ) {
     			playTone(ToneGenerator.TONE_SUP_DIAL);
@@ -125,15 +128,21 @@ public class calling extends Activity {
     	}
     	private void play( int t ) {
     		synchronized ( lock ) { 
-    			type = t;
-    			lock.notifyAll();
+    			if( state == STOPED ) {
+    				state = PLAYING ;
+    				type = t;
+    				lock.notifyAll();
+    			}
     		}
     	}
     	private void pause() {
-    		interrupt();
+    		if( state == PLAYING ) {
+    			state = STOPED ;
+    			interrupt();
+    		}
     	}
     	private void init() {
-    		synchronized (lock) {
+    		synchronized ( lock ) {
                 if (mToneGenerator == null) {
                     try {
                         mToneGenerator = new ToneGenerator(AudioManager.STREAM_MUSIC, 80);
@@ -175,6 +184,15 @@ public class calling extends Activity {
     	Ringtone ringtone = null;
     }
     RingerThread ringer = new RingerThread();
+    private final static int CONFIRMED = 3;
+    private Handler mHandler= new Handler(){      
+    	public void handleMessage(Message msg) {
+    		if( msg.what == CONFIRMED ) {
+    			calling_answer.setVisibility(View.INVISIBLE);
+       	 		calling_reject.startAnimation( AnimationUtils.loadAnimation(ctx, R.anim.right_in_center) );
+    		}
+    	}
+    };
     /*
     private Handler mHandler= new Handler(){      
     	public void handleMessage(Message msg) {
@@ -241,9 +259,10 @@ public class calling extends Activity {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			if( intent.getAction().equals("ACTIVITY.UPDATE") ) {
-				if( intent.getStringExtra("route").equals("confirm") ) {
-		    		calling_answer.setVisibility(View.INVISIBLE);
-		       	 	calling_reject.startAnimation( AnimationUtils.loadAnimation(ctx, R.anim.right_in_center) );
+				if( intent.getStringExtra("route") != null && intent.getStringExtra("route").equals("confirm") ) {
+		    		Message msg = mHandler.obtainMessage();
+		    		msg.what = CONFIRMED;
+		    		mHandler.sendMessage(msg);
 		    	}
 			}
 		}    	
@@ -259,7 +278,34 @@ public class calling extends Activity {
     	IntentFilter filter = new IntentFilter("ACTIVITY.UPDATE");
     	registerReceiver(reciver,filter);
     }
-    
+    @Override
+    public void onResume() {
+    	super.onResume();
+    	Intent i = getIntent();
+    	if( i.getStringExtra("route").equals("confirm") ) {
+    		ringer.pause();
+    		calling_answer.setVisibility(View.INVISIBLE);
+			rejectCenterAligned();
+    		Log.i("debug", "calling confirm");
+    		return;
+    	}
+		if( i.getStringExtra("route").equals("in") ) 
+		     isInCall = true;
+		
+		CallName = i.getStringExtra("name");
+		if( CallName != null && CallName.length() != 0 )
+			calling_number.setText(CallName);
+ 
+		if( isInCall ) {
+			ringer.play(ringer.RINGTONE);
+			answerLeftAligned();
+			rejectRightAligned();
+		}else {
+			ringer.play(ringer.TONE);
+			calling_answer.setVisibility(View.INVISIBLE);
+			rejectCenterAligned();
+		}
+    }
     TextView calling_number;
     ImageView calling_answer;
     ImageView calling_reject;
@@ -286,40 +332,18 @@ public class calling extends Activity {
 		     });
 		     calling_answer.setOnClickListener(new Button.OnClickListener() {
 	             public void onClick(View v) {
-	            	 ringer.pause();
-	            	 main.co.answer();
-	            	 calling_answer.setVisibility(View.INVISIBLE);
-	            	 calling_reject.startAnimation( AnimationUtils.loadAnimation(ctx, R.anim.right_in_center) );
+					ringer.pause();
+					main.co.answer();
+					Message msg = mHandler.obtainMessage();
+					msg.what = CONFIRMED;
+					mHandler.sendMessage(msg);
 	             }
 		     });
 		     ringer.init();
 		     ringer.start();
 	     }
 	     
-    	Intent i = getIntent();
-    	if( i.getStringExtra("route").equals("confirm") ) {
-    		ringer.pause();
-    		calling_answer.setVisibility(View.INVISIBLE);
-			rejectCenterAligned();
-    		Log.i("debug", "calling confirm");
-    		return;
-    	}
-		if( i.getStringExtra("route").equals("in") ) 
-		     isInCall = true;
-		
-		CallName = i.getStringExtra("name");
-		if( CallName != null && CallName.length() != 0 )
-			calling_number.setText(CallName);
- 
-		if( isInCall ) {
-			ringer.play(ringer.RINGTONE);
-			answerLeftAligned();
-			rejectRightAligned();
-		}else {
-			ringer.play(ringer.TONE);
-			calling_answer.setVisibility(View.INVISIBLE);
-			rejectCenterAligned();
-		}
+    	
    
     }
 

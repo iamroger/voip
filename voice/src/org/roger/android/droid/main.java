@@ -132,10 +132,10 @@ public class main extends Activity implements OnClickListener
     
     public void exit( View v ) {
     	//co.hangup();
-    	//co.destroy();
-    	//moveTaskToBack(true);//finish();
-        //System.exit(0);
-    	droid.self.onBackPressed();
+    	co.destroy();
+    	moveTaskToBack(true);//finish();
+        System.exit(0);
+    	//droid.self.onBackPressed();
     }
     public void register( View v ) {
     }
@@ -362,7 +362,8 @@ public class main extends Activity implements OnClickListener
 			break;
 		case R.id.backspace:
 			String str = et.getText().toString();
-			et.setText(str.substring(0, str.length()-1));
+			if( str.length() > 0 )
+				et.setText(str.substring(0, str.length()-1));
 			break;
 			
 		}
