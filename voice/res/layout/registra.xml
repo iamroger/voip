@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#7f000000"
+    android:orientation="vertical"
+    android:gravity="center" >
+
+	<LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="30dp"
+        android:background="#ff111111"
+        android:orientation="vertical" >
+        <TextView
+		        android:id="@+id/alarm"
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"
+	        	android:layout_marginLeft="8dp"
+			    android:text=""
+			    android:textSize="18sp"
+			    android:textColor="#dfdfdf"/>
+	    <LinearLayout
+	        android:layout_width="fill_parent"
+	        android:layout_height="28dp"
+	        android:orientation="horizontal" >
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_marginLeft="8dp"
+	            android:layout_weight="1"
+	            android:text="username"
+	            android:textSize="18sp"
+	            android:textColor="#dfdfdf" />
+		    <EditText 
+			    android:id="@+id/loginname"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:layout_weight="4"
+			    android:background="#00000000"
+			    android:hint=""
+			    android:textSize="18sp"
+			    android:textColor="#dfdfdf"/>
+	    </LinearLayout>
+	    <LinearLayout
+	        android:orientation="horizontal"
+	        android:layout_width="fill_parent"
+	        android:layout_height="1px"
+	        android:layout_marginLeft="8dp"
+	        android:layout_marginRight="8dp"
+	        android:background="#2f7f7f7f"/>
+	    <LinearLayout
+	        android:layout_width="fill_parent"
+	        android:layout_height="28dp"
+	        android:layout_marginTop="11dp"
+	        android:orientation="horizontal" >
+		    <TextView
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+	        	android:layout_marginLeft="8dp"
+	        	android:layout_weight="1"
+			    android:text="password"
+			    android:textSize="18sp"
+			    android:textColor="#dfdfdf"/>
+		    <EditText 
+			    android:id="@+id/pawssword"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:background="#00000000"
+			    android:layout_weight="4"
+			    android:password="true"
+			    android:textSize="18sp"
+			    android:textColor="#dfdfdf"/>
+	    </LinearLayout>
+	    <LinearLayout
+	        android:orientation="horizontal"
+	        android:layout_width="fill_parent"
+	        android:layout_height="1px"
+	        android:layout_marginLeft="8dp"
+	        android:layout_marginRight="8dp"
+	        android:background="#2f7f7f7f"/>
+	    <LinearLayout
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:gravity="center"
+	        android:orientation="vertical" >
+		    <Button
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"
+	        	android:layout_margin="8dp"
+	        	android:padding="2dp"
+			    android:text="submit"
+			    android:textColor="#dfdfdf"
+			    android:textSize="18sp"
+			    android:onClick="submit"
+			    android:background="@drawable/btnblack"/>
+	    </LinearLayout>
+	</LinearLayout>
+</LinearLayout>

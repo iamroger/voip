@@ -47,7 +47,6 @@ class CNI {
 	 static CNI* singleton;
          JNIEnv *e;
          JNIEnv* thread_env;
-         JNIEnv* attach_env;
          JavaVM* jvm;
          jclass jc;
          jmethodID jm;
@@ -104,7 +103,7 @@ class CNI {
         return singleton;
     }
     int handle( char* str ) {
-        jc = 0, jm = 0, thread_env = NULL, attach_env = NULL; 
+        jc = 0, jm = 0, thread_env = NULL; 
         if( jvm && jo && jvm->AttachCurrentThread( &thread_env, NULL ) == JNI_OK && thread_env ) {
             jc = thread_env->GetObjectClass(jo);//FindClass( jfunc_class );
             if( jc != 0 && jc != NULL ) {
@@ -119,11 +118,8 @@ class CNI {
             jstring js = thread_env->NewStringUTF(str);
             ret = thread_env->CallIntMethod( jo, jm, js);//CallIntMethod( jo, jm, js );
         }
-        if( jvm ) {
-            jvm->GetEnv((void**) &attach_env, JNI_VERSION_1_4);
-            if( attach_env != thread_env )
-                jvm->DetachCurrentThread();
-        }
+        if( jvm )
+            jvm->DetachCurrentThread();
         return ret;
     }
     static void ring_start() {
@@ -242,12 +238,12 @@ static void on_call_media_state(pjsua_call_id call_id)
 }
 
 static void roger_log( int level, const char* data, int len ) {
-    if( level == 5 ) 
+    /*if( level == 5 ) 
        LOGI("roger level: %d, log %.*s", level, len,  data );
     else if( level <= 4 )
        LOGD("roger level: %d, log %.*s", level, len,  data );
     else
-       LOGE("roger level: %d, log %.*s", level, len,  data ); 
+       LOGE("roger level: %d, log %.*s", level, len,  data ); */
 }
 static void on_reg_state(pjsua_acc_id acc_id, pjsua_reg_info* reg_info )
 {

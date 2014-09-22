@@ -64,8 +64,12 @@ public class main extends Activity implements OnClickListener
     
     private Handler mHandler= new Handler(){      
     	public void handleMessage(Message msg) {
-			if( droid.self != null )
-				droid.self.startActivity("calling", "route", "in", "name", msg.getData().getString("name"));
+    		if( msg.what == INCALL ) {
+				if( droid.self != null )
+					droid.self.startActivity("calling", "route", "in", "name", msg.getData().getString("name"));
+    		}else if ( msg.what == TRYREG ) {
+    			acc_id = co.add_account(droid.callData.getUser(),droid.callData.getCarrior(),droid.callData.getPasswd() );
+    		}
     	}
     };
 
@@ -95,7 +99,8 @@ public class main extends Activity implements OnClickListener
     	Log.e("droid", "droid" );
     	return null;
     }
-
+    private final static int INCALL = 1;
+    private final static int TRYREG = 2;
     public void incomingCall(String name ) {
     	if( name.equals(droid.callData.get("user"))  )
     		return;
@@ -103,6 +108,7 @@ public class main extends Activity implements OnClickListener
         Bundle b = new Bundle();
         b.putString("name", name);
         Message m = new Message();
+        m.what = INCALL;
         m.setData( b );
     	mHandler.sendMessage( m );      	
     }
@@ -128,16 +134,30 @@ public class main extends Activity implements OnClickListener
     		callstatus.setImageResource(R.drawable.off);
     	//View decorView = getWindow().getDecorView();
     	//decorView.setSystemUiVisibility( View.SYSTEM_UI_FLAG_HIDE_NAVIGATION /*lvl 19 | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY*/ );
+    	Intent i = getIntent();
+    	if( i.getStringExtra("hangup") != null && i.getStringExtra("hangup").equals("hangup") )
+    		co.hangup();
     }
-    
+    public void tryRegiste() {
+    	Message msg = mHandler.obtainMessage();
+    	msg.what = TRYREG;
+    	mHandler.sendMessage(msg);
+    }
+    public boolean isRegistered() {
+    	return co.acc_get_default() == 1;
+    }
     public void exit( View v ) {
     	//co.hangup();
-    	co.destroy();
-    	moveTaskToBack(true);//finish();
-        System.exit(0);
-    	//droid.self.onBackPressed();
+    	//co.destroy();
+    	//moveTaskToBack(true);//finish();
+        //System.exit(0);
+    	droid.self.onBackPressed();
     }
     public void register( View v ) {
+    	if( co.acc_get_default() == 1 ) 
+    		callstatus.setImageResource(R.drawable.on);
+    	else
+    		callstatus.setImageResource(R.drawable.off);
     }
 
     @Override
@@ -249,8 +269,9 @@ public class main extends Activity implements OnClickListener
 		dial_s.setOnClickListener(this);
 		dial_a.setOnClickListener(this);
 		back.setOnClickListener(this);
-
-
+		
+		if( droid.self != null && droid.callData.getOnline() == false )
+			droid.self.startActivity("registra");
     }
     private Object mToneGeneratorLock = new Object();
     void playTone(int tone) {

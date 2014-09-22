@@ -34,5 +34,6 @@
         <activity android:name="org.roger.android.droid.main"></activity>
         <activity android:name="org.roger.android.droid.calling"></activity>
         <activity android:name="org.roger.android.droid.setting"></activity>
+        <activity android:name="org.roger.android.droid.registra"></activity>
     </application>
 </manifest> 

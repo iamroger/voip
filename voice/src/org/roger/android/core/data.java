@@ -107,7 +107,7 @@ public class data {
 	public void setUser( String val ) {
 		set( "user", val );
 	}
-	public void sgetOnline( boolean val ) {
+	public void setOnline( boolean val ) {
 		if ( val )
 			set( "online", "true" );
 		else

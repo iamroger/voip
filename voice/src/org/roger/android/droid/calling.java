@@ -20,6 +20,8 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager.LayoutParams;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -85,72 +87,48 @@ public class calling extends Activity {
 		            	lock.wait();
 		            	OpenSpeaker();
 		            	Log.i("debug", "Ringer thread play");
-		    			aloud();
+		            	ringtone.play();
+		    			while (ringtone.isPlaying()) {
+		    				Thread.sleep(100);
+		    			}
 		            } catch (InterruptedException ex) {
-	            		quiet();
+		            	if(ringtone != null && ringtone.isPlaying()) {
+			    			ringtone.stop();
+			    			ringtone.stop();
+		    			}
 	            		CloseSpeaker();
 	            		Log.i("debug", "Ringer thread interrupt");
 		            } finally {
-	            		quiet();
+		            	if(ringtone != null && ringtone.isPlaying()) {
+			    			ringtone.stop();
+			    			ringtone.stop();
+		    			}
 	            		CloseSpeaker();
 	            		Log.i("debug", "Ringer thread stop");
 		            }
     			}
     		}
     	}
-    	public final static int TONE = 1;
-    	public final static int RINGTONE = 2;
-    	private int type = RINGTONE;
     	public final static int STOPED = 1;
     	public final static int PLAYING = 2;
     	private int state = STOPED;
-    	private void aloud() throws InterruptedException {
-    		if( type == TONE ) {
-    			playTone(ToneGenerator.TONE_SUP_DIAL);
-    			Thread.sleep(100);
-    		}
-    		else if( type == RINGTONE ) {
-    			ringtone.play();
-    			while (ringtone.isPlaying()) {
-    				Thread.sleep(100);
-    			}
-    		}
-    	}
-    	private void quiet() {
-    		if( type == TONE ){
-    			playTone(ToneGenerator.TONE_SUP_DIAL);
-    		}else if( type == RINGTONE ) {
-    			if(ringtone != null && ringtone.isPlaying()) {
-	    			ringtone.stop();
-	    			ringtone.stop();
-    			}
-    		}
-    	}
-    	private void play( int t ) {
+
+    	private void play() {
     		synchronized ( lock ) { 
     			if( state == STOPED ) {
-    				state = PLAYING ;
-    				type = t;
     				lock.notifyAll();
+    				state = PLAYING ;
     			}
     		}
     	}
     	private void pause() {
     		if( state == PLAYING ) {
+				interrupt();
     			state = STOPED ;
-    			interrupt();
     		}
     	}
     	private void init() {
     		synchronized ( lock ) {
-                if (mToneGenerator == null) {
-                    try {
-                        mToneGenerator = new ToneGenerator(AudioManager.STREAM_MUSIC, 80);
-                    } catch (RuntimeException e) {
-                        Log.w("debug", "Exception caught while creating local tone generator: " + e);
-                        mToneGenerator = null;
-                    }
-                }
                 if (ringtone == null) {
                     try {
                     	ringtone = RingtoneManager.getRingtone(ctx, RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE));
@@ -159,10 +137,16 @@ public class calling extends Activity {
                         ringtone = null;
                     }
                 }
-            }
-    		
+            }    		
     	}
-    	void playTone(int tone) {
+
+    	Ringtone ringtone = null;
+    }
+    RingerThread ringer = new RingerThread();
+    class ToneThread extends Thread {
+    	private Object lock = new Object();
+    	private boolean stop = true;
+    	void play() {
         	if (!( Settings.System.getInt(getContentResolver(), Settings.System.DTMF_TONE_WHEN_DIALING, 1) == 1) ) {
         		return;
         	}
@@ -173,23 +157,71 @@ public class calling extends Activity {
         	}
         	AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 
-        	synchronized (lock) {
-    	    	if (mToneGenerator == null) {
-    	    		return;
-    	    	}
-    	    	mToneGenerator.startTone(tone, 150);
+        	if( stop == true ) {
+        		synchronized ( lock ) { 
+   	    			stop = false;
+   	    			lock.notifyAll();
+   	    		}
         	}
     	}
+    	void pause() {
+    		if( stop == false ) {
+				interrupt();
+				stop = true;
+    		}
+    	}
     	private ToneGenerator mToneGenerator = null; 
-    	Ringtone ringtone = null;
-    }
-    RingerThread ringer = new RingerThread();
+    	public void run() {
+			while( true ) {
+				// {
+					try {
+						synchronized ( lock ) {
+							lock.wait();
+						}
+				
+						while( !stop && mToneGenerator != null ) {
+	    					mToneGenerator.startTone(ToneGenerator.TONE_CDMA_NETWORK_USA_RINGBACK, 800);
+	    					Log.i("debug", "tone thread play");
+							Thread.sleep(2200);
+						}
+						
+					} catch (InterruptedException e1) {
+						// TODO Auto-generated catch block
+						Log.i("debug", "tone thread interrupt");
+						e1.printStackTrace();
+					} finally {
+						Log.i("debug", "tone thread stop");
+						mToneGenerator.stopTone();
+					}
+				//}
+			}
+		}
+    	private void init() {
+    		if (mToneGenerator == null) {
+                try {
+                    mToneGenerator = new ToneGenerator(AudioManager.STREAM_MUSIC, 80);
+                    setVolumeControlStream(AudioManager.STREAM_MUSIC);
+		        	AudioManager audioManager = ((AudioManager) getSystemService(Context.AUDIO_SERVICE));
+		        	//audioManager.setSpeakerphoneOn(true);
+		        	audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, droid.callData.getDTMFVolume(),AudioManager.STREAM_MUSIC);
+		        	
+                } catch (RuntimeException e) {
+                    Log.w("debug", "Exception caught while creating local tone generator: " + e);
+                    mToneGenerator = null;
+                }
+            }
+    	}
+    };
+    ToneThread tone = new ToneThread();
     private final static int CONFIRMED = 3;
     private Handler mHandler= new Handler(){      
     	public void handleMessage(Message msg) {
     		if( msg.what == CONFIRMED ) {
-    			calling_answer.setVisibility(View.INVISIBLE);
-       	 		calling_reject.startAnimation( AnimationUtils.loadAnimation(ctx, R.anim.right_in_center) );
+    			calling_answer.setVisibility(View.INVISIBLE);    			
+       	 		//calling_reject.startAnimation( animation );
+    			RelativeLayout.LayoutParams layoutParams2 = (RelativeLayout.LayoutParams)calling_reject.getLayoutParams();
+    			layoutParams2.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
+    			calling_reject.setLayoutParams(layoutParams2);
     		}
     	}
     };
@@ -238,18 +270,18 @@ public class calling extends Activity {
         	.show();
     	}
     };*/
-    public final void answerLeftAligned(){
+    public void answerLeftAligned(){
     	calling_answer.setVisibility(View.VISIBLE);
 		RelativeLayout.LayoutParams layoutParams1 = (RelativeLayout.LayoutParams)calling_answer.getLayoutParams();
 		layoutParams1.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
 		calling_answer.setLayoutParams(layoutParams1);
     }
-    public final void rejectRightAligned(){
+    public void rejectRightAligned(){
     	RelativeLayout.LayoutParams layoutParams2 = (RelativeLayout.LayoutParams)calling_reject.getLayoutParams();
 		layoutParams2.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
 		calling_reject.setLayoutParams(layoutParams2);
     }
-    public final void rejectCenterAligned(){
+    public void rejectCenterAligned(){
     	RelativeLayout.LayoutParams layoutParams2 = (RelativeLayout.LayoutParams)calling_reject.getLayoutParams();
 		layoutParams2.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
 		calling_reject.setLayoutParams(layoutParams2);
@@ -271,6 +303,7 @@ public class calling extends Activity {
     public void onPause() {
     	super.onPause();
     	ringer.init();
+    	tone.init();
     }
     @Override
     public void onStart() {
@@ -283,7 +316,7 @@ public class calling extends Activity {
     	super.onResume();
     	Intent i = getIntent();
     	if( i.getStringExtra("route").equals("confirm") ) {
-    		ringer.pause();
+    		tone.pause();
     		calling_answer.setVisibility(View.INVISIBLE);
 			rejectCenterAligned();
     		Log.i("debug", "calling confirm");
@@ -291,17 +324,19 @@ public class calling extends Activity {
     	}
 		if( i.getStringExtra("route").equals("in") ) 
 		     isInCall = true;
+		else if ( i.getStringExtra("route").equals("out") )
+			isInCall = false;
 		
 		CallName = i.getStringExtra("name");
 		if( CallName != null && CallName.length() != 0 )
 			calling_number.setText(CallName);
  
 		if( isInCall ) {
-			ringer.play(ringer.RINGTONE);
+			ringer.play();
 			answerLeftAligned();
 			rejectRightAligned();
 		}else {
-			ringer.play(ringer.TONE);
+			tone.play();
 			calling_answer.setVisibility(View.INVISIBLE);
 			rejectCenterAligned();
 		}
@@ -325,9 +360,10 @@ public class calling extends Activity {
 		     calling_reject.setOnClickListener(new Button.OnClickListener() {
 		             public void onClick(View v) {
 		            	ringer.pause();
-		            	main.co.hangup();
+		            	tone.pause();
+		            	//main.co.hangup();
 		            	if( droid.self != null )
-							droid.self.startActivity("main");
+							droid.self.startActivity("main","hangup","hangup");
 		             }
 		     });
 		     calling_answer.setOnClickListener(new Button.OnClickListener() {
@@ -341,10 +377,9 @@ public class calling extends Activity {
 		     });
 		     ringer.init();
 		     ringer.start();
-	     }
-	     
-    	
-   
+		     tone.init();
+		     tone.start();
+	     } 
     }
 
 }

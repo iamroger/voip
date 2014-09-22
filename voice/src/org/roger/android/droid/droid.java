@@ -89,13 +89,14 @@ public class droid extends ActivityGroup {
         mActivities.put("main", new Info(main.class)); 
         mActivities.put("calling", new Info(calling.class)); 
         mActivities.put("setting", new Info(setting.class)); 
+        mActivities.put("registra", new Info(registra.class)); 
         
         params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT,LinearLayout.LayoutParams.FILL_PARENT);
 		wparams = new WindowManager.LayoutParams();
 		wparams.width = LayoutParams.FILL_PARENT;
 		wparams.height = LayoutParams.FILL_PARENT;
 
-        startActivity("main");
+		startActivity("main");
         getWindow().setBackgroundDrawableResource(callData.getBgimg());
     }
     private HandlerThread notification = new HandlerThread("notification");
@@ -174,6 +175,16 @@ public class droid extends ActivityGroup {
     		
     		layout.addView(decor, wparams);
     	}
+    }
+    public void tryReg() {
+    	LocalActivityManager mgr = getLocalActivityManager();
+    	main m = (main)mgr.getActivity("main");
+    	m.tryRegiste();
+    }
+    public boolean isRegistered() {
+    	LocalActivityManager mgr = getLocalActivityManager();
+    	main m = (main)mgr.getActivity("main");
+    	return m.isRegistered();
     }
     class Info {
     	public Class<?> cls;
