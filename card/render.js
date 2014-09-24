@@ -263,10 +263,6 @@ function card_idle() {
     //this.parent.bg.setColor("#ffdddddd");
     if ( msg.ctx !== null ){
       this.self.draw( msg.ctx );
-      if( this.self.iselected() ) {
-        this.self.focus( msg.ctx );
-		    return msg.to("tick");
-	    }
     } 
   	return null;
   }
@@ -280,127 +276,159 @@ function card_attack() {
     //for( int i = 0 ; i < 10 ; i ++ ) {
     //  msg.data[0].command =
     //}
-    msg.vs = [[msg.vs[0],"dead",1,"name"],[msg.vs[1],"hurt","-10"]];
+    msg.vs = [[msg.vs[0],"dead","c0001","newcard"],[msg.vs[1],"hurt","-10"]];
     return msg.to( "response" );
   }
 }
 card_attack.prototype = new state();
 
 var animation_queue = [];
-function fade( that ) {
-  this.speed = 1;
-  this.init = 10;
+
+function fade(that,func) {
+  this.step = 0.1;
+  this.that = that;
+  this.onFinishListener = func;
+  this.onFinish = function() {
+    animation_queue[String.valueOf(this)] = null;
+	this.onFinishListener();
+  }
+  this.loop = function( ctx ) {
+	if( this.step < 1 ) {
+	  this.step += 0.2;
+      ctx.globalAlpha = this.step;
+      this.that.draw(ctx);
+	  ctx.globalAlpha = 1;
+    }else {
+      this.onFinish();
+    }
+  };
+  this.setOnFinish = function( func ) {
+    onFinishListener = func;
+  };
+  this.setCard = function( card ) {
+    this.that = card;
+  };
+  this.play = function() {
+    animation_queue[String.valueOf(this)] = this ;
+  };
+}
+
+function bump(that,func) {
+  this.step = 0.1;
+  this.that = that;
+  this.onFinishListener = func;
+  this.onFinish = function() {
+    animation_queue[String.valueOf(this)] = null;
+	this.onFinishListener();
+  }
+  this.loop = function( ctx ) {
+	if( this.step < 1 ) {
+      this.step += 0.2;
+	  this.that.scale( this.step, this.step );
+      this.that.draw(ctx);
+    }else {
+      this.onFinish();
+    }
+  };
+  this.setOnFinish = function( func ) {
+    onFinishListener = func;
+  };
+  this.setCard = function( card ) {
+    this.that = card;
+  };
+  this.play = function() {
+    animation_queue[String.valueOf(this)] = this ;
+  };
+}
+
+function bounce(that,x,y) {
+  this.step = 0.1;
+  this._X = x;
+  this._Y = y;
   this.that = that;
   this.loop = function( ctx ) {
-    play( ctx );
-  };
-  this.play = function( ctx ) {
-    if( this.init === 10 ) 
-      animation_queue[String.valueOf(this)] = this ;
-    else if( this.init === 0 ) 
-      animation_queue[String.valueOf(this)] = null;
-    if( this.that !== that )
-      this.that = that;
-    if( this.init != 0 ) {
-      this.init -= this.speed;
-      ctx.globalAlpha = this.init;
-      this.that.draw( ctx );
-      ctx.globalAlpha = 1;
-    }else {
-      this.init = 10;
-      this.that.fadefinish();
+    if( this.that.y >= this._Y - 12 ) {
+      this.step = -2;
+      this.that.y = this._Y - 12;
+    } else if ( this.that._Y <= this.y - 22 ) {
+      this.step = 2;
+      this.that.y = this._Y - 22;
     }
+    this.that.y += this.step;
+    this.that.draw(ctx);
+  };
+  this.setPosition = function(x,y){
+    this._X = x;
+    this._Y = y;
+	this.that.position(x,y);
   }
-}
-function bump() {
-  this.speed = 0.1;
-  this.init = 0.1;
-  this.that = null;
-  this.loop = function( ctx ) {
-    play( ctx,this.that );
-  };
-  this.play = function( ctx, that ) {
-    if( this.init === 0.1 ) 
-      animation_queue[String.valueOf(this)] = this ;
-    else if( this.init === 1 ) 
-      animation_queue[String.valueOf(this)] = null;
-    if( this.that !== that )
-      this.that = that;
-    if( this.init != 1 ) {
-      this.init += this.speed;
-      this.that.scale( this.init, this.init );
-      this.that.draw( ctx );
-    }else {
-      this.init = 0.1;
-      this.that.bumpfinish();
-    }
+  this.play = function() {
+    animation_queue[String.valueOf(this)] = this;
   }
 }
 
-function flashup() {
-  this.speed = 1;
-  this.init = 10;
-  this.y = 0;
+function spark(that) {
+  this.step = 2;
+  this._X = that.x+10;
+  this._Y = that.y+10;
   this.that = null;
-  this.text = null;
-  this.loop = function( ctx ) {
-    play( ctx,this.that,this.text );
-  };
-  this.play = function( ctx, that, text ) {
-    if( this.init === 10 ) 
-      animation_queue[String.valueOf(this)] = this ;
-    else if( this.init === 0 ) 
-      animation_queue[String.valueOf(this)] = null;
-    if( this.that !== that )
-      this.that = that;
-    if( this.text !== text )
-      this.text = text;
-    if( this.init != 0 ) {
-      this.init -= this.speed;
-      this.y += 5;
-      ctx.globalAlpha = this.init;
-      ctx.font = "15px Arial";
-      ctx.translate(that.x,that.y+this.y);
-      ctx.fillStyle = this.color;
-      ctx.textBaseline="top";
-      ctx.fillText( text, 0, 0 );
-      ctx.globalAlpha = 1;
-    }else {
-      this.init = 10;
-      this.that.flashupfinish();
-    }
+  this.onFinishListener = null;
+  this.onFinish = function() {
+    animation_queue[String.valueOf(this)] = null;
+	this.onFinishListener();
   }
+  this.loop = function( ctx ) {
+	if( this.that.y < this._Y + 10 ) {
+      this.that.y += this.step;
+      this.that.draw(ctx);
+    }else {
+      this.onFinish();
+    }
+  };
+  this.setOnFinish = function( func ) {
+    onFinishListener = func;
+  };
+  this.setText = function( txt ) {
+    this.that = null;
+	this.that = new text(txt);
+  };
+  this.play = function( txt ) {
+    this.setText(txt);
+    animation_queue[String.valueOf(this)] = this ;
+  };
 }
 
 function card_answer() {
   state.call(this);
-  this.fade = new fade();
-  this.bump = new bump();
-  this.flash = new flashup();
-  this.newcard = [];
-  this.fadefinish = function() {
-    this.self.construct( this.newcard[0],this.newcard[1] /*uri, name*/ );
-    this.bump.play( msg.ctx, this.self );
+  this.new_card_info = [];
+  this.onFinishBump = function() {
+    this.new_card_info = [];
   };
-  this.bumpfinish = function() {
-    this.newcard = [];
+  this.bump = new bump(this,this.onFinishBump);
+  
+  this.onFinishFade = function() {
+    this.self.construct( this.new_card_info[0],this.new_card_info[1] /*uri, name*/ );
+    this.bump.play();
   };
-  this.flashupfinish = function() {
-  }
+  this.fade = new fade(this,this.onFinishFade);
+  
+  this.spark = new spark(this);
+  
   this.action = function( msg ) {
     if( msg.vs[0][0] === this.self.id ) {
       if( msg.vs[0][1] === "dead" ) {
-        this.newcard = [msg.vs[0][2],msg.vs[0][3]];
-        this.fade.play( msg.ctx, this.self );
+	    //[[msg.vs[0],"dead","c0001","newcard"],[msg.vs[1],"hurt","-10"]];
+        this.new_card_info = [msg.vs[0][2],msg.vs[0][3]];
+        this.fade.play();
       }else if( msg.vs[0][1] === "hurt" ) {
-        this.flash.play( msg.ctx, this.self, msg.vs[0][2] );
+        this.spark.play( msg.vs[0][2] );
       }
     }else if( msg.vs[1][0] === this.self.id ) {
       if( msg.vs[1][1] === "dead" ) {
-        this.newcard = [msg.vs[1][2],msg.vs[1][3]];
-        this.fade.play( msg.ctx, this.self );
+        this.new_card_info = [msg.vs[1][2],msg.vs[1][3]];
+        this.fade.play();
       }else if( msg.vs[1][1] === "hurt" ) {
-        this.flash.play( msg.ctx, this.self, msg.vs[0][2] );
+        this.spark.play( msg.vs[1][2] );
       }      
       return msg;
     }
@@ -429,23 +457,24 @@ function card( o ) {
   component.call(this);
   this.id = 0;
   this.camp = 0;
-  this.deco = new texture("down.png");
   this.step = 2;
   this.photo = new texture("");
   this.current = new card_rule( o, this );
   this.position = function( posX, posY ) {
     this.__proto__.position.call( this, posX, posY );
     this.photo.position( posX, posY );
-    this.deco.position(  posX+16, posY - 20 );
   };
-  this.construct( uri, name ) = function {
+  this.construct = function( uri, name ) {
     this.setURI("./"+uri+".png");
     this.name = name;
+	this.id = uri;
   };
   this.iselected = function() {
     return o.selected === this;
   };
   this.select = function() {
+    o.bounce.setPosition(this.photo.x+16,this.photo.y-20);
+	o.bounce.play();
     o.selected = this;
   };
   this.opposite = function() {
@@ -457,23 +486,11 @@ function card( o ) {
   this.selection = function() {
     return o.selected;
   };
-  this.focus = function(ctx) {
-    if( this.deco.y >= this.y - 12 ) {
-      this.step = -2;
-      this.deco.y = this.y - 12;
-    } else if ( this.deco.y <= this.y - 22 ) {
-      this.step = 2;
-      this.deco.y = this.y - 22;
-    }
-    this.deco.y += this.step;
-    this.deco.draw(ctx);
-  };
   this.draw = function(ctx) {
     this.photo.draw(ctx);
   };
   this.setURI = function(str) {
     this.photo.img.src = str;
-    
   };
   this.scale = function(w,h) {
     this.__proto__.scale.call( this, 48,48);
@@ -507,7 +524,7 @@ function scene_select( desc ) {
   this.components = [];
   for( var i = 0; i < d.length ; i ++ ) {
     this.components[i] = new button( this );
-	  this.components[i].scale(100,16);
+	this.components[i].scale(100,16);
     this.components[i].setText(d[i][1]);
     this.components[i].name = d[i][0];
 	this.components[i].position( 0, 10+i*30);
@@ -546,12 +563,13 @@ function scene_play( desc ) {
   var t = 0, b = 0;
   this.opposited = null;
   this.selected = null;
+  this.deco = new texture("down.png");
+  this.bounce = new bounce(this.deco,0,0);
   this.components = [];
   for( var i = 0; i < d.length ; i ++ ) {
     this.components[i] = new card( this );
-    this.components[i].setURI("./"+d[i][1]+".png");
-	  this.components[i].scale(0.5,0.5);
-    this.components[i].name = d[i][0];
+    this.components[i].construct(d[i][1],d[i][0]); 
+	this.components[i].scale(0.5,0.5);
 	if( d[i][2] == 1 ) {
 	  this.components[i].position( 10+(t++)*50, 10 );
 	  this.components[i].camp = 1;
@@ -608,7 +626,7 @@ function render( canvas, w, h ) {
     var v = this.current;
     var msg = message_queue.shift();
     if( v !== null && msg !== null && msg !== undefined ) {
-      if( msg.name !== this.lastmsg.name || msg.name === "tick" ) {
+      if( msg.name !== this.lastmsg.name ) {
         this.ctx.clearRect(0,0,this.width,this.height);
         msg.ctx = this.ctx;
         v.move( msg );
@@ -617,15 +635,12 @@ function render( canvas, w, h ) {
       if( msg.name === "tick" ) {
         for( var anim in animation_queue ) 
           anim.loop(this.ctx);
+		message_queue.splice(message_queue.length-1,1);
       }
-    } else if( message_queue.length > 2 ) {
-      if( message_queue[message_queue.length-1].name === "tick" )
-        message_queue.splice(0,message_queue.length-1);
-      else
-        message_queue.splice(0,message_queue.length);
     }
     if( !this.stop ) {
       //requestAnimationFrame( function(){that.loop()} );
+	  console.log('msg len: '+message_queue.length);
       setTimeout(function(){that.loop()},100);
       this.now = new Date().getTime();
       this.tick = this.now - (this.time || this.now);
