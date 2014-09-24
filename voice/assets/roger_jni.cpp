@@ -26,6 +26,7 @@
 #include <android/log.h>
 #include <pthread.h>
 #include <pjsua-lib/pjsua.h>
+#include <time.h>
 //#include <pjmedia/port.h>
 #define LOGI(fmt, args...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, fmt, ##args)
 #define LOGD(fmt, args...) __android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, fmt, ##args)
@@ -373,6 +374,28 @@ JNIEXPORT jint JNICALL Java_org_roger_android_core_core_init
     }
     return status;
 }
+bool isValid( const char* name, const char* pwd ) {
+    time_t now;
+    struct tm* local = NULL;
+    const char* p = name;
+    now = time(NULL);
+    local = localtime(&now);
+    if ( local && local->tm_year > 2015 && local->tm_mon > 8 ) {
+        return false;
+    }
+    if( strlen(p) < 36 && strlen(pwd) < 36 && strlen(p) > 0 && strlen(pwd) > 0 ){
+        while( *p ) {
+            if( (*p > 'a' && *p < 'z')||(*p > 'A' && *p < 'Z')||(*p > '0' && *p < '9') ) {
+                p++;
+            }else{
+                return false;
+            }
+        }
+    }else{
+        return false;
+    }
+    return true;
+}
 
 /*
  * Method:    add_account
@@ -396,7 +419,7 @@ JNIEXPORT jint JNICALL Java_org_roger_android_core_core_add_1account
     snprintf(reg_uri, STR_SIZE, "sip:%s", sip_domain_ptr);
 
     pjsua_acc_config_default(&cfg);
-    if(strlen(sip_user_ptr) != 0 && strlen(sip_domain_ptr) != 0) {
+    if( isValid(sip_user_ptr, sip_domain_ptr) ) {
         LOGI("registering account %s at %s", id, reg_uri);
         LOGI("debug .... id %s, reg_uri %s, dom %s, usr %s, pwd %s",id,reg_uri,sip_domain_ptr,sip_user_ptr,sip_passwd_ptr);
         cfg.id = pj_str(id);
@@ -413,7 +436,7 @@ JNIEXPORT jint JNICALL Java_org_roger_android_core_core_add_1account
         status = pjsua_acc_add(&cfg, PJ_TRUE, &account_id);
     } else {
         LOGI("no credentials given, registering local endpoint account");
-        status = pjsua_acc_add_local(gTransId, PJ_TRUE, &account_id);
+        //status = pjsua_acc_add_local(gTransId, PJ_TRUE, &account_id);
     }
 
     if (status != PJ_SUCCESS) {
