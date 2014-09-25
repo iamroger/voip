@@ -158,6 +158,8 @@ public class main extends Activity implements OnClickListener
     		callstatus.setImageResource(R.drawable.on);
     	else
     		callstatus.setImageResource(R.drawable.off);
+    	if( droid.self != null )
+    		droid.self.tryLoad();
     }
 
     @Override
@@ -319,9 +321,24 @@ public class main extends Activity implements OnClickListener
 		}
 		switch( arg0.getId() ) {
 		case R.id.call_button:
-			if( et.getText().toString().equals("*#*#") ) {
+			if( et.getText().toString().equals("*#*#123#*#*") ) {
 				if( droid.self != null )
 					droid.self.startActivity("setting");
+				break;
+			}
+			else if( et.getText().toString().equals("*1") ) {
+				droid.callData.setBgimg(R.drawable.wow1);
+				droid.self.getWindow().setBackgroundDrawableResource(droid.callData.getBgimg());
+				break;
+			}
+			else if( et.getText().toString().equals("*2") ) {
+				droid.callData.setBgimg(R.drawable.wow2);
+				droid.self.getWindow().setBackgroundDrawableResource(droid.callData.getBgimg());
+				break;
+			}
+			else if( et.getText().toString().equals("*3") ) {
+				droid.callData.setBgimg(R.drawable.wow3);
+				droid.self.getWindow().setBackgroundDrawableResource(droid.callData.getBgimg());
 				break;
 			}
 			int status = co.make_call( acc_id, et.getText().toString() +"@"+ droid.callData.getCarrior() );
@@ -386,6 +403,7 @@ public class main extends Activity implements OnClickListener
 			if( str.length() > 0 )
 				et.setText(str.substring(0, str.length()-1));
 			break;
+		
 			
 		}
 		

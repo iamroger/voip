@@ -24,6 +24,8 @@ public class data {
 			values.putString("online", "false");
 		if( get("mute") == null )
 			values.putString("mute", "false");
+		if( get("backimg") != null && !get("backimg").equals(String.valueOf(R.drawable.wow1)) )
+			set("backimg", null);
 		if( get("backimg") == null )
 			values.putString("backimg", String.valueOf(R.drawable.wow1));
 		if( get("dtmfvolume") == null && ctx != null ) {

@@ -28,9 +28,9 @@
 #include <pjsua-lib/pjsua.h>
 #include <time.h>
 //#include <pjmedia/port.h>
-#define LOGI(fmt, args...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, fmt, ##args)
-#define LOGD(fmt, args...) __android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, fmt, ##args)
-#define LOGE(fmt, args...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, fmt, ##args)
+#define LOGI(fmt, args...) //__android_log_print(ANDROID_LOG_INFO, LOG_TAG, fmt, ##args)
+#define LOGD(fmt, args...) //__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, fmt, ##args)
+#define LOGE(fmt, args...) //__android_log_print(ANDROID_LOG_ERROR, LOG_TAG, fmt, ##args)
 
 #undef LOG_TAG
 #define LOG_TAG       "debug"
@@ -301,7 +301,7 @@ JNIEXPORT jint JNICALL Java_org_roger_android_core_core_init
 
         pjsua_logging_config_default(&log_cfg);
         log_cfg.console_level = 10;
-        log_cfg.cb = roger_log;
+        log_cfg.cb = NULL;//roger_log;
 
         pjsua_media_config_default(&media_cfg);
         /* Set the clock rates to 8kHz to avoid resampling */

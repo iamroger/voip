@@ -49,6 +49,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewAnimator;
 
 import org.roger.android.core.core;
@@ -57,12 +58,55 @@ import org.roger.android.droid.R;
 
 import android.util.DisplayMetrics;
 import android.util.Log;
-
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.AdListener;
        
 public class droid extends ActivityGroup {
 	public static droid self = null;
 	public static data callData ;
-	
+	private AdView ads;
+	private AdRequest adRequest;
+	public class Listener extends AdListener {
+		@Override
+	    public void onAdLoaded() {
+			ads.setVisibility(View.VISIBLE);
+	    }
+	    @Override
+	    public void onAdFailedToLoad(int errorCode) {
+	    	new Handler().postDelayed(new Runnable(){    
+			    public void run() {
+			    	ads.loadAd(adRequest);
+			    }    
+			}, 60000);
+	        String errorReason = "";
+	        switch(errorCode) {
+	            case AdRequest.ERROR_CODE_INTERNAL_ERROR:
+	                errorReason = "Internal error";
+	                break;
+	            case AdRequest.ERROR_CODE_INVALID_REQUEST:
+	                errorReason = "Invalid request";
+	                break;
+	            case AdRequest.ERROR_CODE_NETWORK_ERROR:
+	                errorReason = "Network Error";
+	                break;
+	            case AdRequest.ERROR_CODE_NO_FILL:
+	                errorReason = "No fill";
+	                break;
+	        }
+	    }
+	    @Override
+	    public void onAdOpened() {
+	    }
+
+	    @Override
+	    public void onAdClosed() {
+	    }
+	    @Override
+	    public void onAdLeftApplication() {
+	    }
+	};
+	private Listener listener = new Listener();
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,6 +142,21 @@ public class droid extends ActivityGroup {
 
 		startActivity("main");
         getWindow().setBackgroundDrawableResource(callData.getBgimg());
+        
+        
+        ads = (AdView) findViewById(R.id.adView);
+
+        // Create an ad request. Check logcat output for the hashed device ID to
+        // get test ads on a physical device. e.g.
+        // "Use AdRequest.Builder.addTestDevice("ABCDEF012345") to get test ads on this device."
+        adRequest = new AdRequest.Builder().build();
+
+        // Start loading the ad in the background.
+        
+        ads.setAdListener(listener);
+        ads.setVisibility(View.GONE);
+        ads.loadAd(adRequest);
+        
     }
     private HandlerThread notification = new HandlerThread("notification");
     
@@ -117,11 +176,32 @@ public class droid extends ActivityGroup {
     	moveTaskToBack(true);//finish();
         //System.exit(0);
     }
+    /** Called when leaving the activity */
+    @Override
+    public void onPause() {
+        if (ads != null) {
+            ads.pause();
+        }
+        super.onPause();
+    }
+    /** Called when returning to the activity */
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (ads != null) {
+            ads.resume();
+        }
+    }
+
     @Override
     public void onDestroy() {
+    	if (ads != null) {
+            ads.destroy();
+        }
     	main.co.hangup();
     	main.co.destroy();
         System.exit(0);
+        super.onDestroy();
     }
     public void startActivity( String name, String... args ) {
     	LocalActivityManager mgr = getLocalActivityManager();
@@ -175,6 +255,9 @@ public class droid extends ActivityGroup {
     		
     		layout.addView(decor, wparams);
     	}
+    }
+    public void tryLoad() {
+    	ads.loadAd(adRequest);
     }
     public void tryReg() {
     	LocalActivityManager mgr = getLocalActivityManager();
