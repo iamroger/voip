@@ -68,17 +68,20 @@ public class droid extends ActivityGroup {
 	private AdView ads;
 	private AdRequest adRequest;
 	public class Listener extends AdListener {
+		private boolean actived = false;
 		@Override
 	    public void onAdLoaded() {
+			actived = true;
 			ads.setVisibility(View.VISIBLE);
 	    }
 	    @Override
 	    public void onAdFailedToLoad(int errorCode) {
-	    	new Handler().postDelayed(new Runnable(){    
-			    public void run() {
-			    	ads.loadAd(adRequest);
-			    }    
-			}, 60000);
+	    	if( !actived )
+		    	new Handler().postDelayed(new Runnable(){    
+				    public void run() {
+				    	ads.loadAd(adRequest);
+				    }    
+				}, 60000);
 	        String errorReason = "";
 	        switch(errorCode) {
 	            case AdRequest.ERROR_CODE_INTERNAL_ERROR:
