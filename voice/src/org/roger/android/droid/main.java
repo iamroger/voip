@@ -16,6 +16,7 @@ import android.media.AudioManager;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.media.ToneGenerator;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -23,6 +24,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.provider.Settings;
 
+import java.util.regex.Pattern;
 import java.util.zip.*;
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,17 +40,20 @@ import android.view.KeyEvent;
 import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.view.WindowManager.LayoutParams;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.roger.android.core.core;
 import org.roger.android.core.data;
 import org.roger.android.droid.R;
 
+import android.text.method.LinkMovementMethod;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
@@ -59,6 +64,7 @@ public class main extends Activity implements OnClickListener
 	public static core co = null;
 	
     ImageView callstatus;
+    TextView app_about;
     
     public static int acc_id = -1;
     
@@ -154,12 +160,37 @@ public class main extends Activity implements OnClickListener
     	droid.self.onBackPressed();
     }
     public void register( View v ) {
-    	if( co.acc_get_default() == 1 ) 
-    		callstatus.setImageResource(R.drawable.on);
-    	else
-    		callstatus.setImageResource(R.drawable.off);
-    	if( droid.self != null )
-    		droid.self.tryLoad();
+    	ConnectivityManager connManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+		if (connManager.getActiveNetworkInfo() != null && connManager.getActiveNetworkInfo().isAvailable() ) {
+	    	if( co.acc_get_default() == 1 )  {
+	    		callstatus.setImageResource(R.drawable.on);
+	    		app_about.setText(R.string.app_name);
+	    	}else
+	    		callstatus.setImageResource(R.drawable.off);
+	    	if( droid.self != null )
+	    		droid.self.tryLoad();
+		}else {
+			//Toast.makeText(getApplicationContext(), getString(R.string.network_err) , Toast.LENGTH_SHORT).show();
+			app_about.setText(R.string.network_err);
+		}
+    }
+    public void about( View v ) {
+    	try {
+	    	final AlertDialog dlg = new AlertDialog.Builder(this).create();
+	    	dlg.show();
+	    	Window window = dlg.getWindow();
+	    	window.setContentView(R.layout.about);
+	    	Button ok = (Button) window.findViewById(R.id.about_ok);
+	    	ok.setOnClickListener(new View.OnClickListener() {
+				public void onClick(View v) {
+					dlg.cancel();
+				}
+	    	});
+	    	TextView  e = (TextView ) window.findViewById(R.id.about_desc);
+	    	e.setMovementMethod(LinkMovementMethod.getInstance()); 
+    	}catch(Exception ex ) {
+    		
+    	}
     }
 
     @Override
@@ -257,6 +288,7 @@ public class main extends Activity implements OnClickListener
 		Button dial_a = (Button) findViewById(R.id.dial_sharp);
 		ImageView back = (ImageView) findViewById(R.id.backspace);
 		callstatus = (ImageView) findViewById(R.id.status);
+		app_about = (TextView) findViewById(R.id.app_about);
 		callButton.setOnClickListener(this);
 		dial_0.setOnClickListener(this);
 		dial_1.setOnClickListener(this);
@@ -271,9 +303,34 @@ public class main extends Activity implements OnClickListener
 		dial_s.setOnClickListener(this);
 		dial_a.setOnClickListener(this);
 		back.setOnClickListener(this);
+		alphabet();
 		
 		if( droid.self != null && droid.callData.getOnline() == false )
 			droid.self.startActivity("registra");
+    }
+    private Button[] dial_char = new Button[26];
+    private Button dial_case;
+    private void alphabet() {
+    	for( int i = 0 ; i < 26 ; i ++ ) {
+    		dial_char[i] = (Button) findViewById(R.id.dial_char_a + i);
+    		dial_char[i].setOnClickListener(this);
+    	}
+    	dial_case = (Button) findViewById(R.id.dial_case);
+    	dial_case.setOnClickListener(this);
+    }
+    private void lowercase() {
+    	for( int i = 0 ; i < 26 ; i ++ ) {
+    		char c = (char)(i + 'a');
+    		dial_char[i].setText(String.valueOf(c));
+    	}
+    	dial_case.setText("v");
+    }
+    private void uppercase() {
+    	for( int i = 0 ; i < 26 ; i ++ ) {
+    		char c = (char)(i + 'A');
+    		dial_char[i].setText(String.valueOf(c));
+    	}
+    	dial_case.setText("^");
     }
     private Object mToneGeneratorLock = new Object();
     void playTone(int tone) {
@@ -304,6 +361,9 @@ public class main extends Activity implements OnClickListener
         }
 
         return false;
+    }
+    private boolean isNumOrChar( String str ) {
+    	return Pattern.compile("^[0-9a-zA-Z]+$").matcher(str).find();
     }
 	@Override
 	public void onClick(View arg0) {
@@ -341,14 +401,14 @@ public class main extends Activity implements OnClickListener
 				droid.self.getWindow().setBackgroundDrawableResource(droid.callData.getBgimg());
 				break;
 			}
-			int status = co.make_call( acc_id, et.getText().toString() +"@"+ droid.callData.getCarrior() );
-            if(status != 0) {
-                Log.i("debug","Call to " + et.getText().toString() + "failed");
-            }
-            {
+			else if( isNumOrChar( et.getText().toString() ) ) {
+				int status = co.make_call( acc_id, et.getText().toString() +"@"+ droid.callData.getCarrior() );
+	            if(status != 0) {
+	                Log.i("debug","Call to " + et.getText().toString() + "failed");
+	            }
 				if( droid.self != null )
 					droid.self.startActivity("calling", "route", "out", "name", et.getText().toString() );
-            }
+			}
 			break;
 		case R.id.dial_0:
 			playTone(ToneGenerator.TONE_DTMF_0);
@@ -403,8 +463,41 @@ public class main extends Activity implements OnClickListener
 			if( str.length() > 0 )
 				et.setText(str.substring(0, str.length()-1));
 			break;
-		
-			
+		case R.id.dial_char_a:
+		case R.id.dial_char_b:
+		case R.id.dial_char_c:
+		case R.id.dial_char_d:
+		case R.id.dial_char_e:
+		case R.id.dial_char_f:
+		case R.id.dial_char_g:
+		case R.id.dial_char_h:
+		case R.id.dial_char_i:
+		case R.id.dial_char_j:
+		case R.id.dial_char_k:
+		case R.id.dial_char_l:
+		case R.id.dial_char_m:
+		case R.id.dial_char_n:
+		case R.id.dial_char_o:
+		case R.id.dial_char_p:
+		case R.id.dial_char_q:
+		case R.id.dial_char_r:
+		case R.id.dial_char_s:
+		case R.id.dial_char_t:
+		case R.id.dial_char_u:
+		case R.id.dial_char_v:
+		case R.id.dial_char_w:
+		case R.id.dial_char_x:
+		case R.id.dial_char_y:
+		case R.id.dial_char_z:
+			char c = (char)(dial_char[0].getText().charAt(0)+arg0.getId()-R.id.dial_char_a);
+			et.append(String.valueOf(c));
+			break;
+		case R.id.dial_case:
+			if( dial_case.getText().charAt(0) == '^' )
+				lowercase();
+			else
+				uppercase();
+			break;
 		}
 		
 	}

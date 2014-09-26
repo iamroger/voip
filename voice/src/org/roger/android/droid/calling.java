@@ -136,6 +136,8 @@ public class calling extends Activity {
                         Log.w("debug", "Exception caught while creating local tone generator: " + e);
                         ringtone = null;
                     }
+                }else {
+                	pause();
                 }
             }    		
     	}
@@ -209,6 +211,8 @@ public class calling extends Activity {
                     Log.w("debug", "Exception caught while creating local tone generator: " + e);
                     mToneGenerator = null;
                 }
+            }else {
+            	pause();
             }
     	}
     };

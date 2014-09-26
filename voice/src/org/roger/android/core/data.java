@@ -15,7 +15,7 @@ public class data {
 	public data( Context m ) {
 		ctx = m;
 		if( get("carrior") == null )
-			values.putString("carrior", "192.168.95.2");
+			values.putString("carrior", "54.218.33.25");
 		if( get("passwd") == null )
 			values.putString("passwd", "roger");
 		if( get("user") == null )
