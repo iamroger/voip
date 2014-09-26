@@ -10,14 +10,15 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="28dp"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:visibility="gone" >
 
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
             android:layout_weight="2"
-            android:text="运营商"
+            android:text="@string/carrior_name"
             android:textSize="18sp"
             android:textColor="#dfdfdf" />
 
@@ -27,7 +28,7 @@
 		    android:layout_height="wrap_content"
 		    android:layout_weight="1"
 		    android:background="#00000000"
-		    android:hint="192.168.95.2"
+		    android:hint="54.218.33.25"
 		    android:textSize="18sp"
 		    android:textColor="#dfdfdf"/>
     </LinearLayout>
@@ -48,7 +49,7 @@
 		    android:layout_height="wrap_content"
 		    android:layout_weight="2"
         	android:layout_marginLeft="8dp"
-		    android:text="用户账号"
+		    android:text="@string/account_name"
 		    android:textSize="18sp"
 		    android:textColor="#dfdfdf"/>
 	    <EditText 
@@ -78,7 +79,7 @@
 		    android:layout_height="wrap_content"
 		    android:layout_weight="2"
         	android:layout_marginLeft="8dp"
-		    android:text="账号密码"
+		    android:text="@string/account_pwd"
 		    android:textSize="18sp"
 		    android:textColor="#dfdfdf"/>
 	    <EditText 
@@ -108,7 +109,7 @@
 		    android:layout_height="wrap_content"
 		    android:layout_weight="2"
         	android:layout_marginLeft="8dp"
-		    android:text="默认话筒"
+		    android:text="@string/speaker_enable"
 		    android:textColor="#dfdfdf"
 		    android:textSize="18sp"/>
 
@@ -139,7 +140,7 @@
 		    android:layout_height="wrap_content"
 		    android:layout_weight="1"
         	android:layout_marginLeft="8dp"
-		    android:text="背景"
+		    android:text="@string/background_name"
 		    android:textSize="18sp"/>
 
 	    <RadioGroup
@@ -188,7 +189,7 @@
 		    android:layout_height="wrap_content"
 		    android:layout_weight="1"
         	android:layout_marginLeft="8dp"
-		    android:text="默认按键音量"
+		    android:text="@string/key_volume"
 		    android:textColor="#dfdfdf"
 		    android:textSize="18sp"/>
 	    <SeekBar
@@ -215,7 +216,7 @@
 		    android:layout_height="wrap_content"
 		    android:layout_weight="1"
         	android:layout_marginLeft="8dp"
-		    android:text="默认电话音量"
+		    android:text="@string/talk_volume"
 		    android:textColor="#dfdfdf"
 		    android:textSize="18sp"/>
 	    <SeekBar

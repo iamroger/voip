@@ -1,5 +1,21 @@
 <resources>
-
-    <string name="app_name">voice</string>
+    <string name="app_name">talk</string>
+    <string name="carrior_name">carrior</string>
+    <string name="account_name">account</string>
+    <string name="account_pwd">password</string>
+    <string name="apply_name">apply</string>
+    <string name="speaker_enable">speaker</string>
+    <string name="background_name">background</string>
+    <string name="key_volume">key volume</string>
+    <string name="talk_volume">talk volume</string>
+    <string name="author_name">roger</string>
+    <string name="email_name">imiracle@live.cn</string>
+    <string name="network_err">network error，please enable wifi and press red button to refresh</string>
+    <string name="name_conflict_err">your name have been existed.</string>
+    <string name="description_name">if you have any question and sugguest, please be free to contact with <a href="mailto:imiracle@live.cn">imiracle@live.cn</a></string>
+    <string name="about_name">About</string>
+    <string name="confirm_name">done</string>
+    <string name="uppercase_name">B</string>
+    <string name="lowercase_name">S</string>
     <string name="banner_ad_unit_id">ca-app-pub-4185624570929043/2147192416</string>
 </resources>

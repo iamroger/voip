@@ -29,7 +29,7 @@
 	            android:layout_height="wrap_content"
 	            android:layout_marginLeft="8dp"
 	            android:layout_weight="1"
-	            android:text="username"
+	            android:text="@string/account_name"
 	            android:textSize="18sp"
 	            android:textColor="#dfdfdf" />
 		    <EditText 
@@ -59,7 +59,7 @@
 			    android:layout_height="wrap_content"
 	        	android:layout_marginLeft="8dp"
 	        	android:layout_weight="1"
-			    android:text="password"
+			    android:text="@string/account_pwd"
 			    android:textSize="18sp"
 			    android:textColor="#dfdfdf"/>
 		    <EditText 
@@ -89,7 +89,7 @@
 			    android:layout_height="wrap_content"
 	        	android:layout_margin="8dp"
 	        	android:padding="2dp"
-			    android:text="submit"
+			    android:text="@string/apply_name"
 			    android:textColor="#dfdfdf"
 			    android:textSize="18sp"
 			    android:onClick="submit"

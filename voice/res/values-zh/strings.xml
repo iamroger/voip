@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">通话</string>
+    <string name="carrior_name">运营商</string>
+    <string name="account_name">用户账号</string>
+    <string name="account_pwd">账号密码</string>
+    <string name="apply_name">申请</string>
+    <string name="speaker_enable">默认话筒</string>
+    <string name="background_name">背景</string>
+    <string name="key_volume">按键音量</string>
+    <string name="talk_volume">通话音量</string>
+    <string name="author_name">一把刀</string>
+    <string name="email_name">iamiracle@163.com</string>
+    <string name="network_err">网络不通，请检查wifi是否打开，然后按左边红色按钮刷新</string>
+    <string name="name_conflict_err">您申请的用户名已存在</string>
+    <string name="description_name">如您有任何疑问或建议请联系 <a href="mailto:imiracle@live.cn">iamiracle@163.com</a></string>
+    <string name="about_name">关于</string>
+    <string name="confirm_name">确定</string>
+    <string name="uppercase_name">大</string>
+    <string name="lowercase_name">小</string>
+    <string name="banner_ad_unit_id">ca-app-pub-4185624570929043/2147192416</string>
+</resources>
