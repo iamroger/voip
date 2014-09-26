@@ -28,7 +28,7 @@ public class core {
     	Log.e("Droid", "test" );
     }
     public int receive( String remoteCall ){
-    	Log.e("debug",remoteCall);
+    	//Log.e("debug",remoteCall);
     	if( remoteCall.equals("#disconnected#") ) {
     		if( droid.self != null )
 				droid.self.startActivity("main");

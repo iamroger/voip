@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:locale="en" tools:ignore="ExtraTranslation">
     <string name="app_name">talk</string>
     <string name="carrior_name">carrior</string>
     <string name="account_name">account</string>
