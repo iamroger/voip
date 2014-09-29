@@ -289,7 +289,7 @@ function fade(that,func) {
   this.that = that;
   this.onFinishListener = func;
   this.onFinish = function() {
-    animation_queue[String.valueOf(this)] = null;
+    animation_queue["anim.fade"] = null;
 	this.onFinishListener();
   }
   this.loop = function( ctx ) {
@@ -309,7 +309,7 @@ function fade(that,func) {
     this.that = card;
   };
   this.play = function() {
-    animation_queue[String.valueOf(this)] = this ;
+    animation_queue["anim.fade"] = this ;
   };
 }
 
@@ -318,7 +318,7 @@ function bump(that,func) {
   this.that = that;
   this.onFinishListener = func;
   this.onFinish = function() {
-    animation_queue[String.valueOf(this)] = null;
+    animation_queue["anim.bump"] = null;
 	this.onFinishListener();
   }
   this.loop = function( ctx ) {
@@ -337,7 +337,7 @@ function bump(that,func) {
     this.that = card;
   };
   this.play = function() {
-    animation_queue[String.valueOf(this)] = this ;
+    animation_queue["anim.bump"] = this ;
   };
 }
 
@@ -350,7 +350,7 @@ function bounce(that,x,y) {
     if( this.that.y >= this._Y - 12 ) {
       this.step = -2;
       this.that.y = this._Y - 12;
-    } else if ( this.that._Y <= this.y - 22 ) {
+    } else if ( this.that.y <= this._Y - 22 ) {
       this.step = 2;
       this.that.y = this._Y - 22;
     }
@@ -363,7 +363,7 @@ function bounce(that,x,y) {
 	this.that.position(x,y);
   }
   this.play = function() {
-    animation_queue[String.valueOf(this)] = this;
+    animation_queue["anim.bounce"] = this;
   }
 }
 
@@ -374,7 +374,7 @@ function spark(that) {
   this.that = null;
   this.onFinishListener = null;
   this.onFinish = function() {
-    animation_queue[String.valueOf(this)] = null;
+    animation_queue["anim.spark"] = null;
 	this.onFinishListener();
   }
   this.loop = function( ctx ) {
@@ -394,7 +394,7 @@ function spark(that) {
   };
   this.play = function( txt ) {
     this.setText(txt);
-    animation_queue[String.valueOf(this)] = this ;
+    animation_queue["anim.spark"] = this ;
   };
 }
 
@@ -601,6 +601,8 @@ function scene_rule( that ) {
   play.setTo( "result", select );
   play.setTo( "tick", play );
   play.setTo( "down", play );
+  play.setTo( "attack", play );
+  play.setTo( "response", play );
   open.setTo( "tick", open );
   open.setTo( "play", play );
   
@@ -627,28 +629,32 @@ function render( canvas, w, h ) {
     var msg = message_queue.shift();
     if( v !== null && msg !== null && msg !== undefined ) {
       if( msg.name !== this.lastmsg.name ) {
-        this.ctx.clearRect(0,0,this.width,this.height);
         msg.ctx = this.ctx;
         v.move( msg );
-        this.lastmsg = msg;
       }
       if( msg.name === "tick" ) {
-        for( var anim in animation_queue ) 
-          anim.loop(this.ctx);
-		message_queue.splice(message_queue.length-1,1);
+	    this.ctx.clearRect(0,0,this.width,this.height);
+        msg.ctx = this.ctx;
+        v.move( msg );
+        for( var i in animation_queue ) 
+          animation_queue[i].loop(this.ctx);
+		//message_queue.splice(message_queue.length-1,1);
+		this.lastmsg = msg;
       }
     }
     if( !this.stop ) {
       //requestAnimationFrame( function(){that.loop()} );
 	  console.log('msg len: '+message_queue.length);
       setTimeout(function(){that.loop()},100);
-      this.now = new Date().getTime();
-      this.tick = this.now - (this.time || this.now);
-      this.time = this.now;
-      var msg = new message();
-      msg.name = "tick";
-      msg.data = this.tick;
-      message_queue.push( msg );
+	  if( message_queue.length === 0 ) {
+        this.now = new Date().getTime();
+        this.tick = this.now - (this.time || this.now);
+        this.time = this.now;
+        var msg = new message();
+        msg.name = "tick";
+        msg.data = this.tick;
+        message_queue.push( msg );
+	  }
     }
   }
   var that = this;
