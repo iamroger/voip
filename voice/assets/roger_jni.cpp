@@ -311,6 +311,10 @@ JNIEXPORT jint JNICALL Java_org_roger_android_core_core_init
         media_cfg.channel_count = 1;
         /* Disable echo-cancelling */
         media_cfg.ec_tail_len = 0;
+
+	cfg.stun_host = pj_str("64.24.35.201");
+	med_cfg.enable_ice = 1;
+	med_cfg.enable_turn = 0;
         
         status = pjsua_init(&cfg, &log_cfg, &media_cfg);
         if (status != PJ_SUCCESS) {
