@@ -3661,10 +3661,11 @@ static void call_disconnect( pjsip_inv_session *inv,
 	code==PJSIP_SC_NOT_ACCEPTABLE_HERE)
     {
 	pjmedia_sdp_session *local_sdp;
+        pjsua_call_media *call_med = &call->media[i];
 	pjmedia_transport_info ti;
 
 	pjmedia_transport_info_init(&ti);
-	pjmedia_transport_get_info(call->med_tp, &ti);
+	pjmedia_transport_get_info(call_med->tp/* roger call->med_tp*/, &ti);
 	status = pjmedia_endpt_create_sdp(pjsua_var.med_endpt, tdata->pool,
 					  1, &ti.sock_info, &local_sdp);
 	if (status == PJ_SUCCESS) {

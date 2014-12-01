@@ -257,7 +257,7 @@ enum pjsua_invalid_id_const_
 };
 
 /** Disabled features temporarily for media reorganization */
-#define DISABLED_FOR_TICKET_1185	0
+#define DISABLED_FOR_TICKET_1185	1
 
 /** Call identification */
 typedef int pjsua_call_id;
