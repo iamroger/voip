@@ -891,7 +891,7 @@ static pj_status_t create_ice_media_transports(pjsua_transport_config *cfg)
 	for (strm_idx=0; strm_idx < call->med_cnt; ++strm_idx) {
 	    pjsua_call_media *call_med = &call->media[strm_idx];
 
-	    status = create_ice_media_transport(cfg, call_med);
+	    status = create_ice_media_transport(cfg, call_med, PJ_FALSE);
 	    if (status != PJ_SUCCESS)
 		goto on_error;
 	}
@@ -955,7 +955,7 @@ PJ_DEF(pj_status_t) pjsua_media_transports_create(
     pjsua_transport_config_dup(pjsua_var.pool, &cfg, app_cfg);
 
     /* Create the transports */
-    if (pjsua_var.ice_cfg.enable_ice) {
+    if (pjsua_var.acc[pjsua_var.default_acc].cfg.ice_cfg.enable_ice) { /*roger*/
 	status = create_ice_media_transports(&cfg);
     } else {
 	status = create_udp_media_transports(&cfg);
@@ -1619,6 +1619,7 @@ pj_status_t pjsua_media_channel_init(pjsua_call_id call_id,
     /* Return error if media transport has not been created yet
      * (e.g. application is starting)
      */
+    int i = 0;
     for (i=0; i<call->med_cnt; ++i) {
 	if (call->media[i].tp == NULL) {
 	    status = PJ_EBUSY;

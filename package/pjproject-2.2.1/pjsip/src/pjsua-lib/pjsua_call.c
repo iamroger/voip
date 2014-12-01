@@ -3656,12 +3656,12 @@ static void call_disconnect( pjsip_inv_session *inv,
 
     /* Add SDP in 488 status */
     call = (pjsua_call*) inv->dlg->mod_data[pjsua_var.mod.id];
+    pjsua_call_media *call_med = &call->media[0];
 
-    if (call && call->tp && tdata->msg->type==PJSIP_RESPONSE_MSG &&
+    if (call_med && call_med->tp && tdata->msg->type==PJSIP_RESPONSE_MSG &&
 	code==PJSIP_SC_NOT_ACCEPTABLE_HERE)
     {
 	pjmedia_sdp_session *local_sdp;
-        pjsua_call_media *call_med = &call->media[i];
 	pjmedia_transport_info ti;
 
 	pjmedia_transport_info_init(&ti);
