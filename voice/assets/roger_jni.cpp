@@ -28,9 +28,9 @@
 #include <pjsua-lib/pjsua.h>
 #include <time.h>
 //#include <pjmedia/port.h>
-#define LOGI(fmt, args...) //__android_log_print(ANDROID_LOG_INFO, LOG_TAG, fmt, ##args)
-#define LOGD(fmt, args...) //__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, fmt, ##args)
-#define LOGE(fmt, args...) //__android_log_print(ANDROID_LOG_ERROR, LOG_TAG, fmt, ##args)
+#define LOGI(fmt, args...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, fmt, ##args)
+#define LOGD(fmt, args...) __android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, fmt, ##args)
+#define LOGE(fmt, args...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, fmt, ##args)
 
 #undef LOG_TAG
 #define LOG_TAG       "debug"
@@ -301,7 +301,7 @@ JNIEXPORT jint JNICALL Java_org_roger_android_core_core_init
 
         pjsua_logging_config_default(&log_cfg);
         log_cfg.console_level = 10;
-        log_cfg.cb = NULL;//roger_log;
+        log_cfg.cb = roger_log;
 
         pjsua_media_config_default(&media_cfg);
         /* Set the clock rates to 8kHz to avoid resampling */
@@ -313,8 +313,8 @@ JNIEXPORT jint JNICALL Java_org_roger_android_core_core_init
         media_cfg.ec_tail_len = 0;
 
 	cfg.stun_host = pj_str("64.24.35.201");
-	med_cfg.enable_ice = 1;
-	med_cfg.enable_turn = 0;
+	media_cfg.enable_ice = 1;
+	media_cfg.enable_turn = 0;
         
         status = pjsua_init(&cfg, &log_cfg, &media_cfg);
         if (status != PJ_SUCCESS) {
@@ -389,7 +389,7 @@ bool isValid( const char* name, const char* pwd ) {
     }
     if( strlen(p) < 36 && strlen(pwd) < 36 && strlen(p) > 0 && strlen(pwd) > 0 ){
         while( *p ) {
-            if( (*p > 'a' && *p < 'z')||(*p > 'A' && *p < 'Z')||(*p > '0' && *p < '9') ) {
+            if( (*p >= 'a' && *p <= 'z')||(*p >= 'A' && *p <= 'Z')||(*p >= '0' && *p <= '9') ) {
                 p++;
             }else{
                 return false;
