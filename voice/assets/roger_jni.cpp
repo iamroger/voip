@@ -26,11 +26,12 @@
 #include <android/log.h>
 #include <pthread.h>
 #include <pjsua-lib/pjsua.h>
+#include <pjsip/sip_config.h>
 #include <time.h>
 //#include <pjmedia/port.h>
-#define LOGI(fmt, args...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, fmt, ##args)
-#define LOGD(fmt, args...) __android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, fmt, ##args)
-#define LOGE(fmt, args...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, fmt, ##args)
+#define LOGI(fmt, args...) //__android_log_print(ANDROID_LOG_INFO, LOG_TAG, fmt, ##args)
+#define LOGD(fmt, args...) //__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, fmt, ##args)
+#define LOGE(fmt, args...) //__android_log_print(ANDROID_LOG_ERROR, LOG_TAG, fmt, ##args)
 
 #undef LOG_TAG
 #define LOG_TAG       "debug"
@@ -53,7 +54,6 @@ class CNI {
          jclass jc;
          jmethodID jm;
          jobject jo;
-         jobject joo;
          char jfunc_class[128];
          char jfunc_method[128];
     public:
@@ -73,7 +73,6 @@ class CNI {
         jc = 0;
         jm = 0;
         jo = NULL;
-        joo = obj;
         thread_env = NULL;
         
         jboolean iscopy;
@@ -88,8 +87,16 @@ class CNI {
         }
     }
     ~CNI() {
-        if( e && joo ) 
-            e->DeleteLocalRef(joo);
+        if( jo && jvm ) { 
+            thread_env = NULL, attach_env = NULL;
+            jvm->AttachCurrentThread( &thread_env, NULL );
+            if( thread_env ) {
+                thread_env->DeleteGlobalRef(jo);
+                jvm->GetEnv((void**) &attach_env, JNI_VERSION_1_4);
+            }
+            if( attach_env != thread_env )
+                jvm->DetachCurrentThread();
+        }
     }
     static void acquire( JNIEnv* env, jobject obj, jstring javaclassmethod ) {
         if ( singleton == NULL )
@@ -103,6 +110,59 @@ class CNI {
     }
     static CNI* single() {
         return singleton;
+    }
+    int cmp( const char* s1, const char* s2 ) {
+        if( !s1 || !s2 )
+            return -2;
+        while( *s1 && *s2 && *s1 == *s2 ){
+            s1 ++; s2 ++;
+        }
+        
+        if( *s1 == *s2 )
+            return 0;
+        if( *s1 > *s2 )
+            return 1;
+        if( *s1 < *s2 )
+            return -1;
+    }
+    int indexOf( const char* str, char c ) {
+        const char* s = str;
+        if( !str || !c )
+            return -2;
+        while( *s && *s != c ) s++;
+
+        if( *s == c )
+            return s - str;
+        return -1;
+    }
+    int indexOf( const char* str, const char* seq ) {
+        const char* s = str;
+        if( !str || !seq )
+            return -2;
+        while( *s && !cmp( s, seq ) ) 
+            s++;
+
+        if( *s )
+            return s - str;
+        return -1;
+    }
+    int getNameFromURL( const char* url, char** name ){
+        char header[6] = {"<sip:"};
+        char tail = '>';
+        char seperator = '@';
+        int h = 0, s = 0, t = 0;
+        if( !url || !name || !*name )
+            return 0;
+
+        h = indexOf( url, header );
+        s = indexOf( url, seperator );
+        t = indexOf( url, tail );
+        LOGI("head :%d, seperator:%d, tail:%d", h, s, t);
+        if( t > s && s > h ) {
+            memcpy( *name, url + h + 5, s - ( h + 5 ) );
+            return s - ( h + 5 );
+        }
+        return 0;
     }
     int handle( char* str ) {
         jc = 0, jm = 0, thread_env = NULL, attach_env = NULL; 
@@ -139,31 +199,34 @@ class CNI {
     	pjsua_conf_disconnect(ring_slot, 0);
     }
     void video_start() {
+    }
+    void video_stop() {
+    }
+    static void answer( pjsua_call_id call_id ) {
+	pjsua_call_info call_info;
 
+	pjsua_call_get_info(call_id, &call_info);
+	int i;
+	for (i=0; i<call_info.media_cnt; ++i) {
+		pjsua_conf_port_id call_conf_slot;
+		call_conf_slot = call_info.media[i].stream.aud.conf_slot;
+		pjsua_conf_connect(call_conf_slot, 0);
+		if (!0/*disconnect_mic*/)
+			pjsua_conf_connect(0, call_conf_slot);
 	}
-	void video_stop() {
-
-	}
-	static void answer( pjsua_call_id call_id ) {
-		pjsua_call_info call_info;
-
-		pjsua_call_get_info(call_id, &call_info);
-
-		int i;
-		for (i=0; i<call_info.media_cnt; ++i) {
-			pjsua_conf_port_id call_conf_slot;
-			call_conf_slot = call_info.media[i].stream.aud.conf_slot;
-			pjsua_conf_connect(call_conf_slot, 0);
-			if (!0/*disconnect_mic*/)
-				pjsua_conf_connect(0, call_conf_slot);
-		}
                 
         pjsua_call_answer(call_id, 200, NULL, NULL);
-	}
-	static void hangup( pjsua_call_id call_id ) {
-		current_call_id = -1;
-		pjsua_call_hangup(call_id, PJSIP_SC_GONE, NULL, NULL);
-	}
+    }
+    static void hangup( pjsua_call_id call_id ) {
+	current_call_id = -1;
+	pjsua_call_hangup(call_id, PJSIP_SC_GONE, NULL, NULL);
+    }
+    static void sendim( pj_str_t* to, pj_str_t* msg ) {
+        if( pjsua_acc_is_valid( account_id ) ) {
+            pjsua_im_send( account_id, to, NULL/*pj_str_t *mime_type*/, msg, 
+                NULL/*pjsua_msg_data *msg_data*/, NULL/*void *user_data*/);
+        }
+    }
 };
 CNI* CNI::singleton = NULL;
 
@@ -198,6 +261,26 @@ static void on_incoming_call(pjsua_acc_id acc_id, pjsua_call_id call_id,
     }
     LOGI("on incoming call accepted, %s", ci.remote_info.ptr);
 }
+static void cb_on_pager(pjsua_call_id call_id, const pj_str_t *from,
+                        const pj_str_t *to, const pj_str_t *contact,
+                        const pj_str_t *mime_type, const pj_str_t *body)
+{
+    char content[416] = {0};
+    char s[32] = {"#message#"};
+    char* ptr = content+9;
+    int from_len = 0;
+    CNI* rcv = CNI::single();
+    if( from && contact ) {
+        strcpy(content, s);
+        from_len = rcv->getNameFromURL( from->ptr, &ptr );
+        strcpy(content+9+from_len, "&&");
+        strcpy(content+9+from_len+2, body->ptr);
+        if( rcv && rcv->handle( content ) != -1) {
+        /* Automatically answer incoming calls with 200/OK */
+        }
+    }
+    LOGI("on incoming call accepted, %s, %s", from->ptr, body->ptr);
+}
 
 /* CNI called by the library when call's state has changed */
 static void on_call_state(pjsua_call_id call_id, pjsip_event *e)
@@ -210,14 +293,19 @@ static void on_call_state(pjsua_call_id call_id, pjsip_event *e)
     PJ_UNUSED_ARG(e);
     char s1[32] = {"#disconnected#"};
     char s2[32] = {"#confirmed#"};
+    char s3[32] = {"#offline#"};
 
     pjsua_call_get_info(call_id, &ci);
-    LOGI("Call %d state=%.*s", call_id, (int)ci.state_text.slen, ci.state_text.ptr);
+    LOGI("Call %d state=%.*s, code=%d new version", call_id, (int)ci.state_text.slen, ci.state_text.ptr,ci.last_status);
     if (ci.state == PJSIP_INV_STATE_DISCONNECTED) {
         CNI* rcv = CNI::single();
         CNI::ring_stop(); 
-        if ( rcv ) 
-            rcv->handle( s1 );
+        if ( rcv ) {
+            if( ci.last_status == 404 )
+                rcv->handle( s3 );
+            else
+                rcv->handle( s1 );
+        }
     }else if ( ci.state == PJSIP_INV_STATE_CONFIRMED){
         CNI* rcv = CNI::single();
         CNI::ring_stop();
@@ -245,8 +333,14 @@ static void on_call_media_state(pjsua_call_id call_id)
 static void roger_log( int level, const char* data, int len ) {
     if( level == 5 ) 
        LOGI("roger level: %d, log %.*s", level, len,  data );
-    else if( level <= 4 )
-       LOGD("roger level: %d, log %.*s", level, len,  data );
+    else if( level <= 4 ) {
+       if ( len > 800 ) {
+           LOGD("<<<<<: %.*s", 800,  data );
+           LOGD(">>>>>: %.*s", len-800,  data+800 );
+       }else {
+           LOGD("roger level: %d, log %.*s", level, len,  data );
+       }
+    }
     else
        LOGE("roger level: %d, log %.*s", level, len,  data ); 
 }
@@ -290,6 +384,7 @@ JNIEXPORT jint JNICALL Java_org_roger_android_core_core_init
         cfg.cb.on_call_state = &on_call_state;
         cfg.cb.on_incoming_call = &on_incoming_call;
         cfg.cb.on_reg_state2 = &on_reg_state;
+        cfg.cb.on_pager = &cb_on_pager;
         /* Add a proxy, if we've got one. */
         proxy_str = (char *) env->GetStringUTFChars(proxy, &iscopy);
         if(strlen(proxy_str) != 0) {
@@ -301,7 +396,7 @@ JNIEXPORT jint JNICALL Java_org_roger_android_core_core_init
 
         pjsua_logging_config_default(&log_cfg);
         log_cfg.console_level = 10;
-        log_cfg.cb = roger_log;
+        log_cfg.cb = NULL;//roger_log;
 
         pjsua_media_config_default(&media_cfg);
         /* Set the clock rates to 8kHz to avoid resampling */
@@ -312,13 +407,16 @@ JNIEXPORT jint JNICALL Java_org_roger_android_core_core_init
         /* Disable echo-cancelling */
         media_cfg.ec_tail_len = 0;
 
-	cfg.stun_host = pj_str("64.24.35.201");
-	media_cfg.enable_ice = 1;
-	media_cfg.enable_turn = 0;
+	//cfg.stun_host = pj_str("64.24.35.201");
+	//media_cfg.enable_ice = 1;
+	//media_cfg.enable_turn = 1;
+        //media_cfg.turn_conn_type=PJ_TURN_TP_UDP;
+        //media_cfg.turn_server=pj_str("54.218.33.25:8899");
+        
         
         status = pjsua_init(&cfg, &log_cfg, &media_cfg);
         if (status != PJ_SUCCESS) {
-            LOGE("failed to init pjsua, status %d", status);
+            LOGE("failed to init, status %d", status);
             return (jint) status;
         }
 
@@ -434,8 +532,10 @@ JNIEXPORT jint JNICALL Java_org_roger_android_core_core_add_1account
         cfg.cred_info[0].username = pj_str(sip_user_ptr);
         cfg.cred_info[0].data_type = PJSIP_CRED_DATA_PLAIN_PASSWD;
         cfg.cred_info[0].data = pj_str(sip_passwd_ptr);
-        if( account_id > 0 ) 
+        if( pjsua_acc_is_valid( account_id ) ){
             pjsua_acc_del( account_id);
+            account_id = -1;
+        }
 
         status = pjsua_acc_add(&cfg, PJ_TRUE, &account_id);
     } else {
@@ -513,7 +613,23 @@ JNIEXPORT void JNICALL Java_org_roger_android_core_core_answer
     CNI::answer( current_call_id );
 }
 
+JNIEXPORT void JNICALL Java_org_roger_android_core_core_sendim
+    (JNIEnv *env, jclass cls, jstring to, jstring msg) {
+    char addr[128] = {"sip:"};
+    char content[256] = {0};
+    char *url_ptr, *msg_ptr;
+    jboolean iscopy;
 
+    msg_ptr = (char *) env->GetStringUTFChars(msg, &iscopy);
+    url_ptr = (char *) env->GetStringUTFChars(to, &iscopy);
+    if( strlen( msg_ptr ) < 256 && strlen(url_ptr) < 128 ) {
+        strcpy(addr+4, url_ptr); 
+        strcpy(content, msg_ptr);
+        pj_str_t _url = pj_str(addr);
+        pj_str_t _msg = pj_str(content);
+        CNI::sendim( &_url, &_msg );
+    }
+}
 /*
  * Method:    destroy
  * Signature: ()V
@@ -530,7 +646,11 @@ JNIEXPORT void JNICALL Java_org_roger_android_core_core_destroy
         pjmedia_port_destroy(ring_port);
         ring_port = NULL;
     }
-    
+    if( pjsua_acc_is_valid( account_id ) ){
+        pjsua_acc_del( account_id);
+        account_id = -1;
+    }
+
     pjsua_destroy();
     CNI::release();
 }
