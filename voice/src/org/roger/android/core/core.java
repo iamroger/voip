@@ -18,6 +18,7 @@ public class core {
     public static native int make_call(int acc_id, String uri);
     public static native void hangup();
     public static native void answer();
+    public static native void sendim( String to, String msg );
     public static native void destroy();
     private static main ctx = null;
 
@@ -28,13 +29,15 @@ public class core {
     	Log.e("Droid", "test" );
     }
     public int receive( String remoteCall ){
-    	//Log.e("debug",remoteCall);
-    	if( remoteCall.equals("#disconnected#") ) {
+    	Log.e("debug-------------------------------",remoteCall);
+    	if( remoteCall.equals("#disconnected#") || remoteCall.equals("#offline#") ) {
     		if( droid.self != null )
 				droid.self.startActivity("main");
     	}else if ( remoteCall.equals("#confirmed#") ) {
     		if( droid.self != null )
     			droid.self.startActivity("calling", "route", "confirm" );
+    	}else if( remoteCall.indexOf("#message#") == 0 ) {
+    		ctx.setIMSG(remoteCall);
     	}else {
     		ctx.incomingCall( remoteCall.substring(5,remoteCall.indexOf('@')) );
     	}

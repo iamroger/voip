@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
@@ -64,9 +65,18 @@ public class main extends Activity implements OnClickListener
 	public static core co = null;
 	
     ImageView callstatus;
-    TextView app_about;
+    static TextView app_about;
     
     public static int acc_id = -1;
+    
+    public void setIMSG( String str ) {
+    	Bundle b = new Bundle();
+        b.putString("imsg", str);
+    	Message m = new Message();
+        m.what = IMSG;
+        m.setData( b );
+    	mHandler.sendMessage( m ); 
+    }
     
     private Handler mHandler= new Handler(){      
     	public void handleMessage(Message msg) {
@@ -75,6 +85,8 @@ public class main extends Activity implements OnClickListener
 					droid.self.startActivity("calling", "route", "in", "name", msg.getData().getString("name"));
     		}else if ( msg.what == TRYREG ) {
     			acc_id = co.add_account(droid.callData.getUser(),droid.callData.getCarrior(),droid.callData.getPasswd() );
+    		}else if ( msg.what == IMSG ) {
+    			app_about.setText(msg.getData().getString("imsg"));
     		}
     	}
     };
@@ -107,6 +119,7 @@ public class main extends Activity implements OnClickListener
     }
     private final static int INCALL = 1;
     private final static int TRYREG = 2;
+    private final static int IMSG = 3;
     public void incomingCall(String name ) {
     	if( name.equals(droid.callData.get("user"))  )
     		return;
@@ -157,7 +170,16 @@ public class main extends Activity implements OnClickListener
     	//co.destroy();
     	//moveTaskToBack(true);//finish();
         //System.exit(0);
-    	droid.self.onBackPressed();
+    	//droid.self.onBackPressed();
+    	co.destroy();
+    	co.init("","org/roger/android/core/core/receive"); 
+    	acc_id = co.add_account(droid.callData.getUser(),droid.callData.getCarrior(),droid.callData.getPasswd() );
+		if(acc_id < 0) {
+			Log.i("debug","failed to login!");
+		} else {
+			Log.i("debug","success to login!");
+		}Cursor c;
+
     }
     public void register( View v ) {
     	ConnectivityManager connManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
@@ -269,7 +291,6 @@ public class main extends Activity implements OnClickListener
         acc_id = co.add_account(droid.callData.getUser(),droid.callData.getCarrior(),droid.callData.getPasswd() );
 		if(acc_id < 0) {
 			Log.i("debug","failed to login!");
-			return;
 		} else {
 			Log.i("debug","success to login!");
 		}
@@ -399,6 +420,13 @@ public class main extends Activity implements OnClickListener
 			else if( et.getText().toString().equals("*3") ) {
 				droid.callData.setBgimg(R.drawable.wow3);
 				droid.self.getWindow().setBackgroundDrawableResource(droid.callData.getBgimg());
+				break;
+			}
+			else if( et.getText().toString().getBytes()[0] == '#' ) {
+				String str = et.getText().toString();
+				String to = str.substring(1, str.indexOf('#', 1) );
+				String msg = str.substring(str.indexOf('#', 1)+1);
+				co.sendim(to+"@"+ droid.callData.getCarrior(), msg);
 				break;
 			}
 			else if( isNumOrChar( et.getText().toString() ) ) {
