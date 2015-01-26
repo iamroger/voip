@@ -1,0 +1,15 @@
+CREATE TABLE `imsg` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `src_addr` char(128) NOT NULL DEFAULT '',
+  `dst_addr` char(128) NOT NULL DEFAULT '',
+  `username` char(64) NOT NULL DEFAULT '',
+  `domain` char(64) NOT NULL DEFAULT '',
+  `inc_time` int(11) NOT NULL DEFAULT '0',
+  `exp_time` int(11) NOT NULL DEFAULT '0',
+  `snd_time` int(11) NOT NULL DEFAULT '0',
+  `ctype` char(32) NOT NULL DEFAULT 'text/plain',
+  `body` blob NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `account_idx` (`username`,`domain`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+insert into version( table_name,table_version)values('imsg',6);
