@@ -166,7 +166,6 @@ static const str MI_HTTP_Response_Title_Table_1 = str_init(\
 "<table cellspacing=\"0\" cellpadding=\"5\" width=\"100%%\" border=\"0\">"\
 	"<tr bgcolor=\"#BBDDFF\">"\
 	"<td colspan=2 valign=\"top\" align=\"left\" bgcolor=\"#EFF7FF\" width=\"100%%\">"\
-	"<br/><h2 align=\"center\">OpenSIPS MI HTTP Interface</h2>"\
 	"<p align=\"center\">");
 static const str MI_HTTP_Response_Title_Table_2 = str_init(" is running since <i>");
 static const str MI_HTTP_Response_Title_Table_3 = str_init("</i></p><br/></td></tr></table>\n<center>\n");
@@ -222,9 +221,6 @@ static const str MI_HTTP_Post_1a = str_init("\n"\
 static const str MI_HTTP_Response_Foot = str_init(\
 "\n</center>\n<div align=\"center\" class=\"foot\" style=\"margin:20px auto\">"\
 	"<span style='margin-left:5px;'></span>"\
-	"<a href=\"http://opensips.org\">OpenSIPS web site</a><br/>"\
-	"Copyright &copy; 2011-2012 <a href=\"http://www.voipembedded.com/\">VoIP Embedded</a>"\
-								". All rights reserved."\
 "</div></body></html>");
 
 #define MI_HTTP_ROWSPAN 5
