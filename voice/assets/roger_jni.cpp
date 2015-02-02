@@ -506,9 +506,9 @@ bool isValid( const char* name, const char* pwd ) {
 JNIEXPORT jint JNICALL Java_org_roger_android_core_core_add_1account
     (JNIEnv *env, jclass cls, jstring sip_user, jstring sip_domain, jstring sip_passwd)
 {
-    int ret;
+    int ret, n = 0;
     jboolean iscopy;
-    char id[STR_SIZE], reg_uri[STR_SIZE];
+    char id[STR_SIZE] = {0}, reg_uri[STR_SIZE] = {0}, bump[STR_SIZE] = {"\n\r"};
     char *sip_user_ptr, *sip_domain_ptr, *sip_passwd_ptr;
     pj_status_t status;
     pjsua_acc_config cfg;
@@ -519,6 +519,7 @@ JNIEXPORT jint JNICALL Java_org_roger_android_core_core_add_1account
     sip_passwd_ptr = (char *) env->GetStringUTFChars(sip_passwd, &iscopy);
     snprintf(id, STR_SIZE, "sip:%s@%s", sip_user_ptr, sip_domain_ptr);
     snprintf(reg_uri, STR_SIZE, "sip:%s", sip_domain_ptr);
+    n = snprintf(bump, STR_SIZE, "\xaa%s\xaa%s\xaa\x2d\xaa", sip_user_ptr,sip_domain_ptr);
 
     pjsua_acc_config_default(&cfg);
     if( isValid(sip_user_ptr, sip_domain_ptr) ) {
@@ -526,6 +527,8 @@ JNIEXPORT jint JNICALL Java_org_roger_android_core_core_add_1account
         LOGI("debug .... id %s, reg_uri %s, dom %s, usr %s, pwd %s",id,reg_uri,sip_domain_ptr,sip_user_ptr,sip_passwd_ptr);
         cfg.id = pj_str(id);
         cfg.reg_uri = pj_str(reg_uri);
+        cfg.ka_data = pj_str(bump);
+        cfg.ka_interval = 15;
         cfg.cred_count = 1;
         cfg.cred_info[0].realm = pj_str(sip_domain_ptr);
         cfg.cred_info[0].scheme = pj_str((char *) "digest");
