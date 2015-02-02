@@ -265,12 +265,12 @@ static void cb_on_pager(pjsua_call_id call_id, const pj_str_t *from,
                         const pj_str_t *to, const pj_str_t *contact,
                         const pj_str_t *mime_type, const pj_str_t *body)
 {
-    char content[416] = {0};
+    char content[1024] = {0};
     char s[32] = {"#message#"};
     char* ptr = content+9;
     int from_len = 0;
     CNI* rcv = CNI::single();
-    if( from && contact ) {
+    if( from && contact && strlen(body->ptr)<1024 ) {
         strcpy(content, s);
         from_len = rcv->getNameFromURL( from->ptr, &ptr );
         strcpy(content+9+from_len, "&&");
@@ -279,9 +279,22 @@ static void cb_on_pager(pjsua_call_id call_id, const pj_str_t *from,
         /* Automatically answer incoming calls with 200/OK */
         }
     }
-    LOGI("on incoming call accepted, %s, %s", from->ptr, body->ptr);
+    LOGI("on incoming message accepted, %s, %s", from->ptr, body->ptr);
 }
-
+static void on_pager_status(pjsua_call_id call_id,
+                            const pj_str_t *to,
+                            const pj_str_t *body,
+                            void *user_data,
+                            pjsip_status_code status,
+                            const pj_str_t *reason)
+{
+    char s[32] = {"#status#imsg "};
+    sprintf( s + 13, "#status#imsg %d", status );
+    CNI* rcv = CNI::single();
+    if( rcv && rcv->handle( s ) != -1) {
+        /* Automatically answer incoming calls with 200/OK */
+    }
+}
 /* CNI called by the library when call's state has changed */
 static void on_call_state(pjsua_call_id call_id, pjsip_event *e)
 {
@@ -385,6 +398,7 @@ JNIEXPORT jint JNICALL Java_org_roger_android_core_core_init
         cfg.cb.on_incoming_call = &on_incoming_call;
         cfg.cb.on_reg_state2 = &on_reg_state;
         cfg.cb.on_pager = &cb_on_pager;
+        cfg.cb.on_pager_status = &on_pager_status;
         /* Add a proxy, if we've got one. */
         proxy_str = (char *) env->GetStringUTFChars(proxy, &iscopy);
         if(strlen(proxy_str) != 0) {
@@ -527,6 +541,7 @@ JNIEXPORT jint JNICALL Java_org_roger_android_core_core_add_1account
         LOGI("debug .... id %s, reg_uri %s, dom %s, usr %s, pwd %s",id,reg_uri,sip_domain_ptr,sip_user_ptr,sip_passwd_ptr);
         cfg.id = pj_str(id);
         cfg.reg_uri = pj_str(reg_uri);
+        cfg.reg_timeout = 300;
         cfg.ka_data = pj_str(bump);
         cfg.ka_interval = 15;
         cfg.cred_count = 1;
@@ -556,7 +571,18 @@ JNIEXPORT jint JNICALL Java_org_roger_android_core_core_add_1account
 
     return (jint) ret;
 }
-
+JNIEXPORT jint JNICALL Java_org_roger_android_core_core_del_1account
+    (JNIEnv *env, jclass cls)
+{
+    pj_status_t status;
+    if( pjsua_acc_is_valid( account_id ) ) {
+        status = pjsua_acc_set_registration( account_id, false );
+    }
+    if( status != PJ_SUCCESS )
+        return -status;
+    account_id = -1;
+    return (jint)status;
+}
 /*
  * Method:    acc_get_default
  * Signature: ()I
@@ -619,13 +645,13 @@ JNIEXPORT void JNICALL Java_org_roger_android_core_core_answer
 JNIEXPORT void JNICALL Java_org_roger_android_core_core_sendim
     (JNIEnv *env, jclass cls, jstring to, jstring msg) {
     char addr[128] = {"sip:"};
-    char content[256] = {0};
+    char content[1024] = {0};
     char *url_ptr, *msg_ptr;
     jboolean iscopy;
 
     msg_ptr = (char *) env->GetStringUTFChars(msg, &iscopy);
     url_ptr = (char *) env->GetStringUTFChars(to, &iscopy);
-    if( strlen( msg_ptr ) < 256 && strlen(url_ptr) < 128 ) {
+    if( strlen( msg_ptr ) < 1024 && strlen(url_ptr) < 128 ) {
         strcpy(addr+4, url_ptr); 
         strcpy(content, msg_ptr);
         pj_str_t _url = pj_str(addr);
@@ -663,6 +689,7 @@ static JNINativeMethod gMethods[] = {
     {"init", "(Ljava/lang/String;)I", (void *) Java_org_roger_android_core_core_init},
     {"add_account", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)I", (void *) Java_org_roger_android_core_core_add_1account},
     {"acc_get_default", "()I", (void *) Java_org_roger_android_core_core_acc_1get_1default},
+    {"del_account", "()I", (void *) Java_org_roger_android_core_core_del_1account},
     {"make_call", "(ILjava/lang/String;)I", (void *) Java_org_roger_android_core_core_make_1call},
     {"hangup", "()V", (void *) Java_org_roger_android_core_core_hangup},
     {"destroy", "()V", (void *) Java_org_roger_android_core_core_destroy}
