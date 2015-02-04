@@ -723,8 +723,91 @@ static inline int add_contacts(struct sip_msg* _m, contact_t* _c,
 	ul.unlock_udomain(_d, &_sctx->aor);
 	return 0;
 }
+/* roger */
+static inline int save_login(struct sip_msg* _m, contact_t* _c,
+                                                        udomain_t* _d, struct save_ctx *_sctx)
+{
+	int res;
+	urecord_t* _r;
+	ucontact_info_t ci;
+        ucontact_t *c_last, *c_it;
 
+	ul.lock_udomain(_d, &_sctx->aor);
+        res = ul.get_urecord(_d, &_sctx->aor, &_r);
+        if (res < 0) {
+                rerrno = R_UL_GET_R;
+                LM_ERR("failed to retrieve record from usrloc\n");
+                ul.unlock_udomain(_d, &_sctx->aor);
+                return -2;
+        }
+	for( c_it=_r->contacts,c_last=NULL ; c_it ; c_it=c_it->next ) {
+		c_last=c_it;
+		if (ul.delete_ucontact( _r, c_last)!=0) {
+			LM_ERR("failed to remove contact\n");
+			ul.unlock_udomain(_d, &_sctx->aor);
+			return -1;
+		}
+	}	
+	if (insert_contacts(_m, _c, _d, &_sctx->aor, _sctx) < 0) {
+		ul.unlock_udomain(_d, &_sctx->aor);
+		return -4;
+	}
+	ul.unlock_udomain(_d, &_sctx->aor);
+	return 0;
+}
+static inline int save_bump(struct sip_msg* _m, contact_t* _c,
+                                                        udomain_t* _d, struct save_ctx *_sctx)
+{
+	int res, e;
+	unsigned int cflags;
+	urecord_t* _r;
+	ucontact_info_t ci;
+	ucontact_t *c_last, *c_it;
 
+	ul.lock_udomain(_d, &_sctx->aor);
+	res = ul.get_urecord(_d, &_sctx->aor, &_r);
+	if (res < 0) {
+		rerrno = R_UL_GET_R;
+		LM_ERR("failed to retrieve record from usrloc\n");
+		ul.unlock_udomain(_d, &_sctx->aor);
+		return -2;
+	}
+	if (res == 0) {
+		for( c_it=_r->contacts,c_last=NULL ; c_it ; c_it=c_it->next )
+			c_last=c_it;
+		if ( c_last ) {	
+			cflags = (_sctx->flags&REG_SAVE_MEMORY_FLAG)?FL_MEM:FL_NONE;
+			if ( (ci=pack_ci( _m, 0, 0, cflags, _sctx->flags))==0 ) {
+				LM_ERR("failed to pack contact specific info\n");
+				ul.unlock_udomain(_d, &_sctx->aor);
+				return -1;
+			}
+			if (calc_contact_q(_c->q, &ci.q) < 0) {
+				rerrno = R_INV_Q;
+				LM_ERR("failed to calculate q\n");
+				ul.unlock_udomain(_d, &_sctx->aor);
+				return -1;
+			}
+			calc_contact_expires(_m, _c->expires, &e);
+			ci->callid = &c_last->callid;
+			ci->methods = &c_last->methods;
+			ci->cseq = &c_last->cseq;
+			ci->expires = e;
+			if (_c->instance) {
+				ci->instance = _c->instance->body;
+			}
+			LM_INFO("BUMP save %d", e);
+			if (ul.update_ucontact(_r, c_last, ci) < 0) {
+				rerrno = R_UL_UPD_C;
+				LM_ERR("failed to update contact\n");
+				ul.unlock_udomain(_d, &_sctx->aor);
+				return -1;
+			}
+		}
+	}
+	ul.unlock_udomain(_d, &_sctx->aor);
+	return 0;
+}
 /*! \brief
  * Process REGISTER request and save it's contacts
  */
@@ -734,7 +817,7 @@ int save_aux(struct sip_msg* _m, str* forced_binding, char* _d, char* _f, char* 
 	struct save_ctx  sctx;
 	contact_t* c;
 	contact_t* forced_c = NULL;
-	int st;
+	int st, delay_action;
 	str uri;
 	str flags_s;
 	pv_value_t val;
@@ -751,6 +834,8 @@ int save_aux(struct sip_msg* _m, str* forced_binding, char* _d, char* _f, char* 
 		}
 		for( st=0 ; st< flags_s.len ; st++ ) {
 			switch (flags_s.s[st]) {
+				case 'i': delay_action = 1; break;
+				case 'b': delay_action = 2; break;
 				case 'm': sctx.flags |= REG_SAVE_MEMORY_FLAG; break;
 				case 'r': sctx.flags |= REG_SAVE_NOREPLY_FLAG; break;
 				case 's': sctx.flags |= REG_SAVE_SOCKET_FLAG; break;
@@ -834,7 +919,13 @@ int save_aux(struct sip_msg* _m, str* forced_binding, char* _d, char* _f, char* 
 			if (no_contacts((udomain_t*)_d, &sctx.aor,_m) < 0) goto error;
 		}
 	} else {
-		if (add_contacts(_m, c, (udomain_t*)_d, &sctx) < 0) goto error;
+		if ( delay_action == 1 ) {
+			if (save_login(_m, c, (udomain_t*)_d, &sctx) < 0) goto error;
+		} else if( delay_action == 2 ) {
+			if (save_bump(_m, c, (udomain_t*)_d, &sctx) < 0) goto error;
+		} else {
+			if (add_contacts(_m, c, (udomain_t*)_d, &sctx) < 0) goto error;
+		}
 	}
 
 	update_stat(accepted_registrations, 1);
