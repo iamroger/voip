@@ -729,7 +729,6 @@ static inline int save_login(struct sip_msg* _m, contact_t* _c,
 {
 	int res;
 	urecord_t* _r;
-	ucontact_info_t ci;
         ucontact_t *c_last, *c_it;
 
 	ul.lock_udomain(_d, &_sctx->aor);
@@ -740,14 +739,16 @@ static inline int save_login(struct sip_msg* _m, contact_t* _c,
                 ul.unlock_udomain(_d, &_sctx->aor);
                 return -2;
         }
-	for( c_it=_r->contacts,c_last=NULL ; c_it ; c_it=c_it->next ) {
-		c_last=c_it;
-		if (ul.delete_ucontact( _r, c_last)!=0) {
-			LM_ERR("failed to remove contact\n");
-			ul.unlock_udomain(_d, &_sctx->aor);
-			return -1;
+	if (res == 0 && _r ) {
+		for( c_it=_r->contacts,c_last=NULL ; c_it ; c_it=c_it->next ) {
+			c_last=c_it;
+			if (ul.delete_ucontact( _r, c_last)!=0) {
+				LM_ERR("failed to remove contact\n");
+				ul.unlock_udomain(_d, &_sctx->aor);
+				return -1;
+			}
 		}
-	}	
+	}
 	if (insert_contacts(_m, _c, _d, &_sctx->aor, _sctx) < 0) {
 		ul.unlock_udomain(_d, &_sctx->aor);
 		return -4;
@@ -761,7 +762,7 @@ static inline int save_bump(struct sip_msg* _m, contact_t* _c,
 	int res, e;
 	unsigned int cflags;
 	urecord_t* _r;
-	ucontact_info_t ci;
+	ucontact_info_t* ci;
 	ucontact_t *c_last, *c_it;
 
 	ul.lock_udomain(_d, &_sctx->aor);
@@ -772,7 +773,7 @@ static inline int save_bump(struct sip_msg* _m, contact_t* _c,
 		ul.unlock_udomain(_d, &_sctx->aor);
 		return -2;
 	}
-	if (res == 0) {
+	if (res == 0 && _r) {
 		for( c_it=_r->contacts,c_last=NULL ; c_it ; c_it=c_it->next )
 			c_last=c_it;
 		if ( c_last ) {	
@@ -782,7 +783,7 @@ static inline int save_bump(struct sip_msg* _m, contact_t* _c,
 				ul.unlock_udomain(_d, &_sctx->aor);
 				return -1;
 			}
-			if (calc_contact_q(_c->q, &ci.q) < 0) {
+			if (calc_contact_q(_c->q, &(ci->q)) < 0) {
 				rerrno = R_INV_Q;
 				LM_ERR("failed to calculate q\n");
 				ul.unlock_udomain(_d, &_sctx->aor);
@@ -790,8 +791,8 @@ static inline int save_bump(struct sip_msg* _m, contact_t* _c,
 			}
 			calc_contact_expires(_m, _c->expires, &e);
 			ci->callid = &c_last->callid;
-			ci->methods = &c_last->methods;
-			ci->cseq = &c_last->cseq;
+			ci->methods = c_last->methods;
+			ci->cseq = c_last->cseq;
 			ci->expires = e;
 			if (_c->instance) {
 				ci->instance = _c->instance->body;
@@ -804,6 +805,8 @@ static inline int save_bump(struct sip_msg* _m, contact_t* _c,
 				return -1;
 			}
 		}
+		build_contact(_r->contacts,_m);
+		ul.release_urecord(_r);
 	}
 	ul.unlock_udomain(_d, &_sctx->aor);
 	return 0;
@@ -817,7 +820,7 @@ int save_aux(struct sip_msg* _m, str* forced_binding, char* _d, char* _f, char* 
 	struct save_ctx  sctx;
 	contact_t* c;
 	contact_t* forced_c = NULL;
-	int st, delay_action;
+	int st, delay_action = 0;
 	str uri;
 	str flags_s;
 	pv_value_t val;
