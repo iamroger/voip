@@ -1183,7 +1183,7 @@ nh_timer(unsigned int ticks, void *timer_idx)
 		cp =  (char*)cp + sizeof(path.len) + path.len;
 
 		/* determin the destination */
-		if ( path.len && (flags&sipping_flag)!=0 ) {
+		if ( path.len && (/*flags roger&*/sipping_flag)!=0 ) {
 			/* send to first URI in path */
 			if (get_path_dst_uri( &path, &opt) < 0) {
 				LM_ERR("failed to get dst_uri for Path\n");
@@ -1224,7 +1224,7 @@ nh_timer(unsigned int ticks, void *timer_idx)
 			}
 		}
 
-		if ( (flags&sipping_flag)!=0 &&
+		if ( (/*flags&*/sipping_flag)!=0 &&
 		(opt.s=build_sipping( &c, send_sock, &path, &opt.len))!=0 ) {
 			if (udp_send(send_sock, opt.s, opt.len, &to)<0){
 				LM_ERR("sip udp_send failed\n");

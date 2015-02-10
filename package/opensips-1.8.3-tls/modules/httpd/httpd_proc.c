@@ -120,7 +120,7 @@ int answer_to_connection (void *cls, struct MHD_Connection *connection,
 		"versio=%s, upload_data[%d]=%p, con_cls=%p\n",
 			cls, connection, url, method, version,
 			(int)*upload_data_size, upload_data, con_cls);
-
+	
 	cb = get_httpd_cb(url);
 	if (cb) {
 		normalised_url = &url[cb->http_root->len+1];
@@ -142,6 +142,10 @@ int answer_to_connection (void *cls, struct MHD_Connection *connection,
 							0, 1);
 	} else {
 		LM_DBG("MHD_create_response_from_callback\n");
+		if( con_cls ) {
+			LM_DBG("roger con_cls : %x\n", (int)con_cls);
+			async_data = *con_cls;
+		}
 		response = MHD_create_response_from_callback (MHD_SIZE_UNKNOWN,
 							buffer.len,
 							cb->flush_data_callback,

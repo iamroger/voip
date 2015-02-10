@@ -34,7 +34,7 @@
 #include "dprint.h"
 #include "mem/mem.h"
 
-
+#include "globals.h"
 
 struct host_alias{
 	str alias;
@@ -72,12 +72,18 @@ static inline int grep_aliases(char* name, int len, unsigned short port,
 		len-=2;
 	}
 #endif
-	for(a=aliases;a;a=a->next)
+	LM_DBG("auto_aliases %d",auto_aliases);
+	for(a=aliases;a;a=a->next){
+		LM_DBG("check alias: host == us : %d==%d && [%.*s] == [%.*s]\n",
+		a->alias.len,
+		len,
+		a->alias.len, a->alias.s,
+		len, name );
 		if ((a->alias.len==len) && ((a->port==0) || (port==0) || 
 				(a->port==port)) && ((a->proto==0) || (proto==0) || 
 				(a->proto==proto)) && (strncasecmp(a->alias.s, name, len)==0))
 			return 1;
-	
+	}
 	for( af=alias_fcts ; af ; af=af->next ) {
 		if ( af->alias_f(name,len,port,proto)>0 )
 			return 1;

@@ -304,11 +304,12 @@ struct socket_info* get_send_socket(struct sip_msg *msg,
  */
 int check_self(str* host, unsigned short port, unsigned short proto)
 {
+	grep_aliases(host->s, host->len, port, proto);
 	if (grep_sock_info(host, port, proto)) goto found;
 	/* try to look into the aliases*/
 	if (grep_aliases(host->s, host->len, port, proto)==0){
 		LM_DBG("host != me\n");
-		return 0;
+		return 1;
 	}
 found:
 	return 1;

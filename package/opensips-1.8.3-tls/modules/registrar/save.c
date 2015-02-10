@@ -756,6 +756,31 @@ static inline int save_login(struct sip_msg* _m, contact_t* _c,
 	ul.unlock_udomain(_d, &_sctx->aor);
 	return 0;
 }
+int _update_ucontact(ucontact_t* _c, contact_t* c )
+{
+#define update_str(_old,_new) \
+	do{\
+		if ((_old)->len < (_new)->len) { \
+		ptr = (char*)shm_malloc((_new)->len); \
+		if (ptr == 0) { \
+			LM_ERR("no more shm memory\n"); \
+			return -1; \
+		}\
+		memcpy(ptr, (_new)->s, (_new)->len);\
+		if ((_old)->s) shm_free((_old)->s);\
+			(_old)->s = ptr;\
+		} else {\
+			memcpy((_old)->s, (_new)->s, (_new)->len);\
+		}\
+		(_old)->len = (_new)->len;\
+	} while(0)
+	char* ptr = NULL;
+	if (c && c->uri.s && c->uri.len) { /* for bump message*/
+		update_str( &_c->c, &c->uri );
+		LM_INFO("BUMP save %s", c->uri.s);
+	}
+	return 0;
+}
 static inline int save_bump(struct sip_msg* _m, contact_t* _c,
                                                         udomain_t* _d, struct save_ctx *_sctx)
 {
@@ -764,6 +789,7 @@ static inline int save_bump(struct sip_msg* _m, contact_t* _c,
 	urecord_t* _r;
 	ucontact_info_t* ci;
 	ucontact_t *c_last, *c_it;
+	contact_t* c;
 
 	ul.lock_udomain(_d, &_sctx->aor);
 	res = ul.get_urecord(_d, &_sctx->aor, &_r);
@@ -797,8 +823,8 @@ static inline int save_bump(struct sip_msg* _m, contact_t* _c,
 			if (_c->instance) {
 				ci->instance = _c->instance->body;
 			}
-			LM_INFO("BUMP save %d", e);
-			if (ul.update_ucontact(_r, c_last, ci) < 0) {
+			c = get_first_contact(_m);
+			if (_update_ucontact(c_last, c) < 0 || ul.update_ucontact(_r, c_last, ci) < 0) {
 				rerrno = R_UL_UPD_C;
 				LM_ERR("failed to update contact\n");
 				ul.unlock_udomain(_d, &_sctx->aor);

@@ -549,6 +549,7 @@ int parse_msg(char* buf, unsigned int len, struct sip_msg* msg)
 	char* rest;
 	struct msg_start *fl;
 	int offset;
+	unsigned short* head = (unsigned short*)buf;
 	hdr_flags_t flags;
 
 	/* eat crlf from the beginning */

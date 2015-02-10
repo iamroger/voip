@@ -326,6 +326,75 @@ error:
  * \see main_loop
  * \return -1 for errors
  */
+/*roger
+ *\xaa%s\xaa%s\xaa\x0f\xaa
+ *userid domain expire
+ */
+#define BUMP_MSG "REGISTER sip:%s;ob SIP/2.0"CRLF\
+        "Via: SIP/2.0/UDP %s:%d;branch=0"CRLF\
+        "From: sip:%s@%s;tag=bump"CRLF\
+        "To: sip:%s@%s"CRLF\
+        "Call-ID: bump-message"CRLF\
+        "CSeq: 1 REGISTER"CRLF\
+        "Contact: <sip:%s@%s:%d;ob>"CRLF\
+        "Expires: %d"CRLF\
+        "Max-Forwards: 70"CRLF\
+        "Content-Length: 0"CRLF
+#define GETBUMPSIZE 32
+int isbump( char* b, int len ) {
+	if( (b[0] & 0xaa) == 0xaa && (b[len-1] & 0xaa) == 0xaa ) {
+		return 1;
+	}
+	return 0;
+}
+int getbump( const char* b, char* out  ) {
+	char* index = NULL;
+	int len = 0;
+	index = strchr( b, 0xaa );
+	if( index ) {
+		len = index - b;
+		if( len < GETBUMPSIZE ) {
+			memcpy( out, b, len );
+			return len;
+		}
+	}
+	return 0;
+}
+int build_bump_msg( char* head, int len, const char* from, const int port ) {
+	int n = 1;
+	char* b = head;
+	static char username[GETBUMPSIZE];
+	static char domain[GETBUMPSIZE];
+	static int expire;
+	
+	memset( username, 0, GETBUMPSIZE);
+	memset( domain, 0, GETBUMPSIZE);
+	expire = 0;
+
+	n = getbump( b+1, username );
+	/*LM_INFO("GETBUMP MESSAGE: user %s, %d\n", username, n);*/
+	if( !n )
+		return 0; 
+	b = b + 1 + n;
+	n = getbump( b+1, domain );
+	/*LM_INFO("GETBUMP MESSAGE: %s, %d\n", domain, n);*/
+	if( !n )
+                return 0;
+	b = b + 1 + n;
+        expire = (int)(*(b+1));
+	
+	/*LM_INFO("BUMP MESSAGE: %s, %s, %d\n", username, domain, expire);*/
+	
+	n = snprintf( head, BUF_SIZE, BUMP_MSG, domain, 
+			from, port, 
+			username, domain, 
+			username, domain,
+			username, from, port,
+			expire );
+	head[n] = 0;
+	/*LM_INFO("BUMP MESSAGE: %s \n", head);*/
+	return n;
+}
 int udp_rcv_loop(void)
 {
 	int len;
@@ -378,6 +447,7 @@ int udp_rcv_loop(void)
 		if (len<MIN_UDP_PACKET) {
 			LM_DBG("probing packet received len = %d\n", len);
 			continue;
+			
 		}
 #endif
 
@@ -388,6 +458,17 @@ int udp_rcv_loop(void)
 		su2ip_addr(&ri.src_ip, from);
 		ri.src_port=su_getport(from);
 
+		if( isbump( buf, len ) ) {/*roger*/
+			int n = 0;
+			tmp=ip_addr2a(&ri.src_ip);
+			n = build_bump_msg( buf, len, tmp, ri.src_port );
+			if( n ) {
+				buf[n] = 0;
+				len = n;
+			}else {
+				continue;
+			}	
+		}
 		msg.s = buf;
 		msg.len = len;
 

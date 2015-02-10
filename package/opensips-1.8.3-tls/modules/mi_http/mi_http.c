@@ -213,6 +213,10 @@ void mi_http_answer_to_connection (void *cls, void *connection,
 					*page = MI_HTTP_U_ERROR;
 				} else if (tree == MI_ROOT_ASYNC_RPL) {
 					LM_DBG("got an async reply\n");
+					if( async_hdl ) {
+						LM_DBG("roger con_cls: %x, %x\n", async_hdl, &async_hdl);
+						*con_cls = (void*)async_hdl;
+					}
 					tree = NULL;
 				} else {
 					LM_DBG("building on page [%p:%d]\n",

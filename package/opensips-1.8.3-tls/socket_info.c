@@ -557,7 +557,8 @@ static int fix_socket_list(struct socket_info **list)
 	/* get ips & fill the port numbers*/
 #ifdef EXTRA_DEBUG
 	LM_DBG("listening on \n");
-#endif
+#endif  
+	LM_DBG("fix_socket_list");
 	for (si=*list;si;si=si->next){
 		/* fix the number of processes per interface */
 		if (si->children==0 && (si->proto==PROTO_UDP || si->proto==PROTO_SCTP))
@@ -582,12 +583,15 @@ static int fix_socket_list(struct socket_info **list)
 		}
 		strncpy(si->port_no_str.s, tmp, len+1);
 		si->port_no_str.len=len;
+		LM_DBG("resolvehost [%.*s] ",si->name.len,si->name.s);
 		/* get "official hostnames", all the aliases etc. */
 		he=resolvehost(si->name.s,0);
 		if (he==0){
 			LM_ERR("could not resolve %s\n", si->name.s);
 			goto error;
 		}
+		LM_DBG("aliases [%.*s] == [%.*s] ",
+			(int)strlen(he->h_name),he->h_name, si->name.len, si->name.s);
 		/* check if we got the official name */
 		if (strcasecmp(he->h_name, si->name.s)!=0){
 			if (auto_aliases && add_alias(si->name.s, si->name.len,
@@ -606,10 +610,12 @@ static int fix_socket_list(struct socket_info **list)
 		}
 		/* add the aliases*/
 		if (auto_aliases) {
-			for(h=he->h_aliases; h && *h; h++)
+			for(h=he->h_aliases; h && *h; h++){
+				LM_DBG("h_alias [%.*s] ",(int)strlen(*h),*h);
 				if (add_alias(*h, strlen(*h), si->port_no, si->proto)<0){
 					LM_ERR("add_alias failed\n");
 				}
+			}
 		}
 		hostent2ip_addr(&si->address, he, 0); /*convert to ip_addr 
 														 format*/

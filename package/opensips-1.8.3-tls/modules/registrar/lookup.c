@@ -318,7 +318,11 @@ int registered(struct sip_msg* _m, char* _t, char* _s, char *_c)
 
 	ul.lock_udomain((udomain_t*)_t, &aor);
 	res = ul.get_urecord((udomain_t*)_t, &aor, &r);
-
+	if (res == 0) {
+		ul.unlock_udomain((udomain_t*)_t, &aor);
+		LM_DBG("for roger bump message '%.*s' found in usrloc\n", aor.len, ZSW(aor.s));
+		return 1;/* roger*/
+	}
 	if (res < 0) {
 		ul.unlock_udomain((udomain_t*)_t, &aor);
 		LM_ERR("failed to query usrloc\n");
@@ -327,7 +331,7 @@ int registered(struct sip_msg* _m, char* _t, char* _s, char *_c)
 
 	if (res == 0) {
 		ptr = r->contacts;
-		while (ptr && !VALID_CONTACT(ptr, act_time)) {
+		while (ptr && !VALID_CONTACT(ptr, act_time) ) {
 			ptr = ptr->next;
 		}
 
